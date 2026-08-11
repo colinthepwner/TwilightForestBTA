@@ -76,6 +76,8 @@ public final class TFGeometryBridge {
 		final Map<String, String[]> baseSlots = new HashMap<>();
 
 		final Map<String, String> rendererFields = new HashMap<>();
+
+		final Map<String, String> rendererMethods = new HashMap<>();
 	}
 
 	private static Manifest manifest;
@@ -97,6 +99,11 @@ public final class TFGeometryBridge {
 				if (rest.endsWith(".slots")) {
 					m.baseSlots.put(rest.substring(0, rest.length() - ".slots".length()), split(value));
 				}
+				continue;
+			}
+			if (key.startsWith("renderer-method.")) {
+
+				m.rendererMethods.put(key.substring("renderer-method.".length()), value);
 				continue;
 			}
 			if (key.startsWith("renderer.")) {
@@ -159,6 +166,16 @@ public final class TFGeometryBridge {
 		}
 		manifest = m;
 		return m;
+	}
+
+	private static String argumentDescriptor(Type[] params) {
+		StringBuilder out = new StringBuilder("(");
+		for (Type param : params) out.append(param.getDescriptor());
+		return out.append(')').toString();
+	}
+
+	private static double[] shift(double[] args, int n) {
+		return n >= args.length ? new double[0] : Arrays.copyOfRange(args, n, args.length);
 	}
 
 	private static String[] split(String value) {
@@ -251,13 +268,7 @@ public final class TFGeometryBridge {
 				}
 
 				composedBase = false;
-				if (extraction.superName != null && !extraction.superIsPlainBase) {
-					if (entry.base == null) {
-						result.skipped.add(entry.id);
-						result.problems.add(entry.id + ": " + entry.sourceClass + " extends '" + extraction.superName
-							+ "', whose boxes are built outside the archive, and the manifest names no base layer");
-						continue;
-					}
+				if (entry.base != null) {
 					List<Bone> base = baseLayer(entry.base, extraction, m, result, entry.id);
 					if (base == null) {
 						result.skipped.add(entry.id);
@@ -265,6 +276,11 @@ public final class TFGeometryBridge {
 					}
 					extraction.bones = merge(base, extraction.bones);
 					composedBase = true;
+				} else if (extraction.superName != null && !extraction.superIsPlainBase) {
+					result.skipped.add(entry.id);
+					result.problems.add(entry.id + ": " + entry.sourceClass + " extends '" + extraction.superName
+						+ "', whose boxes are built outside the archive, and the manifest names no base layer");
+					continue;
 				}
 
 				if (entry.overlayClass != null) {
@@ -351,9 +367,7 @@ public final class TFGeometryBridge {
 		}
 	}
 
-	private static final List<String> BUILTIN_MODEL_IDS = Arrays.asList(
-		"bear", "bird", "boar", "bunny", "deer", "fox",
-		"horse", "horse_pegasus", "horse_unicorn", "kitty", "litterbox");
+	private static final List<String> BUILTIN_MODEL_IDS = Arrays.asList();
 
 	private static void publish(Result result) {
 		convertedCount = result.converted.size();
@@ -373,8 +387,12 @@ public final class TFGeometryBridge {
 	static final class Bone {
 
 		String slot;
+
+		String parentSlot;
 		String name;
 		String parent;
+
+		boolean composedInOriginal;
 		float pointX, pointY, pointZ;
 		float angleX, angleY, angleZ;
 		int u, v;
@@ -732,14 +750,19 @@ public final class TFGeometryBridge {
 					Object target = pop(stack);
 					if (pose) return true;
 					if (!"<init>".equals(call.name)) return true;
-					if (target instanceof PendingNew && "(II)V".equals(call.desc) && rendererType == null) {
+					if (target instanceof PendingNew pending && rendererType == null
+						&& isRendererCtor(params)) {
 
-						rendererType = ((PendingNew) target).type;
+						rendererType = pending.type();
 						Bone bone = new Bone();
 						replace(stack, target, bone);
-						applyRendererCtor(bone, args);
-					} else if (target instanceof Bone bone && "(II)V".equals(call.desc)) {
-						applyRendererCtor(bone, args);
+						applyRendererCtor(bone, args, params);
+					} else if (target instanceof Bone bone && isRendererCtor(params)) {
+						applyRendererCtor(bone, args, params);
+					} else if (target instanceof Bone bone && rendererType != null
+						&& call.owner.equals(rendererType)) {
+
+						applyRendererCtor(bone, new double[0], new Type[0]);
 					} else if (target == THIS) {
 						if (call.owner.equals(owner.name)) {
 							MethodNode delegate = ctors.get(call.desc);
@@ -757,26 +780,54 @@ public final class TFGeometryBridge {
 				case Opcodes.INVOKEVIRTUAL -> {
 					MethodInsnNode call = (MethodInsnNode) insn;
 					Type[] params = Type.getArgumentTypes(call.desc);
+					String shape = argumentDescriptor(params);
+
+					if (!pose && rendererType != null && shape.equals("(L" + rendererType + ";)")) {
+						Object child = pop(stack);
+						Object parent = pop(stack);
+						if (!Type.VOID_TYPE.equals(Type.getReturnType(call.desc))) push(stack, null);
+						if (parent instanceof Bone p && child instanceof Bone c) {
+
+							c.parentSlot = p.slot;
+						}
+						return true;
+					}
+
 					double[] args = popArgs(stack, params);
 					Object target = pop(stack);
-					if (!Type.VOID_TYPE.equals(Type.getReturnType(call.desc))) push(stack, null);
+					if (!Type.VOID_TYPE.equals(Type.getReturnType(call.desc))) {
+
+						push(stack, returnsRenderer(call) ? target : null);
+					}
 					if (pose) {
 
 						if (target instanceof Bone bone && "(FFF)V".equals(call.desc)) movePoint(bone, args);
 						return true;
 					}
 					if (!(target instanceof Bone bone)) return true;
-					switch (call.desc) {
 
-						case "(FFFIIIF)V" -> addBox(bone, args, (float) args[6]);
-						case "(FFFIII)V" -> addBox(bone, args, 0.0F);
-						case "(FFF)V" -> {
+					switch (shape) {
+						case "(FFFIIIF)" -> addBox(bone, args, (float) args[6]);
+						case "(FFFIII)" -> addBox(bone, args, 0.0F);
+						case "(Ljava/lang/String;FFFIII)" ->
+
+							addBox(bone, shift(args, 1), 0.0F);
+						case "(FFF)" -> {
 							bone.pointX = (float) args[0];
 							bone.pointY = (float) args[1];
 							bone.pointZ = (float) args[2];
 						}
+						case "(II)" -> {
+
+							if (!applyIntPair(bone, call.name, args)) {
+								out.problems.add("the model calls " + call.name + "(int,int) on a ModelRenderer and "
+									+ "the manifest does not say whether that is setTextureOffset or "
+									+ "setTextureSize -- add a renderer-method." + call.name + " entry");
+								return false;
+							}
+						}
 						default -> {
-							out.problems.add("unreadable ModelRenderer call " + call.desc + " in the constructor");
+							out.problems.add("unreadable ModelRenderer call " + shape + " in the constructor");
 							return false;
 						}
 					}
@@ -793,11 +844,44 @@ public final class TFGeometryBridge {
 			return true;
 		}
 
-		private void applyRendererCtor(Bone bone, double[] args) {
-			bone.u = args.length > 0 ? (int) args[0] : 0;
-			bone.v = args.length > 1 ? (int) args[1] : 0;
+		private boolean returnsRenderer(MethodInsnNode call) {
+			return rendererType != null
+				&& Type.getReturnType(call.desc).getSort() == Type.OBJECT
+				&& rendererType.equals(Type.getReturnType(call.desc).getInternalName());
+		}
+
+		private static boolean isRendererCtor(Type[] params) {
+			int n = params.length;
+			if (n != 2 && n != 3) return false;
+			if (n == 3 && params[0].getSort() != Type.OBJECT) return false;
+			return params[n - 2].getSort() == Type.INT && params[n - 1].getSort() == Type.INT;
+		}
+
+		private void applyRendererCtor(Bone bone, double[] args, Type[] params) {
+
+			int at = params.length >= 2 ? params.length - 2 : args.length;
+			bone.u = at < args.length ? (int) args[at] : 0;
+			bone.v = at + 1 < args.length ? (int) args[at + 1] : 0;
 			bone.slot = "#" + out.bones.size();
 			out.bones.add(bone);
+		}
+
+		private boolean applyIntPair(Bone bone, String name, double[] args) {
+			switch (manifest.rendererMethods.getOrDefault(name, "")) {
+				case "texture-offset" -> {
+					bone.u = (int) args[0];
+					bone.v = (int) args[1];
+
+					return true;
+				}
+				case "texture-size" -> {
+
+					return true;
+				}
+				default -> {
+					return false;
+				}
+			}
 		}
 
 		private void addBox(Bone bone, double[] args, float inflate) {
@@ -917,6 +1001,10 @@ public final class TFGeometryBridge {
 		List<Bone> bones = switch (id) {
 			case "quadruped" -> quadrupedBase(arg(args, 0, 8), (float) arg(args, 1, 0));
 			case "biped" -> bipedBase((float) arg(args, 0, 0), (float) arg(args, 1, 0));
+			case "skeleton" -> skeletonBase();
+			case "sheep_body" -> sheepBodyBase();
+			case "sheep_wool" -> sheepWoolBase();
+			case "spider" -> spiderBase();
 			default -> null;
 		};
 		if (bones == null) {
@@ -937,7 +1025,8 @@ public final class TFGeometryBridge {
 		int leg = (int) legLength;
 		List<Bone> bones = new ArrayList<>();
 		bones.add(bone("head", 0, 0, 0, 18 - leg, -6, box(-4, -4, -8, 8, 8, 8, inflate)));
-		Bone body = bone("body", 28, 8, 0, 11, 2, box(-5, -10, -7, 10, 16, 8, inflate));
+
+		Bone body = bone("body", 28, 8, 0, 17 - leg, 2, box(-5, -10, -7, 10, 16, 8, inflate));
 		body.angleX = (float) (Math.PI / 2.0);
 		bones.add(body);
 		bones.add(bone("legLeftBack", 0, 16, -3, 24 - leg, 7, box(-2, 0, -2, 4, leg, 4, inflate)));
@@ -960,6 +1049,63 @@ public final class TFGeometryBridge {
 			if (bone.name.endsWith("Left")) bone.cubes.get(0).mirror = true;
 		}
 		return bones;
+	}
+
+	static List<Bone> skeletonBase() {
+		List<Bone> bones = bipedBase(0.0F, 0.0F);
+		replaceBone(bones, "armRight", bone("armRight", 40, 16, -5, 2, 0, box(-1, -2, -1, 2, 12, 2, 0)));
+		replaceBone(bones, "armLeft", bone("armLeft", 40, 16, 5, 2, 0, box(-1, -2, -1, 2, 12, 2, 0)));
+		replaceBone(bones, "legRight", bone("legRight", 0, 16, -2, 12, 0, box(-1, 0, -1, 2, 12, 2, 0)));
+		replaceBone(bones, "legLeft", bone("legLeft", 0, 16, 2, 12, 0, box(-1, 0, -1, 2, 12, 2, 0)));
+		for (Bone bone : bones) {
+			if (bone.name.endsWith("Left")) bone.cubes.get(0).mirror = true;
+		}
+		return bones;
+	}
+
+	static List<Bone> sheepBodyBase() {
+		List<Bone> bones = quadrupedBase(12, 0.0F);
+		replaceBone(bones, "head", bone("head", 0, 0, 0, 6, -8, box(-3, -4, -6, 6, 6, 8, 0)));
+		Bone body = bone("body", 28, 8, 0, 5, 2, box(-4, -10, -7, 8, 16, 6, 0));
+		body.angleX = (float) (Math.PI / 2.0);
+		replaceBone(bones, "body", body);
+		return bones;
+	}
+
+	static List<Bone> sheepWoolBase() {
+		List<Bone> bones = quadrupedBase(12, 0.0F);
+		replaceBone(bones, "head", bone("head", 0, 0, 0, 6, -8, box(-3, -4, -4, 6, 6, 6, 0.6F)));
+		Bone body = bone("body", 28, 8, 0, 5, 2, box(-4, -10, -7, 8, 16, 6, 1.75F));
+		body.angleX = (float) (Math.PI / 2.0);
+		replaceBone(bones, "body", body);
+		replaceBone(bones, "legLeftBack", bone("legLeftBack", 0, 16, -3, 12, 7, box(-2, 0, -2, 4, 6, 4, 0.5F)));
+		replaceBone(bones, "legRightBack", bone("legRightBack", 0, 16, 3, 12, 7, box(-2, 0, -2, 4, 6, 4, 0.5F)));
+		replaceBone(bones, "legLeftFront", bone("legLeftFront", 0, 16, -3, 12, -5, box(-2, 0, -2, 4, 6, 4, 0.5F)));
+		replaceBone(bones, "legRightFront", bone("legRightFront", 0, 16, 3, 12, -5, box(-2, 0, -2, 4, 6, 4, 0.5F)));
+		return bones;
+	}
+
+	static List<Bone> spiderBase() {
+		List<Bone> bones = new ArrayList<>();
+		bones.add(bone("head", 32, 4, 0, 15, -3, box(-4, -4, -8, 8, 8, 8, 0)));
+		bones.add(bone("neck", 0, 0, 0, 15, 0, box(-3, -3, -3, 6, 6, 6, 0)));
+		bones.add(bone("body", 0, 12, 0, 15, 9, box(-5, -4, -6, 10, 8, 12, 0)));
+
+		int[] legZ = {2, 1, 0, -1};
+		for (int i = 0; i < 4; i++) {
+			bones.add(bone("leg" + i + "Left", 18, 0, -4, 15, legZ[i], box(-15, -1, -1, 16, 2, 2, 0)));
+			bones.add(bone("leg" + i + "Right", 18, 0, 4, 15, legZ[i], box(-1, -1, -1, 16, 2, 2, 0)));
+		}
+		return bones;
+	}
+
+	private static void replaceBone(List<Bone> bones, String name, Bone replacement) {
+		for (int i = 0; i < bones.size(); i++) {
+			if (name.equals(bones.get(i).name)) {
+				bones.set(i, replacement);
+				return;
+			}
+		}
 	}
 
 	private static List<Bone> vanillaModel(String id) {
@@ -1101,6 +1247,14 @@ public final class TFGeometryBridge {
 	}
 
 	private static List<Bone> rename(List<Bone> bones, ModelEntry entry) {
+
+		Map<String, String> nameOfSlot = new LinkedHashMap<>();
+		for (Bone bone : bones) {
+			String name = bone.name != null ? bone.name : bone.slot;
+			if (entry.renames.containsKey(bone.slot)) name = entry.renames.get(bone.slot);
+			if (name != null) nameOfSlot.put(bone.slot, name);
+		}
+
 		List<Bone> kept = new ArrayList<>();
 		for (Bone bone : bones) {
 			String name = bone.name != null ? bone.name : bone.slot;
@@ -1110,6 +1264,14 @@ public final class TFGeometryBridge {
 			}
 			bone.name = name;
 			bone.parent = entry.parents.get(name);
+
+			if (bone.parent == null && bone.parentSlot != null) {
+				String discovered = nameOfSlot.get(bone.parentSlot);
+				if (discovered != null && !discovered.equals(name)) {
+					bone.parent = discovered;
+					bone.composedInOriginal = true;
+				}
+			}
 
 			if (entry.mirrorBones.contains(name)) {
 				for (Cube cube : bone.cubes) {
@@ -1140,6 +1302,14 @@ public final class TFGeometryBridge {
 				bone.parent = null;
 				continue;
 			}
+
+			if (bone.composedInOriginal) {
+				bone.pointX += parent.pointX;
+				bone.pointY += parent.pointY;
+				bone.pointZ += parent.pointZ;
+				continue;
+			}
+
 			if (parent.angleX == 0 && parent.angleY == 0 && parent.angleZ == 0) continue;
 			if (turnsOutside(bone, parent)) {
 				result.problems.add(modelId + ": '" + bone.name + "' and its parent '" + parent.name
