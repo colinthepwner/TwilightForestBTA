@@ -63,6 +63,20 @@ public final class TFStructures {
 			hill.buildComponent(hill, pieces, rand);
 		}
 
+		if (type == TFFeature.HEDGE_MAZE) {
+			ComponentTFHedgeMaze maze = new ComponentTFHedgeMaze(0,
+				(cx << 4) + 8, ComponentTFHedgeMaze.floorY(), (cz << 4) + 8);
+			pieces.add(maze);
+			maze.buildComponent(maze, pieces, rand);
+		}
+
+		if (type == TFFeature.NAGA_COURTYARD) {
+			ComponentTFNagaCourtyard courtyard = new ComponentTFNagaCourtyard(0,
+				(cx << 4) + 8, ComponentTFNagaCourtyard.floorY(), (cz << 4) + 8);
+			pieces.add(courtyard);
+			courtyard.buildComponent(courtyard, pieces, rand);
+		}
+
 		return pieces;
 	}
 }

@@ -165,6 +165,14 @@ public abstract class TFWorldFeature extends WorldFeature {
 		}
 	}
 
+	protected void fillFloor(int x, int y, int z, int width, int depth, int blockValue) {
+		for (int dx = 0; dx < width; dx++) {
+			for (int dz = 0; dz < depth; dz++) {
+				this.putBlock(x + dx, y, z + dz, blockValue, true);
+			}
+		}
+	}
+
 	protected int randStone(Random rand, int howMuch) {
 		return rand.nextInt(howMuch) >= 1 ? Blocks.COBBLE_STONE.id() : Blocks.COBBLE_STONE_MOSSY.id();
 	}

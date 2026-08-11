@@ -5,6 +5,7 @@ import com.twilightforest.world.biome.TFBiomes;
 import com.twilightforest.world.feature.TFFeature;
 import com.twilightforest.world.feature.WorldFeatureTFCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFFoundation;
+import com.twilightforest.world.feature.WorldFeatureTFGlacierMaze;
 import com.twilightforest.world.feature.WorldFeatureTFHollowTree;
 import com.twilightforest.world.feature.WorldFeatureTFMangroveTree;
 import com.twilightforest.world.feature.WorldFeatureTFMonolith;
@@ -132,6 +133,12 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 		if (nearType == TFFeature.HEDGE_MAZE || nearType == TFFeature.NAGA_COURTYARD
 			|| nearType == TFFeature.LICH_TOWER || nearType == 9) {
 			return;
+		}
+
+		int hereType = TFFeature.featureType(this.world, mapX >> 4, mapZ >> 4);
+		if (hereType == TFFeature.GLACIER_FEATURE) {
+			new WorldFeatureTFGlacierMaze(1).place(this.world, this.rand,
+				mapX + 8, TFWorldConstants.SEA_LEVEL + 10, mapZ + 8);
 		}
 
 		Counts counts = Counts.of(biome);
