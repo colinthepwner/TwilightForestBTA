@@ -140,21 +140,21 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
 			new WorldFeatureTFHollowTree()
-				.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
+				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
 		}
 
 		if (this.rand.nextInt(6) == 0) {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
 			randomFeature(this.rand)
-				.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
+				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
 		}
 
 		int canopyCount = counts.canopy + this.rand.nextInt(2);
 		for (int i = 0; i < canopyCount; i++) {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
-			int ry = this.world.getHeightValue(rx, rz);
+			int ry = groundAt(rx, rz);
 
 			boolean wantsMushroom = counts.canopyMushroomChance > 0.0F
 				&& this.rand.nextFloat() <= counts.canopyMushroomChance;
@@ -178,12 +178,18 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
 			new WorldFeatureTFMangroveTree()
-				.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
+				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
 		}
 
 		com.twilightforest.world.structure.TFStructures.generate(this.world, this.rand, chunkX, chunkZ);
 
 		vanillaPass(biome, mapX, mapZ);
+	}
+
+	private int groundAt(int x, int z) {
+		int y = this.world.findTopSolidNonLiquidBlock(x, z);
+
+		return y < 0 ? this.world.getHeightValue(x, z) : y;
 	}
 
 	private void vanillaPass(Biome biome, int mapX, int mapZ) {
@@ -204,7 +210,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int rz = mapZ + this.rand.nextInt(16) + 8;
 			WorldFeature tree = biome.getTreeFeature(this.rand);
 			tree.init(1.0, 1.0, 1.0);
-			tree.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
+			tree.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
 		}
 
 		for (int i = 0; i < v.flowers; i++) {

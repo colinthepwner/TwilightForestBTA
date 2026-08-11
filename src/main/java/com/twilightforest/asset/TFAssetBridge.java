@@ -41,7 +41,7 @@ public final class TFAssetBridge {
 	private static final String MANIFEST = "/assets/twilightforest/asset-bridge.properties";
 	private static final String STAMP = "bridge-source.txt";
 
-	private static final int BRIDGE_REVISION = 16;
+	private static final int BRIDGE_REVISION = 17;
 
 	private static final int MAX_NESTING = 3;
 
@@ -279,7 +279,8 @@ public final class TFAssetBridge {
 	}
 
 	private static boolean isOwnJar(String name) {
-		return name.toLowerCase(Locale.ROOT).matches("^twilightforest-\\d+\\.\\d.*");
+		String lower = name.toLowerCase(Locale.ROOT);
+		return lower.startsWith("twilightforest-") && lower.contains("+");
 	}
 
 	private static boolean isZip(File file) {

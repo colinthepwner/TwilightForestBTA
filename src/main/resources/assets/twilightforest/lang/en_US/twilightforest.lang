@@ -3,32 +3,88 @@
 # BTA scans assets/<namespace>/lang/en_US/ for any *.lang and parses each as a Properties file, so
 # the filename here is free; the directory is not.
 #
-# Names are Benimatic's own, taken from TFBiomeGenBase's setBiomeName calls and from the entity names
-# mod_TwilightForest registers -- not invented. "TwilightClearings" and the rest are camel-case in the
-# source because b1.7.3 used the biome name as an identifier; the display strings below are the same
-# names spelled for a reader.
+# Names are Benimatic's own wherever he wrote one -- taken from TFBiomeBase's setBiomeName calls,
+# mod_TwilightForest's registerEntityID calls and TFBlocks' addName calls. The handful that are not
+# are marked, and every one of them exists because this port splits something upstream kept whole.
+#
+# --- ⚠️ Key formats, which are not obvious --------------------------------------------------------
+# blocks    tile.<modid>.<translation key>.name    -- the key HalpLibe's build() was given, dots and
+#                                                     all, NOT the texture name with underscores
+# items     item.<modid>.<key>.name
+# biomes    biome.<key>                            -- no .name suffix
+# mobs      guidebook.section.mob.<entity id>.name -- BTA 8.0 resolves mob names through the
+#                                                     guidebook namespace, not entity.*
+#
+# A missing key is not silent: BTA logs "Missing translation in default language: <key>" once per
+# key as the creative menu is built, which is how the gaps below were found rather than guessed.
 
-# --- Biomes ---------------------------------------------------------------------------------------
+# --- Biomes -----------------------------------------------------------------------------------------
+# All fourteen. ⚠️ Three of these keys CHANGED when the port moved from 1.p4 to 1.7.1 -- "clearings"
+# became "clearing", "highland" became "highlands" and "mushroom" became "mushrooms" -- so the old
+# entries matched nothing and those biomes displayed a raw key.
+biome.twilight.lake=Twilight Lake
 biome.twilight.forest=Twilight Forest
-biome.twilight.clearings=Twilight Clearings
-biome.twilight.highland=Twilight Highlands
-biome.twilight.mushroom=Twilight Mushroom Forest
+biome.twilight.forest_variant=Twilight Forest Variant
+biome.twilight.highlands=Highlands
+biome.twilight.mushrooms=Mushrooms
 biome.twilight.swamp=Twilight Swamp
-biome.twilight.snow=Twilight Snowy Forest
-biome.twilight.glacier=Twilight Glacier
+biome.twilight.stream=Twilight Stream
+biome.twilight.snow=Snowfield
+biome.twilight.glacier=Glacier
+biome.twilight.clearing=Twilight Clearing
+biome.twilight.clearing_border=Clearing Border
+biome.twilight.lake_border=Lake Border
+biome.twilight.deep_mushrooms=Lots of Mushrooms
+biome.twilight.large_feature=Major Feature
 
 # --- World type and dimension -----------------------------------------------------------------------
 worldType.twilightforest.default.name=Twilight Forest
 worldType.twilightforest.default.desc=A forest under a sky that never moves.
 dimension.twilightforest.name=Twilight Forest
 
-# --- Mobs -----------------------------------------------------------------------------------------
-# BTA 8.0 resolves a mob's display name through the guidebook namespace, which is why these are not
-# entity.* keys. The three names are the ones mod_TwilightForest passes to RegisterEntityID.
+# --- Mobs -------------------------------------------------------------------------------------------
 guidebook.section.mob.wildboar.name=Wild Boar
 guidebook.section.mob.bighorn.name=Bighorn Sheep
 guidebook.section.mob.wilddeer.name=Wild Deer
+guidebook.section.mob.penguin.name=Penguin
+guidebook.section.mob.swarmspider.name=Swarm Spider
+guidebook.section.mob.hedgespider.name=Hedge Spider
+guidebook.section.mob.redcap.name=Redcap
+guidebook.section.mob.skeletondruid.name=Skeleton Druid
+guidebook.section.mob.wraith.name=Twilight Wraith
+guidebook.section.mob.hostilewolf.name=Hostile Wolf
+guidebook.section.mob.naga.name=Naga
+guidebook.section.mob.nagasegment.name=Naga Segment
+
+# The two projectiles. Upstream never names them -- they are not registered as mobs at all, only as
+# network-visible entities -- so these are this port's own, and exist because BTA asks every
+# registered entity for a display name whether or not anything shows it.
+guidebook.section.mob.projectile.name=Magic Bolt
+guidebook.section.mob.naturebolt.name=Nature Bolt
 
 # --- Blocks -----------------------------------------------------------------------------------------
+# The log and leaf names are upstream's three metadata variants, which this port registers as
+# separate blocks -- so the names carry over one for one.
+tile.twilightforest.log.twilight_oak.name=Twilight Oak Log
+tile.twilightforest.log.canopy.name=Canopy Tree Log
+tile.twilightforest.log.mangrove.name=Mangrove Log
+tile.twilightforest.leaves.twilight_oak.name=Twilight Oak Leaves
+tile.twilightforest.leaves.canopy.name=Canopy Tree Leaves
+tile.twilightforest.leaves.mangrove.name=Mangrove Leaves
+
+# ⚠️ Upstream has ONE mazestone with three metadata variants and one name for all three. Splitting
+# it into three blocks means inventing two names; these follow the vanilla blocks each variant
+# disguises itself as, which is the only honest reading of what they are.
+tile.twilightforest.mazestone.name=Mazestone
+tile.twilightforest.mazestone.cobble.name=Mazestone Cobblestone
+tile.twilightforest.mazestone.mossy.name=Mossy Mazestone
+
+tile.twilightforest.hedge.name=Hedge
+tile.twilightforest.firefly.name=Firefly
+tile.twilightforest.cicada.name=Cicada
+tile.twilightforest.boss_spawner.name=Boss Spawner
 tile.twilightforest.portal.twilightforest.name=Twilight Forest Portal
 tile.twilightforest.portal.twilightforest.desc=A way in. Build a frame of mossy cobblestone.
+
+# --- Items ------------------------------------------------------------------------------------------
+item.twilightforest.naga_scale.name=Naga Scale
