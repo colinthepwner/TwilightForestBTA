@@ -1,0 +1,34 @@
+# Twilight Forest -- English (US).
+#
+# BTA scans assets/<namespace>/lang/en_US/ for any *.lang and parses each as a Properties file, so
+# the filename here is free; the directory is not.
+#
+# Names are Benimatic's own, taken from TFBiomeGenBase's setBiomeName calls and from the entity names
+# mod_TwilightForest registers -- not invented. "TwilightClearings" and the rest are camel-case in the
+# source because b1.7.3 used the biome name as an identifier; the display strings below are the same
+# names spelled for a reader.
+
+# --- Biomes ---------------------------------------------------------------------------------------
+biome.twilight.forest=Twilight Forest
+biome.twilight.clearings=Twilight Clearings
+biome.twilight.highland=Twilight Highlands
+biome.twilight.mushroom=Twilight Mushroom Forest
+biome.twilight.swamp=Twilight Swamp
+biome.twilight.snow=Twilight Snowy Forest
+biome.twilight.glacier=Twilight Glacier
+
+# --- World type and dimension -----------------------------------------------------------------------
+worldType.twilightforest.default.name=Twilight Forest
+worldType.twilightforest.default.desc=A forest under a sky that never moves.
+dimension.twilightforest.name=Twilight Forest
+
+# --- Mobs -----------------------------------------------------------------------------------------
+# BTA 8.0 resolves a mob's display name through the guidebook namespace, which is why these are not
+# entity.* keys. The three names are the ones mod_TwilightForest passes to RegisterEntityID.
+guidebook.section.mob.wildboar.name=Wild Boar
+guidebook.section.mob.bighorn.name=Bighorn Sheep
+guidebook.section.mob.wilddeer.name=Wild Deer
+
+# --- Blocks -----------------------------------------------------------------------------------------
+tile.twilightforest.portal.twilightforest.name=Twilight Forest Portal
+tile.twilightforest.portal.twilightforest.desc=A way in. Build a frame of mossy cobblestone.

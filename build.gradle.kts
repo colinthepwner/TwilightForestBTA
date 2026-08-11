@@ -1,0 +1,196 @@
+plugins {
+	alias(libs.plugins.loom)
+    java
+}
+
+val lwjglNatives = resolveLwjglNatives()
+
+val modVersion = "${providers.gradleProperty("mod_version").get()}+${libs.versions.bta.get()}"
+val modGroup: Provider<String> = providers.gradleProperty("mod_group")
+val modName: Provider<String> = providers.gradleProperty("mod_name")
+
+val javaVersion: Provider<Int> = libs.versions.java.map { it.toInt() }
+
+base.archivesName = modName
+group = modGroup.get()
+version = modVersion
+loom {
+	val btaChannel = libs.versions.btaChannel.get()
+	val btaVersion = (if (btaChannel == "nightly") "" else "v") + libs.versions.bta.get()
+    customMinecraftMetadata.set("https://downloads.betterthanadventure.net/bta-client/${btaChannel}/$btaVersion/manifest.json")
+}
+repositories {
+    mavenCentral()
+    maven("https://maven.fabricmc.net/") { name = "Fabric" }
+    maven("https://maven.thesignalumproject.net/infrastructure") { name = "SignalumMavenInfrastructure" }
+    maven("https://maven.thesignalumproject.net/releases") { name = "SignalumMavenReleases" }
+	maven("https://maven.thesignalumproject.net/nightly") { name = "SignalumMavenNightly" }
+    ivy("https://piston-data.mojang.com") {
+        patternLayout { artifact("v1/[organisation]/[revision]/[module].jar") }
+        metadataSources { artifact() }
+    }
+}
+dependencies {
+    minecraft("::${libs.versions.bta.get()}")
+
+	// Required at compilation & runtime
+	// included in builds as a runtime dependency
+	implementation(libs.loader)
+	implementation(libs.halplibe) // If you do not need halplibe you can delete this line
+
+	// Ship HalpLibe inside the jar so the mod works on its own. Fabric treats a nested jar as one more
+	// candidate rather than an override: if the player already has HalpLibe, the loader picks whichever
+	// version is higher, so a newer one they installed themselves still wins and this copy is ignored.
+	// Not transitive -- the loader and Minecraft it asks for are the game's own and must not be nested.
+	include(libs.halplibe) { isTransitive = false }
+
+	// Only required at compilation
+	// provides documentation, can be removed if that isn't needed
+	compileOnly(libs.bundles.btaLwjgl)
+	compileOnly(libs.joml)
+	compileOnly(libs.joml.primitives)
+	compileOnly(libs.slf4jApi)
+
+	// Only required for development/launch at runtime, won't be part of any builds
+	localRuntime(libs.modMenu) // Optional, can be removed
+	runtimeClasspath(libs.clientJar)
+	val lwjglVer = libs.versions.lwjgl.get()
+	localRuntime(platform("org.lwjgl:lwjgl-bom:${lwjglVer}"))
+	localRuntime("org.lwjgl:lwjgl::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-glfw::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-openal::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-opengl::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-stb::$lwjglNatives")
+}
+java {
+	toolchain {
+		languageVersion = javaVersion.map { JavaLanguageVersion.of(it) }
+		vendor = JvmVendorSpec.ADOPTIUM
+	}
+	sourceCompatibility = JavaVersion.toVersion(javaVersion.get())
+	targetCompatibility = JavaVersion.toVersion(javaVersion.get())
+	withSourcesJar()
+}
+val licenseFile = run {
+	val rootLicense = layout.projectDirectory.file("LICENSE")
+	val parentLicense = layout.projectDirectory.file("../LICENSE")
+	when {
+		rootLicense.asFile.exists() -> {
+			logger.lifecycle("Using LICENSE from project root: {}", rootLicense.asFile)
+			rootLicense
+		}
+		parentLicense.asFile.exists() -> {
+			logger.lifecycle("Using LICENSE from parent directory: {}", parentLicense.asFile)
+			parentLicense
+		}
+		else -> {
+			logger.warn("No LICENSE file found in project or parent directory.")
+			null
+		}
+	}
+}
+tasks {
+	withType<JavaCompile>().configureEach {
+		options.encoding = "UTF-8"
+		sourceCompatibility = javaVersion.get().toString()
+		targetCompatibility = javaVersion.get().toString()
+		if (javaVersion.get() > 8) options.release = javaVersion
+	}
+	named<UpdateDaemonJvm>("updateDaemonJvm") {
+		languageVersion = libs.versions.gradleJava.map { JavaLanguageVersion.of(it.toInt()) }
+		vendor = JvmVendorSpec.ADOPTIUM
+	}
+	withType<JavaExec>().configureEach { defaultCharacterEncoding = "UTF-8" }
+	withType<Javadoc>().configureEach { options.encoding = "UTF-8" }
+	withType<Test>().configureEach { defaultCharacterEncoding = "UTF-8" }
+	withType<Jar>().configureEach {
+		licenseFile?.let {
+			from(it) {
+				rename { original -> "${original}_${archiveBaseName.get()}" }
+			}
+		}
+	}
+	processResources {
+		val resourceMap = mapOf(
+			"version" to modVersion,
+			"fabricloader" to libs.versions.loader.get(),
+			"halplibe" to libs.versions.halplibe.get(),
+			"java" to libs.versions.java.get(),
+			"modmenu" to libs.versions.modMenu.get()
+		)
+		// This is needed for gradle to recognize changes
+		// made to expanded files
+		inputs.properties(resourceMap)
+
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+		with(copySpec {
+			from("src/main/resources/") {
+				include("fabric.mod.json")
+				include("*.mixins.json")
+				expand(resourceMap)
+			}
+		})
+	}
+}
+/**
+ * Fails the build if any file the asset bridge is supposed to supply is sitting in the source tree.
+ *
+ * This is the other half of the bridge, and it is driven by the same manifest so the two cannot
+ * drift: every path on the right-hand side of `asset-bridge.properties` is a file this repository
+ * must NOT contain, because the bridge's whole purpose is to fetch that file from a copy the player
+ * supplies instead.
+ *
+ * Wired into `check` rather than left as a thing to remember, so a stray copy of Benimatic's art
+ * cannot reach a public repository or a released jar by being forgotten about. Skipped silently when
+ * Python is unavailable -- the guard is a safety net, not a build dependency.
+ */
+val verifyNoBridgedAssets by tasks.registering(Exec::class) {
+	group = "verification"
+	description = "Fails if art the asset bridge should supply is present in the tree."
+	isIgnoreExitValue = false
+	commandLine("python", "tools/strip_bridged_assets.py", "--check")
+	// A machine without Python still builds; it just does not get the check.
+	onlyIf {
+		try {
+			ProcessBuilder("python", "--version").start().waitFor() == 0
+		} catch (e: Exception) {
+			logger.warn("Python not found; skipping the bridged-asset check.")
+			false
+		}
+	}
+}
+
+tasks.named("check") { dependsOn(verifyNoBridgedAssets) }
+
+// Removes all outdated manifest.json dependencies
+configurations.configureEach {
+	exclude(group = "org.lwjgl.lwjgl")
+	exclude(group = "net.java.jutils")
+	exclude(group = "net.java.jinput")
+	exclude(group = "net.sf.jopt-simple")
+	exclude(group = "net.minecraft", module = "launchwrapper")
+}
+
+fun resolveLwjglNatives(): String { // Sourced from https://www.lwjgl.org/
+	return Pair(
+		System.getProperty("os.name")!!,
+		System.getProperty("os.arch")!!
+	).let { (name, arch) ->
+		when {
+			arrayOf("Linux", "SunOS", "Unit").any { name.startsWith(it) } ->
+				if (arrayOf("arm", "aarch64").any { arch.startsWith(it) })
+					"natives-linux${if (arch.contains("64") || arch.startsWith("armv8")) "-arm64" else "-arm32"}"
+				else
+					"natives-linux"
+			arrayOf("Mac OS X", "Darwin").any { name.startsWith(it) } ->
+				"natives-macos${if (arch.startsWith("aarch64")) "-arm64" else ""}"
+			arrayOf("Windows").any { name.startsWith(it) } ->
+				if (arch.contains("64"))
+					"natives-windows${if (arch.startsWith("aarch64")) "-arm64" else ""}"
+				else
+					"natives-windows-x86"
+			else ->
+				throw Error("Unrecognized or unsupported platform. Please set \"lwjglNatives\" manually")
+		}
+	}
+}

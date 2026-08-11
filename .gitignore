@@ -1,0 +1,33 @@
+.gradle/
+.idea/
+.vscode/
+bin/
+build/
+out/
+run/
+run-server/
+
+# Reference material: Benimatic's decompiled Twilight Forest 1.p4 and a decompiled b1.7.3 client.
+# Neither is ours to redistribute -- the port is written *against* these, never *from* a committed
+# copy of them. Same rule the BOP port keeps _reference/ under.
+_reference/
+
+# Editor, IDE and tooling artefacts -- never ship these
+*.orig
+
+# Asset bridge -- output is generated from a copy of the original mod that the player supplies,
+# and neither the copy nor anything extracted from it is redistributable.
+texturepacks/
+**/TwilightForestAssets/
+
+# BTA's log4j config writes here when a JVM is started with the client jar on its classpath and the
+# repo root as its working directory. Harmless, but it is not run/logs/ and not the log to read.
+logs/
+
+# Python bytecode from tools/
+__pycache__/
+*.pyc
+
+# Working notes: deobfuscation tables, measured generation results, design rationale and the record
+# of what was got wrong on the way. Kept locally as the port's own memory; not public-facing.
+docs/

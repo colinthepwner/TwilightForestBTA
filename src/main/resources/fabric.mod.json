@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "twilightforest",
+  "version": "${version}",
+
+  "name": "Twilight Forest",
+  "description": "Benimatic's Twilight Forest 1.p4, ported to Better than Adventure. Not affiliated with the original author. Ships none of the original mod's art -- supply your own copy and it will be bridged in; see the README.",
+  "authors": [
+    "Benimatic (original mod)"
+  ],
+
+  "icon": "icon.png",
+
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "environment": "*",
+
+  "entrypoints": {
+    "main": ["com.twilightforest.TwilightForest"],
+    "client": ["com.twilightforest.TwilightForestClient"]
+  },
+
+  "mixins": ["twilightforest.mixins.json"],
+
+  "depends": {
+    "fabricloader": ">=${fabricloader}",
+    "halplibe": ">=${halplibe}",
+    "minecraft": "*",
+    "java": ">=${java}"
+  },
+  "suggests": {
+    "modmenu": ">=${modmenu}"
+  }
+}
