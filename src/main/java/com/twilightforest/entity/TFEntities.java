@@ -58,6 +58,11 @@ public final class TFEntities {
 
 		register(EntityTFTinyFirefly.class, "tinyfirefly", EntityTFTinyFirefly::new);
 
+		register(MobTFBunny.class, "bunny", MobTFBunny::new);
+		register(MobTFSquirrel.class, "squirrel", MobTFSquirrel::new);
+		register(MobTFTinyBird.class, "tinybird", MobTFTinyBird::new);
+		register(MobTFRaven.class, "raven", MobTFRaven::new);
+
 		TwilightForest.LOGGER.info("Registered {} Twilight Forest entities.", REGISTERED_IDS.size());
 	}
 }

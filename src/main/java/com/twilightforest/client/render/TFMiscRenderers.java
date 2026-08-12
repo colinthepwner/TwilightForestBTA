@@ -176,14 +176,14 @@ public final class TFMiscRenderers {
 		}
 	}
 
-	private static void setRotX(StaticEntityModel model, String bone, float angle) {
+	static void setRotX(StaticEntityModel model, String bone, float angle) {
 		BoneTransform t = model.getTransform(bone);
 		if (t != null) {
 			t.rotX = angle;
 		}
 	}
 
-	private static void setRotZ(StaticEntityModel model, String bone, float angle) {
+	static void setRotZ(StaticEntityModel model, String bone, float angle) {
 		BoneTransform t = model.getTransform(bone);
 		if (t != null) {
 			t.rotZ = angle;

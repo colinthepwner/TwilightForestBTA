@@ -8,7 +8,11 @@ import com.twilightforest.entity.MobTFHedgeSpider;
 import com.twilightforest.entity.MobTFLich;
 import com.twilightforest.entity.MobTFNaga;
 import com.twilightforest.entity.MobTFNagaSegment;
+import com.twilightforest.entity.MobTFBunny;
 import com.twilightforest.entity.MobTFPenguin;
+import com.twilightforest.entity.MobTFRaven;
+import com.twilightforest.entity.MobTFSquirrel;
+import com.twilightforest.entity.MobTFTinyBird;
 import com.twilightforest.entity.MobTFRedcap;
 import com.twilightforest.entity.MobTFSkeletonDruid;
 import com.twilightforest.entity.MobTFSwarmSpider;
@@ -39,6 +43,15 @@ public final class TFEntityRenderers {
 		dispatcher.assignRenderer(MobTFLich.class, new TFHumanoidRenderers.Lich());
 
 		dispatcher.assignRenderer(EntityTFTinyFirefly.class, new RendererTFTinyFirefly());
+
+		dispatcher.assignRenderer(MobTFBunny.class,
+			new TFAmbientRenderers.Critter<>("geometry.bunny", 0.3F));
+		dispatcher.assignRenderer(MobTFSquirrel.class,
+			new TFAmbientRenderers.Critter<>("geometry.squirrel", 0.3F));
+		dispatcher.assignRenderer(MobTFTinyBird.class,
+			new TFAmbientRenderers.Bird<>("geometry.tinybird", 0.3F));
+		dispatcher.assignRenderer(MobTFRaven.class,
+			new TFAmbientRenderers.Bird<>("geometry.raven", 0.3F));
 
 		dispatcher.assignRenderer(MobTFNaga.class, new TFMiscRenderers.Naga());
 		dispatcher.assignRenderer(MobTFNagaSegment.class, new TFMiscRenderers.NagaSegment());

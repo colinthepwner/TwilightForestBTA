@@ -854,7 +854,12 @@ public class ComponentTFTowerWing extends StructureComponentTF {
 			if (world.getBlockId(wx, wy, wz) == planterBlock) {
 
 				int species = planterBlock == Blocks.MUSHROOM_BROWN.id() ? 0 : 1;
-				new WorldFeatureTFBigMushroom(species).place(world, world.rand, wx, wy, wz);
+
+				world.setBlockWithNotify(wx, wy, wz, 0);
+				if (!new WorldFeatureTFBigMushroom(species).place(world, world.rand, wx, wy, wz)) {
+
+					world.setBlockAndMetadataWithNotify(wx, wy, wz, planterBlock, planterMeta);
+				}
 			}
 		}
 	}

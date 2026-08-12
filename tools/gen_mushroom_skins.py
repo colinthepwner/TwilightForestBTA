@@ -5,7 +5,8 @@ Generate the three giant-mushroom skin textures out of BTA's own art.
 Idempotent and deterministic: same inputs, same bytes. Writes exactly three files into
 src/main/resources/assets/twilightforest/textures/block/:
 
-    mushroom_skin_brown.png   mushroom_skin_red.png   mushroom_skin_stem.png
+    mushroom_skin_brown.png   mushroom_skin_red.png
+    mushroom_skin_stem.png    mushroom_skin_inside.png
 
     python tools/gen_mushroom_skins.py [--dry-run] [--bta-dir PATH]
 
@@ -149,6 +150,22 @@ GRAIN_BROWN = 0.05
 # The stem's grain leans vertical: this is how much of the hash comes from Y rather than X. Low
 # means "the value barely changes going down a column", i.e. fibres.
 STEM_Y_WEIGHT = 0.25
+
+# How far the inside is mixed towards white FROM THE BROWN CAP'S HUE. Not from the stalk's, which
+# BTA's small mushrooms sample at a near-neutral (218, 218, 218) -- lightening that gives a paler
+# grey, and a grey underside is the thing being fixed. Mushroom flesh is warm, so the cap's own hue
+# diluted is the honest source for it, and 0.65 lands on a cream that is clearly not the stem.
+INSIDE_LIGHTEN = 0.65
+
+# The inside's grain. HIGHER than the others and deliberately so: this is the one surface that is
+# supposed to look porous rather than smooth, and the pores are what a player sees when they stand
+# under a cap. At GRAIN it reads as flat cream.
+GRAIN_INSIDE = 0.13
+
+
+def lighten(rgb, fraction: float):
+    """Mix a colour towards white. Used for the inside, which is paler than the skin around it."""
+    return tuple(int(round(c + (255 - c) * fraction)) for c in rgb)
 
 
 def lum(p) -> float:
@@ -306,12 +323,30 @@ def main() -> int:
 
     # Distinct seeds so the three tiles do not share a grain pattern -- two surfaces meeting at a
     # cap's rim with identical noise reads as one continuous block rather than two faces.
+    # ⚠️ The inside is NOT the stem texture, and this was got wrong once. Minecraft ships FOUR
+    # huge-mushroom files -- skin_brown, skin_red, skin_stem and mushroom_block_inside -- and the
+    # last two are different surfaces: a stem has vertical fibres running down it, and the cut
+    # underside of a cap has pores and no direction at all. Reusing the stem for both gives every
+    # cap a streaky underside, which is what it looked like and what was reported.
+    #
+    # So: a diluted cap hue, isotropic grain (y_weight left at its default 1.0, where the stem's is
+    # 0.25), and a coarser amplitude so it reads as pores.
+    #
+    # ⚠️ ONE inside for BOTH species, from the BROWN cap, which is vanilla's structure rather than a
+    # shortcut -- Minecraft ships a single mushroom_block_inside that a red cap and a brown cap both
+    # wear. The flesh of a mushroom is the same stuff whatever colour its skin is, and the brown cap
+    # is the one whose hue is already close to flesh. Deriving a red inside from the red cap would
+    # give a pink underside, which no mushroom has.
+    inside = lighten(cap_brown, INSIDE_LIGHTEN)
+
     outputs = {
         "mushroom_skin_brown.png": grained(cap_brown, seed=1, amplitude=GRAIN_BROWN),
         "mushroom_skin_red.png": spotted(grained(cap_red, seed=2), spots),
         "mushroom_skin_stem.png": grained(stalk, seed=3, y_weight=STEM_Y_WEIGHT),
+        "mushroom_skin_inside.png": grained(inside, seed=5, amplitude=GRAIN_INSIDE),
     }
-    print(f"sampled hues: brown cap {cap_brown}, red cap {cap_red}, stalk {stalk}")
+    print(f"sampled hues: brown cap {cap_brown}, red cap {cap_red}, stalk {stalk}, "
+          f"inside {inside}")
     print(f"spot layout: {len(spots)} of {SPOT_COUNT} placed -> {spots}")
     for name, image in outputs.items():
         target = OUT_DIR / name

@@ -3,7 +3,11 @@ package com.twilightforest.world.biome;
 import com.twilightforest.block.TFBlocks;
 import com.twilightforest.entity.MobTFBighorn;
 import com.twilightforest.entity.MobTFBoar;
+import com.twilightforest.entity.MobTFBunny;
 import com.twilightforest.entity.MobTFDeer;
+import com.twilightforest.entity.MobTFRaven;
+import com.twilightforest.entity.MobTFSquirrel;
+import com.twilightforest.entity.MobTFTinyBird;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.entity.SpawnListEntry;
 import net.minecraft.core.entity.animal.MobButterfly;
@@ -38,6 +42,11 @@ public class TFBiome extends Biome {
 		this.spawnableCreatureList.add(new SpawnListEntry(MobChicken.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(MobTFDeer.class, 15));
 		this.spawnableCreatureList.add(new SpawnListEntry(MobWolf.class, 5));
+
+		this.spawnableCreatureList.add(new SpawnListEntry(MobTFTinyBird.class, 15));
+		this.spawnableCreatureList.add(new SpawnListEntry(MobTFSquirrel.class, 10));
+		this.spawnableCreatureList.add(new SpawnListEntry(MobTFBunny.class, 10));
+		this.spawnableCreatureList.add(new SpawnListEntry(MobTFRaven.class, 10));
 
 		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobFireflyCluster.class, 10));
 		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobButterfly.class, 65));

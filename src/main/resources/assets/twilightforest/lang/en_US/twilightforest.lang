@@ -59,6 +59,12 @@ guidebook.section.mob.hostilewolf.name=Hostile Wolf
 guidebook.section.mob.naga.name=Naga
 guidebook.section.mob.nagasegment.name=Naga Segment
 
+# The ambient four, from the 1.15.4 donor -- its own registerTFCreature strings.
+guidebook.section.mob.bunny.name=Forest Bunny
+guidebook.section.mob.squirrel.name=Forest Squirrel
+guidebook.section.mob.tinybird.name=Tiny Bird
+guidebook.section.mob.raven.name=Forest Raven
+
 # The two projectiles. Upstream never names them -- they are not registered as mobs at all, only as
 # network-visible entities -- so these are this port's own, and exist because BTA asks every
 # registered entity for a display name whether or not anything shows it.

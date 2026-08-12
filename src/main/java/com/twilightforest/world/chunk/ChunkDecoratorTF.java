@@ -13,6 +13,7 @@ import com.twilightforest.world.feature.WorldFeatureTFGlacierMaze;
 import com.twilightforest.world.feature.WorldFeatureTFHollowTree;
 import com.twilightforest.world.feature.WorldFeatureTFMangroveTree;
 import com.twilightforest.world.feature.WorldFeatureTFMonolith;
+import com.twilightforest.world.feature.WorldFeatureTFMushrooms;
 import com.twilightforest.world.feature.WorldFeatureTFMyceliumBlob;
 import com.twilightforest.world.feature.WorldFeatureTFOutsideStalagmite;
 import com.twilightforest.world.feature.WorldFeatureTFPenguins;
@@ -311,14 +312,14 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			if (this.rand.nextInt(4) == 0) {
 				int rx = mapX + this.rand.nextInt(16) + 8;
 				int rz = mapZ + this.rand.nextInt(16) + 8;
-				new WorldFeatureFlowers(Blocks.MUSHROOM_BROWN.id(), 64, false)
+				new WorldFeatureTFMushrooms(Blocks.MUSHROOM_BROWN.id(), 64)
 					.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
 			}
 			if (this.rand.nextInt(8) == 0) {
 				int rx = mapX + this.rand.nextInt(16) + 8;
 				int ry = this.rand.nextInt(height);
 				int rz = mapZ + this.rand.nextInt(16) + 8;
-				new WorldFeatureFlowers(Blocks.MUSHROOM_RED.id(), 64, false)
+				new WorldFeatureTFMushrooms(Blocks.MUSHROOM_RED.id(), 64)
 					.place(this.world, this.rand, rx, ry, rz);
 			}
 		}

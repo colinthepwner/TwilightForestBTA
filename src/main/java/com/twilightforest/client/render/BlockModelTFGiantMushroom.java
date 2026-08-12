@@ -21,7 +21,7 @@ public class BlockModelTFGiantMushroom<T extends BlockLogic> extends BlockModelS
 	public BlockModelTFGiantMushroom(@NotNull Block<T> block, @NotNull String skinTexture) {
 		super(block);
 		this.skin = TextureRegistry.getTexture(skinTexture);
-		this.pores = TextureRegistry.getTexture("twilightforest:block/mushroom_skin_stem");
+		this.pores = TextureRegistry.getTexture("twilightforest:block/mushroom_skin_inside");
 
 		this.setAllTextures(skinTexture);
 	}
