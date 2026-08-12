@@ -162,6 +162,20 @@ INSIDE_LIGHTEN = 0.65
 # under a cap. At GRAIN it reads as flat cream.
 GRAIN_INSIDE = 0.13
 
+# How large a pore is, in pixels, and how much of the inside's variation comes from the pore rather
+# than from the surface under it.
+#
+# ⚠️ THIS IS THE ONE PLACE THAT BREAKS THIS FILE'S OWN RULE, and it is deliberate. Everywhere else,
+# per-pixel hash is the whole point and low-frequency blobbing is the failure mode the rewrite
+# existed to remove -- see hash_noise's docstring. Minecraft's own mushroom_block_inside is blotchy,
+# because pores are physical features a few pixels across rather than surface grain, and copying its
+# CHARACTER is the whole request. A per-pixel version of this texture reads as sandpaper.
+#
+# 3 gives patches you can see without them tiling visibly at 16 wide. 0.72 leaves enough per-pixel
+# variation underneath that the patches have texture rather than being flat cells.
+PORE_SIZE = 3
+PORE_WEIGHT = 0.72
+
 
 def lighten(rgb, fraction: float):
     """Mix a colour towards white. Used for the inside, which is paler than the skin around it."""
@@ -220,6 +234,28 @@ def grained(rgb, seed: int, size: int = 16, y_weight: float = 1.0,
             column = hash_noise(x, 0, seed)
             pixel = hash_noise(x, y, seed)
             n = column * (1.0 - y_weight) + pixel * y_weight
+            scale = 1.0 + (n - 0.5) * 2.0 * amplitude
+            px[x, y] = tuple(max(0, min(255, int(round(c * scale)))) for c in rgb) + (255,)
+    return out
+
+
+def mottled(rgb, seed: int, size: int = 16, amplitude: float = GRAIN_INSIDE) -> Image.Image:
+    """A flat `rgb` tile with soft blotches over it, in the manner of Minecraft's mushroom inside.
+
+    Two octaves rather than one: a coarse hash sampled per `PORE_SIZE` cell carries most of the
+    variation, and a per-pixel hash underneath keeps each cell from being a flat square. Compare
+    `grained`, which is per-pixel only -- the difference is pores against sandpaper.
+
+    ⚠️ The coarse hash is offset by a different seed from the fine one. Sharing a seed makes the two
+    octaves correlate at cell boundaries, which draws a faint grid.
+    """
+    out = Image.new("RGBA", (size, size))
+    px = out.load()
+    for y in range(size):
+        for x in range(size):
+            coarse = hash_noise(x // PORE_SIZE, y // PORE_SIZE, seed)
+            fine = hash_noise(x, y, seed + 977)
+            n = coarse * PORE_WEIGHT + fine * (1.0 - PORE_WEIGHT)
             scale = 1.0 + (n - 0.5) * 2.0 * amplitude
             px[x, y] = tuple(max(0, min(255, int(round(c * scale)))) for c in rgb) + (255,)
     return out
@@ -329,8 +365,9 @@ def main() -> int:
     # underside of a cap has pores and no direction at all. Reusing the stem for both gives every
     # cap a streaky underside, which is what it looked like and what was reported.
     #
-    # So: a diluted cap hue, isotropic grain (y_weight left at its default 1.0, where the stem's is
-    # 0.25), and a coarser amplitude so it reads as pores.
+    # So: a diluted cap hue and BLOTCHES rather than grain -- see mottled(), which is the one
+    # departure from this file's per-pixel rule and exists because Minecraft's own inside texture is
+    # blotchy. Pores are physical features a few pixels across; surface grain is not.
     #
     # ⚠️ ONE inside for BOTH species, from the BROWN cap, which is vanilla's structure rather than a
     # shortcut -- Minecraft ships a single mushroom_block_inside that a red cap and a brown cap both
@@ -343,7 +380,7 @@ def main() -> int:
         "mushroom_skin_brown.png": grained(cap_brown, seed=1, amplitude=GRAIN_BROWN),
         "mushroom_skin_red.png": spotted(grained(cap_red, seed=2), spots),
         "mushroom_skin_stem.png": grained(stalk, seed=3, y_weight=STEM_Y_WEIGHT),
-        "mushroom_skin_inside.png": grained(inside, seed=5, amplitude=GRAIN_INSIDE),
+        "mushroom_skin_inside.png": mottled(inside, seed=5),
     }
     print(f"sampled hues: brown cap {cap_brown}, red cap {cap_red}, stalk {stalk}, "
           f"inside {inside}")
