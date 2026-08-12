@@ -61,6 +61,11 @@ public final class TFStructures {
 			ComponentTFHollowHill hill = new ComponentTFHollowHill(0, type, x, y, z);
 			pieces.add(hill);
 			hill.buildComponent(hill, pieces, rand);
+
+			ComponentTFHillMaze maze =
+				new ComponentTFHillMaze(1, x, ComponentTFHillMaze.mazeY(), z, type);
+			pieces.add(maze);
+			maze.buildComponent(maze, pieces, rand);
 		}
 
 		if (type == TFFeature.HEDGE_MAZE) {
@@ -75,6 +80,14 @@ public final class TFStructures {
 				(cx << 4) + 8, ComponentTFNagaCourtyard.floorY(), (cz << 4) + 8);
 			pieces.add(courtyard);
 			courtyard.buildComponent(courtyard, pieces, rand);
+		}
+
+		if (type == TFFeature.LICH_TOWER) {
+
+			ComponentTFTowerMain keep = new ComponentTFTowerMain(0, rand,
+				(cx << 4) + 8, ComponentTFTowerMain.floorY(), (cz << 4) + 8);
+			pieces.add(keep);
+			keep.buildComponent(keep, pieces, rand);
 		}
 
 		return pieces;

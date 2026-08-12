@@ -4,11 +4,17 @@ import com.twilightforest.TwilightForest;
 import com.twilightforest.world.chunk.TFWorldConstants;
 import com.twilightforest.world.feature.WorldFeatureTFCaveStalactite;
 import net.minecraft.core.block.Blocks;
+import com.twilightforest.world.treasure.TFTreasure;
+import com.twilightforest.world.treasure.TFTreasureTable;
 import net.minecraft.core.world.World;
 
 import java.util.Random;
 
 public class ComponentTFHollowHill extends StructureComponentTF {
+
+	private static final TFTreasureTable[] HILL_TABLES = {
+		TFTreasure.HILL_1, TFTreasure.HILL_1, TFTreasure.HILL_2, TFTreasure.HILL_3,
+	};
 
 	private final int hsize;
 	private final int radius;
@@ -44,7 +50,7 @@ public class ComponentTFHollowHill extends StructureComponentTF {
 
 		for (int i = 0; i < chests; i++) {
 			int[] dest = coordsInHill(rand);
-			placeTreasureChest(world, dest[0], 0, dest[1], clip);
+			placeTreasureChest(world, rand, dest[0], 0, dest[1], clip);
 		}
 
 		for (int i = 0; i < stalactites; i++) {
@@ -63,7 +69,7 @@ public class ComponentTFHollowHill extends StructureComponentTF {
 		return true;
 	}
 
-	private void placeTreasureChest(World world, int x, int y, int z, BoundingBox clip) {
+	private void placeTreasureChest(World world, Random rand, int x, int y, int z, BoundingBox clip) {
 		int wx = getXWithOffset(x, z);
 		int wy = getYWithOffset(y);
 		int wz = getZWithOffset(x, z);
@@ -71,7 +77,7 @@ public class ComponentTFHollowHill extends StructureComponentTF {
 			return;
 		}
 
-		world.setBlockWithNotify(wx, wy, wz, Blocks.CHEST_PLANKS_OAK.id());
+		TFTreasure.place(world, rand, wx, wy, wz, HILL_TABLES[this.hsize]);
 	}
 
 	private void placeOreStalactite(World world, int x, int y, int z, BoundingBox clip) {

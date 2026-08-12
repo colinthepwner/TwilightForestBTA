@@ -118,7 +118,6 @@ public class WorldFeatureTFWitchHut extends TFWorldFeature {
 		}
 
 		this.putBlock(x + 1, y - 1, z + 3, Blocks.NETHERRACK.id(), true);
-		this.putBlock(x + 1, y, z + 3, Blocks.FIRE.id(), true);
 
 		this.worldObj.setBlockWithNotify(x + 3, y + 1, z + 3, Blocks.MOBSPAWNER.id());
 		if (world.getTileEntity(x + 3, y + 1, z + 3) instanceof TileEntityMobSpawner spawner) {

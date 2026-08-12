@@ -84,7 +84,11 @@ tile.twilightforest.firefly.name=Firefly
 tile.twilightforest.cicada.name=Cicada
 tile.twilightforest.boss_spawner.name=Boss Spawner
 tile.twilightforest.portal.twilightforest.name=Twilight Forest Portal
-tile.twilightforest.portal.twilightforest.desc=A way in. Build a frame of mossy cobblestone.
+# ⚠️ This line described the 1.p4 port's INVENTED portal -- a mossy cobblestone frame, built because
+# 1.p4 shipped no portal block at all. 1.7.1 has a real BlockTFPortal and it is nothing like a nether
+# portal: nothing is crafted, nothing is placed, and no frame exists. You find a 2x2 pool of water in
+# a clearing, ringed by flowering grass, and throw a diamond in. See BlockLogicTFPortal.
+tile.twilightforest.portal.twilightforest.desc=A pool in a flowering clearing. Throw in a diamond.
 
 # --- Items ------------------------------------------------------------------------------------------
 item.twilightforest.naga_scale.name=Naga Scale

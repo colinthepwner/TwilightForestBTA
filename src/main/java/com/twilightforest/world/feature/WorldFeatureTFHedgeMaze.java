@@ -3,6 +3,7 @@ package com.twilightforest.world.feature;
 import com.twilightforest.TwilightForest;
 import com.twilightforest.block.TFBlocks;
 import com.twilightforest.compat.TFWorldFeature;
+import com.twilightforest.world.treasure.TFTreasure;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.entity.TileEntityMobSpawner;
 import net.minecraft.core.world.World;
@@ -124,11 +125,7 @@ public class WorldFeatureTFHedgeMaze extends TFWorldFeature {
 	private boolean roomTreasure(World world, int dx, int dy, int dz) {
 		int rx = this.rand.nextInt(ROOM_SPREAD) + dx - ROOM_SPREAD / 2;
 		int rz = this.rand.nextInt(ROOM_SPREAD) + dz - ROOM_SPREAD / 2;
-		if (world.getBlockId(rx, dy, rz) != 0) {
-			return false;
-		}
-		world.setBlockWithNotify(rx, dy, rz, Blocks.CHEST_PLANKS_OAK.id());
-		return true;
+		return TFTreasure.place(world, this.rand, rx, dy, rz, TFTreasure.HEDGE_MAZE);
 	}
 
 	private boolean roomJackO(World world, int dx, int dy, int dz) {

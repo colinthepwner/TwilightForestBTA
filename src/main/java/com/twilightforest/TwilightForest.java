@@ -5,6 +5,7 @@ import com.twilightforest.entity.TFEntities;
 import com.twilightforest.item.TFItems;
 import com.twilightforest.world.TFDimension;
 import com.twilightforest.world.biome.TFBiomes;
+import com.twilightforest.world.treasure.TFTreasure;
 import com.twilightforest.world.type.WorldTypeTwilightForest;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -46,5 +47,9 @@ public class TwilightForest implements ModInitializer {
 		TFDimension.register();
 
 		TFDimension.registerWorldTypeGroups();
+
+		TFRecipes.register();
+
+		TFTreasure.verify();
 	}
 }

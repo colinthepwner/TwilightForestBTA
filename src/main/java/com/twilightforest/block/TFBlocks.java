@@ -1,6 +1,8 @@
 package com.twilightforest.block;
 
 import com.twilightforest.block.entity.TileEntityTFBossSpawner;
+import com.twilightforest.block.entity.TileEntityTFCicada;
+import com.twilightforest.block.entity.TileEntityTFFirefly;
 import com.twilightforest.TwilightForest;
 import com.twilightforest.world.TFDimension;
 import net.minecraft.core.block.Block;
@@ -38,6 +40,10 @@ public final class TFBlocks {
 	public static Block<?> FIREFLY;
 	public static Block<?> CICADA;
 	public static Block<?> BOSS_SPAWNER;
+
+	public static Block<?> MUSHROOM_GIANT_BROWN;
+	public static Block<?> MUSHROOM_GIANT_RED;
+
 	public static Block<BlockLogicPortal> PORTAL_TWILIGHT;
 
 	private static final int PORTAL_ID = 2300;
@@ -91,15 +97,17 @@ public final class TFBlocks {
 
 		MAZESTONE = mazestone.clone()
 			.setCreativeInventoryPlacement(after(() -> Blocks.STONE))
-			.build("mazestone", 2307, block -> new BlockLogic(block, Materials.STONE));
+			.build("mazestone", 2307, block -> new BlockLogicTFMazestone(block, Blocks.STONE));
 
 		MAZESTONE_COBBLE = mazestone.clone()
 			.setCreativeInventoryPlacement(after(() -> Blocks.COBBLE_STONE))
-			.build("mazestone.cobble", 2308, block -> new BlockLogic(block, Materials.STONE));
+			.build("mazestone.cobble", 2308,
+				block -> new BlockLogicTFMazestone(block, Blocks.COBBLE_STONE));
 
 		MAZESTONE_MOSSY = mazestone.clone()
 			.setCreativeInventoryPlacement(after(() -> Blocks.COBBLE_STONE_MOSSY))
-			.build("mazestone.mossy", 2309, block -> new BlockLogic(block, Materials.STONE));
+			.build("mazestone.mossy", 2309,
+				block -> new BlockLogicTFMazestone(block, Blocks.COBBLE_STONE_MOSSY));
 
 		HEDGE = builder.clone()
 			.setHardness(2.0f)
@@ -109,19 +117,26 @@ public final class TFBlocks {
 			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
 			.build("hedge", 2310, BlockLogicTFHedge::new);
 
+		TileEntityTFFirefly.register();
+		TileEntityTFCicada.register();
+
 		BlockBuilder critter = builder.clone()
 			.setHardness(0.0f)
 			.setBlockSound(BlockSounds.GRASS)
-			.setTags(BlockTags.NOT_IN_CREATIVE_MENU);
+			.setCreativeInventoryPlacement(after(() -> Blocks.TORCH_COAL));
 
 		FIREFLY = critter.clone()
 			.setLuminance(15)
-			.setCreativeInventoryPlacement(after(() -> Blocks.TORCH_COAL))
-			.build("firefly", 2311, block -> new BlockLogic(block, Materials.DECORATION));
+			.build("firefly", 2311, block -> {
+				block.withEntity(TileEntityTFFirefly::new);
+				return new BlockLogicTFFirefly(block);
+			});
 
 		CICADA = critter.clone()
-			.setCreativeInventoryPlacement(after(() -> Blocks.TORCH_COAL))
-			.build("cicada", 2312, block -> new BlockLogic(block, Materials.DECORATION));
+			.build("cicada", 2312, block -> {
+				block.withEntity(TileEntityTFCicada::new);
+				return new BlockLogicTFCicada(block);
+			});
 
 		TileEntityTFBossSpawner.register();
 		BOSS_SPAWNER = builder.clone()
@@ -135,7 +150,22 @@ public final class TFBlocks {
 				return new BlockLogic(block, Materials.STONE);
 			});
 
-		TwilightForest.LOGGER.info("Registered 13 Twilight Forest blocks (ids 2301-2313).");
+		BlockBuilder mushroom = builder.clone()
+			.setHardness(0.2f)
+			.setBlockSound(BlockSounds.WOOD)
+			.setTags(BlockTags.MINEABLE_BY_AXE);
+
+		MUSHROOM_GIANT_BROWN = mushroom.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.MUSHROOM_BROWN))
+			.build("mushroom_giant.brown", 2314,
+				block -> new BlockLogicTFGiantMushroom(block, () -> Blocks.MUSHROOM_BROWN));
+
+		MUSHROOM_GIANT_RED = mushroom.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.MUSHROOM_RED))
+			.build("mushroom_giant.red", 2315,
+				block -> new BlockLogicTFGiantMushroom(block, () -> Blocks.MUSHROOM_RED));
+
+		TwilightForest.LOGGER.info("Registered 15 Twilight Forest blocks (ids 2301-2315).");
 	}
 
 	public static void registerPortal() {
@@ -146,8 +176,7 @@ public final class TFBlocks {
 			.setBlockSound(BlockSounds.GLASS)
 			.setTags(BlockTags.BROKEN_BY_FLUIDS, BlockTags.NOT_IN_CREATIVE_MENU)
 			.build("portal.twilightforest", PORTAL_ID,
-				block -> new BlockLogicPortal(block, TFDimension.TWILIGHT_FOREST,
-					Blocks.COBBLE_STONE_MOSSY, Blocks.AIR));
+				block -> new BlockLogicTFPortal(block, TFDimension.TWILIGHT_FOREST));
 
 		TFDimension.attachPortalBlock(PORTAL_TWILIGHT);
 		TwilightForest.LOGGER.info("Registered the Twilight Forest portal.");

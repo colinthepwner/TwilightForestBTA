@@ -1,5 +1,6 @@
 package com.twilightforest.world.chunk;
 
+import com.twilightforest.world.feature.TFRavineLargeFeature;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.generate.CavesLargeFeature;
 import net.minecraft.core.world.generate.LargeFeature;
@@ -14,7 +15,7 @@ public class ChunkGeneratorTF extends ChunkGeneratorPerlin {
 			new ChunkDecoratorTF(world),
 			new TerrainGeneratorTF(world),
 			new SurfaceGeneratorTF(world),
-			new LargeFeature[]{new CavesLargeFeature()}
+			new LargeFeature[]{new CavesLargeFeature(), new TFRavineLargeFeature()}
 		);
 	}
 }

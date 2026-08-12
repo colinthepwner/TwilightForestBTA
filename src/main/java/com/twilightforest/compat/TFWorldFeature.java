@@ -24,6 +24,11 @@ public abstract class TFWorldFeature extends WorldFeature {
 
 	protected boolean putBlockAndMetadata(int dx, int dy, int dz, int blockValue, int metaValue,
 	                                      boolean priority) {
+
+		if (DecorationWindow.wouldCascade(this.worldObj, dx, dz)
+			&& DecorationWindow.deferWrite(this.worldObj, dx, dy, dz, blockValue, metaValue)) {
+			return true;
+		}
 		if (priority) {
 			this.worldObj.setBlockAndMetadataRaw(dx, dy, dz, blockValue, metaValue);
 			return true;
@@ -197,6 +202,9 @@ public abstract class TFWorldFeature extends WorldFeature {
 	}
 
 	protected static int getBlockId(World world, int x, int y, int z) {
+		if (DecorationWindow.wouldCascade(world, x, z)) {
+			return 0;
+		}
 		return world.getBlockId(x, y, z);
 	}
 
@@ -213,6 +221,9 @@ public abstract class TFWorldFeature extends WorldFeature {
 	}
 
 	protected static boolean isAirBlock(World world, int x, int y, int z) {
+		if (DecorationWindow.wouldCascade(world, x, z)) {
+			return true;
+		}
 		return world.isAirBlock(x, y, z);
 	}
 }

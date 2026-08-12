@@ -28,10 +28,6 @@ public final class TFConfig {
 
 	public static int DIMENSION_ID = DIMENSION_AUTO;
 
-	public static boolean MUSHROOM_PORTAL = false;
-
-	public static int MUSHROOM_PORTAL_ITEM_ID = 40;
-
 	@SuppressWarnings({"java:S899", "ResultOfMethodCallIgnored"})
 	static void init() {
 		LOGGER.info("Initializing config..");
@@ -57,9 +53,6 @@ public final class TFConfig {
 
 	private static void loadProperties() {
 		DIMENSION_ID = cfgGetValueOrDefault(GENERAL_CATEGORY + ".DIMENSION_ID", DIMENSION_ID);
-		MUSHROOM_PORTAL = cfgGetValueOrDefault(GENERAL_CATEGORY + ".MUSHROOM_PORTAL", MUSHROOM_PORTAL);
-		MUSHROOM_PORTAL_ITEM_ID =
-			cfgGetValueOrDefault(GENERAL_CATEGORY + ".MUSHROOM_PORTAL_ITEM_ID", MUSHROOM_PORTAL_ITEM_ID);
 	}
 
 	public static int resolveDimensionId() {
@@ -139,9 +132,7 @@ public final class TFConfig {
 	private static void assembleProperties(Toml properties) {
 		properties.addCategory(GENERAL_CATEGORY)
 			.addEntry("cfgVersion", 1)
-			.addEntry("DIMENSION_ID", DIMENSION_ID)
-			.addEntry("MUSHROOM_PORTAL", MUSHROOM_PORTAL)
-			.addEntry("MUSHROOM_PORTAL_ITEM_ID", MUSHROOM_PORTAL_ITEM_ID);
+			.addEntry("DIMENSION_ID", DIMENSION_ID);
 	}
 
 	@SuppressWarnings("unchecked")

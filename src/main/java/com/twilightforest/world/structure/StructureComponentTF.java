@@ -45,6 +45,16 @@ public abstract class StructureComponentTF {
 		}
 	}
 
+	public static StructureComponentTF findIntersecting(List<StructureComponentTF> pieces,
+	                                                    BoundingBox box) {
+		for (StructureComponentTF piece : pieces) {
+			if (piece.boundingBox != null && piece.boundingBox.intersects(box)) {
+				return piece;
+			}
+		}
+		return null;
+	}
+
 	public BoundingBox boundingBox;
 
 	public int coordBaseMode;
@@ -113,6 +123,59 @@ public abstract class StructureComponentTF {
 		if (world.getTileEntity(wx, wy, wz) instanceof TileEntityMobSpawner spawner) {
 			spawner.setMobId(mobId);
 		}
+	}
+
+	public int componentType() {
+		return this.componentType;
+	}
+
+	protected void placeBlock(World world, int blockId, int meta, int x, int y, int z,
+	                          BoundingBox clip) {
+		int wx = getXWithOffset(x, z);
+		int wy = getYWithOffset(y);
+		int wz = getZWithOffset(x, z);
+		if (!clip.contains(wx, wy, wz)) {
+			return;
+		}
+		world.setBlockAndMetadataRaw(wx, wy, wz, blockId, meta);
+	}
+
+	protected int getBlockIdAt(World world, int x, int y, int z, BoundingBox clip) {
+		int wx = getXWithOffset(x, z);
+		int wy = getYWithOffset(y);
+		int wz = getZWithOffset(x, z);
+		if (!clip.contains(wx, wy, wz)) {
+			return 0;
+		}
+		return world.getBlockId(wx, wy, wz);
+	}
+
+	protected void fillWithRandomizedBlocks(World world, BoundingBox clip,
+	                                        int minX, int minY, int minZ,
+	                                        int maxX, int maxY, int maxZ,
+	                                        boolean alwaysReplace, Random rand,
+	                                        BlockSelector selector) {
+		for (int y = minY; y <= maxY; y++) {
+			for (int x = minX; x <= maxX; x++) {
+				for (int z = minZ; z <= maxZ; z++) {
+					if (alwaysReplace && getBlockIdAt(world, x, y, z, clip) == 0) {
+						continue;
+					}
+					boolean shell = y == minY || y == maxY
+						|| x == minX || x == maxX
+						|| z == minZ || z == maxZ;
+					selector.select(rand, x, y, z, shell);
+					placeBlock(world, selector.blockId, selector.meta, x, y, z, clip);
+				}
+			}
+		}
+	}
+
+	public abstract static class BlockSelector {
+		public int blockId;
+		public int meta;
+
+		public abstract void select(Random rand, int x, int y, int z, boolean shell);
 	}
 
 	public void buildComponent(StructureComponentTF parent, List<StructureComponentTF> pieces,

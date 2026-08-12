@@ -1,5 +1,6 @@
 package com.twilightforest.world.feature;
 
+import com.twilightforest.block.TFBlocks;
 import com.twilightforest.compat.TFWorldFeature;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.world.World;
@@ -27,14 +28,19 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 		this.y = treeY;
 		this.z = treeZ;
 
-		this.treeBlock = Blocks.LOG_PINE.id();
+		this.treeBlock = TFBlocks.LOG_CANOPY.id();
 		this.treeMeta = 0;
-		this.leafBlock = Blocks.LEAVES_PINE.id();
+		this.leafBlock = TFBlocks.LEAVES_CANOPY.id();
 		this.leafMeta = 0;
 
 		int below = getBlockId(world, this.x, this.y - 1, this.z);
 		if ((below != Blocks.GRASS.id() && below != Blocks.DIRT.id())
 			|| this.y >= 128 - this.height - 1) {
+			return false;
+		}
+
+		if (getBlockId(world, this.x, this.y, this.z) == Blocks.FLUID_WATER_STILL.id()
+			|| getBlockId(world, this.x, this.y, this.z) == Blocks.FLUID_WATER_FLOWING.id()) {
 			return false;
 		}
 
@@ -69,7 +75,8 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 
 	private void addFirefly(int fireflyHeight, double angle) {
 		int iAngle = (int) (angle * 4.0);
-		int torch = Blocks.TORCH_COAL.id();
+
+		int torch = TFBlocks.FIREFLY.id();
 		switch (iAngle) {
 
 			case 0 -> this.putBlockAndMetadata(this.x + 1, this.y + fireflyHeight, this.z, torch, 1, false);

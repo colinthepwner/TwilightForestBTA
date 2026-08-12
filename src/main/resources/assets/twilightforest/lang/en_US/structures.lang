@@ -1,0 +1,35 @@
+# Twilight Forest -- structure names, English (US).
+#
+# BTA scans assets/<namespace>/lang/en_US/ for any *.lang and parses each as a Properties file, so
+# splitting the structures out of twilightforest.lang costs nothing and keeps the two sets of keys
+# from being edited past each other.
+#
+# --- ⚠️ Nothing in the game reads these yet -----------------------------------------------------
+# There is no structure-name UI in BTA 8.0.1: no locator item, no map marker, no advancement, no
+# /locate. These keys exist because the names are Benimatic's and are worth capturing next to the
+# code that builds each structure, not because something looks them up. A missing key here is
+# therefore silent -- unlike a missing block or biome key, which BTA logs once as
+# "Missing translation in default language" while the creative menu is built.
+#
+# Key format is this port's own, since upstream has no structure names at all and BTA defines no
+# convention for them:  structure.<modid>.<component>.name
+#
+# The component halves of these keys match the class names in
+# com.twilightforest.world.structure, so a key and its builder are greppable from each other.
+
+structure.twilightforest.hollow_hill.name=Hollow Hill
+structure.twilightforest.hill_maze.name=Underhill Labyrinth
+structure.twilightforest.hedge_maze.name=Hedge Maze
+structure.twilightforest.naga_courtyard.name=Naga Courtyard
+structure.twilightforest.glacier_maze.name=Glacier Labyrinth
+
+# The keep. "Lich Tower" is the name the feature type carries (TFFeature.LICH_TOWER); the wings,
+# outbuildings and bridges are all one structure and are not separately findable, so they share it.
+structure.twilightforest.tower_main.name=Lich Tower
+structure.twilightforest.tower_wing.name=Tower Wing
+structure.twilightforest.tower_outbuilding.name=Tower Outbuilding
+structure.twilightforest.tower_bridge.name=Tower Bridge
+
+# ⚠️ Ported and deliberately not placed -- see ComponentTFHollowTreeTrunk. The name is here so that
+# wiring it up later is a code change and not a naming decision.
+structure.twilightforest.hollow_tree.name=Hollow Tree

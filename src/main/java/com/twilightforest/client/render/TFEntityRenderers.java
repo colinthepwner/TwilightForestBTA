@@ -3,7 +3,9 @@ package com.twilightforest.client.render;
 import com.twilightforest.entity.MobTFBighorn;
 import com.twilightforest.entity.MobTFBoar;
 import com.twilightforest.entity.MobTFDeer;
+import com.twilightforest.entity.EntityTFTinyFirefly;
 import com.twilightforest.entity.MobTFHedgeSpider;
+import com.twilightforest.entity.MobTFLich;
 import com.twilightforest.entity.MobTFNaga;
 import com.twilightforest.entity.MobTFNagaSegment;
 import com.twilightforest.entity.MobTFPenguin;
@@ -33,6 +35,10 @@ public final class TFEntityRenderers {
 		dispatcher.assignRenderer(MobTFRedcap.class, new TFHumanoidRenderers.Redcap());
 		dispatcher.assignRenderer(MobTFSkeletonDruid.class, new TFHumanoidRenderers.SkeletonDruid());
 		dispatcher.assignRenderer(MobTFWraith.class, new TFHumanoidRenderers.Wraith());
+
+		dispatcher.assignRenderer(MobTFLich.class, new TFHumanoidRenderers.Lich());
+
+		dispatcher.assignRenderer(EntityTFTinyFirefly.class, new RendererTFTinyFirefly());
 
 		dispatcher.assignRenderer(MobTFNaga.class, new TFMiscRenderers.Naga());
 		dispatcher.assignRenderer(MobTFNagaSegment.class, new TFMiscRenderers.NagaSegment());

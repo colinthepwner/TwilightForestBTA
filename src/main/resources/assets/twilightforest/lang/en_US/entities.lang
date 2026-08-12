@@ -1,0 +1,21 @@
+# Display names for the entities added after the first roster pass.
+#
+# ⚠️ These live here rather than in twilightforest.lang only because that file is owned by another
+# pass and two writers on one file is how a merge loses a line. BTA loads every .lang file in this
+# directory and merges them, so the split has no effect at runtime -- a key defined here is
+# indistinguishable from one defined there.
+#
+# The key shape is BTA 8.0's: mob names resolve through the guidebook namespace as
+#     guidebook.section.mob.<entity id>.name
+# where <entity id> is exactly the string TFEntities.register() passes. A mismatch shows the raw key
+# in the world rather than falling back to anything.
+
+# The Lich. "Twilight Lich" is upstream's own name for it, not an embellishment.
+guidebook.section.mob.lich.name=Twilight Lich
+
+# The Lich's bolt. Registered as an entity because the id is what the spawn packet carries; it is
+# never named in the UI, but an unnamed registration shows the key in death messages and F3.
+guidebook.section.mob.lichbolt.name=Lich Bolt
+
+# The firefly spark thrown off by a firefly. Nothing spawns it yet -- see EntityTFTinyFirefly.
+guidebook.section.mob.tinyfirefly.name=Firefly

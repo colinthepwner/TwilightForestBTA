@@ -1,0 +1,38 @@
+# Twilight Forest -- block descriptions.
+#
+# BTA scans assets/<namespace>/lang/en_US/ for any *.lang and loads each into ONE Properties object,
+# so which file a key lives in does not matter -- but a key defined in two files does, because the
+# load order is directory-enumeration order and the winner is whichever happens to be read last.
+#
+# ⚠️ SO THIS FILE CONTAINS NO KEY THAT twilightforest.lang ALREADY HAS. Every block and item NAME is
+# defined there and stays there. What is here is the `.desc` half, which nothing had before: BTA's own
+# tile.lang carries 745 of them, so it is an established key and not an invention.
+#
+# The names are Benimatic's. The descriptions are not -- upstream wrote none, because Twilight Forest
+# 1.7.1 predates the guidebook entirely. They are this port's, and they are written to say what a
+# block DOES rather than what it looks like, because in this mod those are usually different.
+
+# --- Mazestone --------------------------------------------------------------------------------------
+# The whole point of the block is that its appearance is a lie -- and the lie holds through the drop
+# as well, since it yields whatever the block it imitates would have. So the only tell is the cost,
+# and that is what the description says. See BlockLogicTFMazestone: hardness 20, and 16 durability
+# off a pickaxe per block.
+tile.twilightforest.mazestone.desc=Passes for ordinary stone, and breaks like it. Ruins a pickaxe sixteen times faster.
+tile.twilightforest.mazestone.cobble.desc=Passes for ordinary cobblestone, and breaks like it. Ruins a pickaxe sixteen times faster.
+tile.twilightforest.mazestone.mossy.desc=Passes for ordinary mossy cobblestone, and breaks like it. Ruins a pickaxe sixteen times faster.
+
+# --- Hedge ------------------------------------------------------------------------------------------
+tile.twilightforest.hedge.desc=A wall of thorns. It bites anything that touches it, except spiders.
+
+# --- The critters -----------------------------------------------------------------------------------
+tile.twilightforest.firefly.desc=A living light. Clings to walls, floors and ceilings, and drifts sparks when you are near.
+tile.twilightforest.cicada.desc=Clings to bark and leaves, and sings.
+
+# --- Boss spawner -----------------------------------------------------------------------------------
+tile.twilightforest.boss_spawner.desc=Something is waiting. It fires once, from fifty blocks away.
+
+# Giant mushrooms. Vanilla's blocks 99/100, which BTA does not have and this port supplies -- the
+# canopy mushroom's cap and stalk. The stalk is data 10 on the brown block, so it needs no name of
+# its own: a player only ever holds the cap form.
+tile.twilightforest.mushroom_giant.brown.name=Giant Brown Mushroom
+tile.twilightforest.mushroom_giant.red.name=Giant Red Mushroom

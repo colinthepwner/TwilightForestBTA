@@ -41,7 +41,7 @@ public final class TFAssetBridge {
 	private static final String MANIFEST = "/assets/twilightforest/asset-bridge.properties";
 	private static final String STAMP = "bridge-source.txt";
 
-	private static final int BRIDGE_REVISION = 17;
+	private static final int BRIDGE_REVISION = 22;
 
 	private static final int MAX_NESTING = 3;
 
@@ -75,6 +75,8 @@ public final class TFAssetBridge {
 			sourceArchive = previous.label;
 			TwilightForest.LOGGER.info("Asset bridge: '{}' is already built from {}, skipping extraction",
 				PACK_NAME, previous.label);
+
+			TFBlockTextureBridge.recordExisting(packDir);
 			enablePack(packDir);
 			return;
 		}
@@ -108,7 +110,7 @@ public final class TFAssetBridge {
 				}
 
 				for (String path : mapping.getValue()) {
-					write(new File(packDir, path), bytes);
+					write(new File(destinationRoot(gameDir, packDir, path), path), bytes);
 					written++;
 				}
 			}
@@ -573,6 +575,10 @@ public final class TFAssetBridge {
 			TwilightForest.LOGGER.warn("Asset bridge: bridged models were written but could not be reloaded ({}); "
 				+ "restart the game to see them", t.toString());
 		}
+	}
+
+	private static File destinationRoot(File gameDir, File packDir, String path) {
+		return path.startsWith("packResources/") ? gameDir : packDir;
 	}
 
 	private static void write(File target, byte[] bytes) throws IOException {

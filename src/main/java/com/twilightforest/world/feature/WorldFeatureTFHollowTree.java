@@ -1,5 +1,6 @@
 package com.twilightforest.world.feature;
 
+import com.twilightforest.block.TFBlocks;
 import com.twilightforest.compat.TFWorldFeature;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.world.World;
@@ -24,8 +25,9 @@ public class WorldFeatureTFHollowTree extends TFWorldFeature {
 		this.x = treeX;
 		this.y = treeY;
 		this.z = treeZ;
-		this.treeBlock = Blocks.LOG_OAK.id();
-		this.leafBlock = Blocks.LEAVES_OAK.id();
+
+		this.treeBlock = TFBlocks.LOG_TWILIGHT_OAK.id();
+		this.leafBlock = TFBlocks.LEAVES_TWILIGHT_OAK.id();
 
 		this.height = this.treeRNG.nextInt(64) + 32;
 		this.diameter = this.treeRNG.nextInt(4) + 1;
@@ -65,6 +67,21 @@ public class WorldFeatureTFHollowTree extends TFWorldFeature {
 		}
 
 		this.buildTrunk();
+
+		int numFireflies = this.treeRNG.nextInt(3 * this.diameter) + 5;
+		for (int i = 0; i <= numFireflies; i++) {
+			int fHeight = (int) (this.height * this.treeRNG.nextDouble() * 0.9) + this.height / 10;
+			double fAngle = this.treeRNG.nextDouble();
+			this.addFirefly(fHeight, fAngle);
+		}
+
+		int numCicadas = this.treeRNG.nextInt(3 * this.diameter) + 5;
+		for (int i = 0; i <= numCicadas; i++) {
+			int fHeight = (int) (this.height * this.treeRNG.nextDouble() * 0.9) + this.height / 10;
+			double fAngle = this.treeRNG.nextDouble();
+			this.addCicada(fHeight, fAngle);
+		}
+
 		this.buildFullCrown();
 
 		int numBranches = this.treeRNG.nextInt(3) + 3;
@@ -75,13 +92,6 @@ public class WorldFeatureTFHollowTree extends TFWorldFeature {
 		}
 
 		this.buildBranchRing(3, 2, 6, 0, 0.75, 0.0, 3, 5, 3, false);
-
-		int numFireflies = this.treeRNG.nextInt(3) + 3;
-		for (int i = 0; i <= numFireflies; i++) {
-			int fHeight = (int) (this.height * this.treeRNG.nextDouble() * 0.9) + this.height / 10;
-			double fAngle = this.treeRNG.nextDouble();
-			this.addFirefly(fHeight, fAngle);
-		}
 
 		return true;
 	}
@@ -255,25 +265,32 @@ public class WorldFeatureTFHollowTree extends TFWorldFeature {
 	}
 
 	private void addFirefly(int fHeight, double fAngle) {
+		this.putCritter(fHeight, fAngle, TFBlocks.FIREFLY.id());
+	}
+
+	private void addCicada(int fHeight, double fAngle) {
+		this.putCritter(fHeight, fAngle, TFBlocks.CICADA.id());
+	}
+
+	private void putCritter(int fHeight, double fAngle, int blockId) {
 		int[] src = this.translate(this.x, this.y + fHeight, this.z, this.diameter + 1, fAngle, 0.5);
-		int torch = Blocks.TORCH_COAL.id();
 		fAngle %= 1.0;
 
 		if (fAngle > 0.875 || fAngle <= 0.125) {
 			if (this.worldObj.isBlockNormalCube(src[0] + 1, src[1], src[2])) {
-				this.putBlockAndMetadata(src[0], src[1], src[2], torch, 2, false);
+				this.putBlockAndMetadata(src[0], src[1], src[2], blockId, 2, false);
 			}
 		} else if (fAngle > 0.125 || fAngle <= 0.375) {
 			if (this.worldObj.isBlockNormalCube(src[0], src[1], src[2] - 1)) {
-				this.putBlockAndMetadata(src[0], src[1], src[2], torch, 3, false);
+				this.putBlockAndMetadata(src[0], src[1], src[2], blockId, 3, false);
 			}
 		} else if (fAngle > 0.375 || fAngle <= 0.625) {
 			if (this.worldObj.isBlockNormalCube(src[0] - 1, src[1], src[2])) {
-				this.putBlockAndMetadata(src[0], src[1], src[2], torch, 1, false);
+				this.putBlockAndMetadata(src[0], src[1], src[2], blockId, 1, false);
 			}
 		} else if ((fAngle > 0.625 || fAngle <= 0.875)
 			&& this.worldObj.isBlockNormalCube(src[0], src[1], src[2] - 1)) {
-			this.putBlockAndMetadata(src[0], src[1], src[2], torch, 4, false);
+			this.putBlockAndMetadata(src[0], src[1], src[2], blockId, 4, false);
 		}
 	}
 

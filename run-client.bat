@@ -12,10 +12,30 @@ REM
 REM  The world lives in run\ and persists between launches, so your test world,
 REM  options and screenshots are still there next time.
 REM
-REM  To reach the Twilight Forest once you are in game, either:
-REM    * build a mossy cobblestone frame and light it, or
-REM    * set MUSHROOM_PORTAL = true in run\config\twilightforest.cfg and hold a
-REM      red mushroom -- upstream 1.p4's own mechanism, off by default.
+REM  To reach the Twilight Forest once you are in game, make a portal. There is
+REM  no frame to build and nothing to craft -- you make an offering to a
+REM  clearing, which is Twilight Forest 1.7.1's own mechanism:
+REM
+REM    1. Dig a 2x2 hole one block deep and fill it with water.
+REM    2. The twelve blocks ringing that pool must all be GRASS, and every one
+REM       of them must have something growing on top: a flower, a mushroom or
+REM       tall grass. Any mix will do.
+REM    3. Drop a DIAMOND into the water. Lightning strikes and the pool becomes
+REM       the portal. (The diamond is not consumed -- that is upstream's, not an
+REM       oversight here.)
+REM
+REM  Step 2 is the fiddly one. If nothing happens, that is almost always what is
+REM  wrong: a corner block that is dirt rather than grass, or a bare ring block
+REM  with nothing growing on it. A natural flowery meadow needs very little work.
+REM
+REM  Coming back needs no effort -- arriving builds a return portal for you, and
+REM  walking into either one takes you the other way.
+REM
+REM  NOTE: earlier revisions of this file described a mossy cobblestone frame and
+REM  a red-mushroom config switch. Both are gone. Those belonged to the 1.p4
+REM  port, which had no portal block at all and had to invent one; 1.7.1 ships a
+REM  real BlockTFPortal and the invented pair was retired with it. MUSHROOM_PORTAL
+REM  in run\config\twilightforest.cfg does nothing now.
 REM ---------------------------------------------------------------------------
 
 REM Every call below uses an EXPLICIT "%~dp0..." path, and that is not style.

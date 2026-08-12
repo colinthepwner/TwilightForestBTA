@@ -3,10 +3,13 @@
   "minVersion": "0.8",
   "package": "com.twilightforest.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [],
-  "client": [
-    "MushroomPortalMixin"
+  "mixins": [
+    "ButterflySpawnMixin",
+    "EntityItemPortalMixin",
+    "PortalHandlerMixin",
+    "TwilightDaytimeMixin"
   ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

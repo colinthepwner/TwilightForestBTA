@@ -1,6 +1,7 @@
 package com.twilightforest.entity;
 
 import com.twilightforest.TwilightForest;
+import com.twilightforest.entity.projectile.EntityTFLichBolt;
 import com.twilightforest.entity.projectile.EntityTFNatureBolt;
 import com.twilightforest.entity.projectile.EntityTFProjectile;
 import net.minecraft.core.entity.Entity;
@@ -51,6 +52,11 @@ public final class TFEntities {
 
 		register(MobTFNaga.class, "naga", MobTFNaga::new);
 		register(MobTFNagaSegment.class, "nagasegment", MobTFNagaSegment::new);
+
+		register(MobTFLich.class, "lich", MobTFLich::new);
+		register(EntityTFLichBolt.class, "lichbolt", EntityTFLichBolt::new);
+
+		register(EntityTFTinyFirefly.class, "tinyfirefly", EntityTFTinyFirefly::new);
 
 		TwilightForest.LOGGER.info("Registered {} Twilight Forest entities.", REGISTERED_IDS.size());
 	}

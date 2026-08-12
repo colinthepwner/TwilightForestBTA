@@ -17,14 +17,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from scan_world import level_of, region_chunks  # noqa: E402
 
 # Block id -> (what it proves, roughly how many one instance places)
+#
+# The mod's own blocks are 2301-2313. Everything above 400 is BTA's, resolved out of
+# net.minecraft.core.block.Blocks rather than remembered -- BTA renumbered vanilla, so
+# stone brick is 121 and not 98, and the tower's stand-in for iron bars is 892.
 MARKERS = {
     2310: ("hedge maze walls", "hundreds"),
     2313: ("Naga courtyard boss spawner", "exactly 1 per courtyard"),
     2311: ("fireflies (hedge maze torches + courtyard pillars)", "tens"),
-    2307: ("mazestone (hill maze)", "hundreds"),
-    2308: ("mazestone cobble (hill maze)", "hundreds"),
-    2309: ("mazestone mossy (hill maze)", "hundreds"),
+    # The hill maze's floor and ceiling are solid mazestone and its walls are the mossy variant.
+    # ⚠️ Depth is what identifies it: the maze sits 20 blocks under a hollow hill's chamber, so
+    # y ~13. Nothing else in the mod places mazestone at all -- the glacier maze is built of ice.
+    2307: ("mazestone (hill maze floor + ceiling)", "thousands, y~12-13"),
+    2309: ("mazestone mossy (hill maze walls)", "thousands, y~13-16"),
+    # The three-block-thick shell of every tower in a Lich keep, ~30% of it mossy.
+    122: ("mossy stone brick (Lich tower shell)", "thousands per keep"),
+    # Only the keep places these. Both are rare within a keep, so a zero here with 122 present
+    # means the towers built but their interiors did not decorate -- a different failure.
+    892: ("steel fence (Lich tower chains + rooms)", "tens per keep"),
+    490: ("stone pressure plate (hill maze dead-end traps)", "~1 in 17 dead ends"),
 }
+
+# Markers that are genuinely rare rather than merely absent. A zero in one of these is not a
+# failure on its own -- it is reported separately so it cannot be read as one.
+RARE = {892, 490}
 
 
 def main():
@@ -60,6 +76,7 @@ def main():
 
     print("%d chunks\n" % chunks)
     missing = []
+    rare_missing = []
     for bid, (what, scale) in MARKERS.items():
         n = counts.get(bid, 0)
         if n:
@@ -67,14 +84,18 @@ def main():
             print("  %-6d %-46s %7d  %s" % (bid, what, n, span))
         else:
             print("  %-6d %-46s %7d  (expected %s)" % (bid, what, 0, scale))
-            missing.append(what)
+            (rare_missing if bid in RARE else missing).append(what)
 
     print()
+    if rare_missing:
+        print("ABSENT BUT RARE: %s" % "; ".join(rare_missing))
+        print("Not a failure. These are placed a handful of times inside a structure that is")
+        print("itself uncommon, so a sample this size can legitimately miss them.")
     if missing:
         print("NOT FOUND: %s" % "; ".join(missing))
         print("A structure is rare -- widen the sample before calling it broken.")
         return 1
-    print("PASS: every marker present.")
+    print("PASS: every non-rare marker present.")
     return 0
 
 

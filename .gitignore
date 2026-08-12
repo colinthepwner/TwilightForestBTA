@@ -31,3 +31,14 @@ __pycache__/
 # Working notes: deobfuscation tables, measured generation results, design rationale and the record
 # of what was got wrong on the way. Kept locally as the port's own memory; not public-facing.
 docs/
+
+# An extracted BTA client jar, used as the DONOR ART for tools/gen_mushroom_skins.py. Turnip Labs'
+# work; ours to read locally, never to redistribute.
+tools/bta_jar/
+
+# Generated giant-mushroom skins. Adapted Material of BTA's textures, produced by
+# tools/gen_mushroom_skins.py from a copy of BTA the player already has. Generated rather than
+# committed so this repository keeps holding no derived art -- run the script to get them.
+src/main/resources/assets/twilightforest/textures/block/mushroom_skin_brown.png
+src/main/resources/assets/twilightforest/textures/block/mushroom_skin_red.png
+src/main/resources/assets/twilightforest/textures/block/mushroom_skin_stem.png

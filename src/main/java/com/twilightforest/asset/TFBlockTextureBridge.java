@@ -9,22 +9,76 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeSet;
 
 public final class TFBlockTextureBridge {
 	private TFBlockTextureBridge() {}
 
-	private static final String MANIFEST = "/assets/twilightforest/block-bridge.properties";
+	private static final String[] MANIFESTS = {
+		"/assets/twilightforest/block-bridge.properties",
+		"/assets/twilightforest/item-bridge.properties",
+	};
 
 	private static final int TILES_ACROSS = 16;
 
 	public static int slicedCount = -1;
 	public static List<String> problems = new ArrayList<>();
+
+	public static final Set<String> writtenTextureIds = new HashSet<>();
+
+	private static boolean scanned = false;
+
+	public static void ensureScanned() {
+		if (scanned) {
+			return;
+		}
+		File gameDir;
+		try {
+			gameDir = net.minecraft.client.Minecraft.getMinecraft().getMinecraftDir();
+		} catch (Throwable t) {
+			return;
+		}
+		if (gameDir == null) {
+			return;
+		}
+		File packDir = new File(gameDir, "texturepacks/" + TFAssetBridge.PACK_NAME);
+		if (!packDir.isDirectory()) {
+			return;
+		}
+		scanned = true;
+		recordExisting(packDir);
+	}
+
+	private static void recordWritten(String packPath) {
+		String id = textureIdFor(packPath);
+		if (id != null) writtenTextureIds.add(id);
+	}
+
+	public static void recordExisting(File packDir) {
+		for (Slice slice : manifest()) {
+			if (new File(packDir, slice.path).isFile()) {
+				recordWritten(slice.path);
+			}
+		}
+	}
+
+	private static String textureIdFor(String packPath) {
+		String prefix = "assets/";
+		String middle = "/textures/";
+		if (!packPath.startsWith(prefix) || !packPath.endsWith(".png")) return null;
+		int mid = packPath.indexOf(middle);
+		if (mid < 0) return null;
+		String namespace = packPath.substring(prefix.length(), mid);
+		String rest = packPath.substring(mid + middle.length(), packPath.length() - ".png".length());
+		return namespace + ":" + rest;
+	}
 
 	private record Slice(String sheet, int index, String path) {}
 
@@ -38,12 +92,19 @@ public final class TFBlockTextureBridge {
 
 	private static List<Slice> manifest() {
 		List<Slice> slices = new ArrayList<>();
+		for (String manifest : MANIFESTS) {
+			readManifest(manifest, slices);
+		}
+		return slices;
+	}
+
+	private static void readManifest(String resource, List<Slice> into) {
 		Properties props = new Properties();
-		try (InputStream in = TFBlockTextureBridge.class.getResourceAsStream(MANIFEST)) {
-			if (in == null) return slices;
+		try (InputStream in = TFBlockTextureBridge.class.getResourceAsStream(resource)) {
+			if (in == null) return;
 			props.load(in);
 		} catch (IOException e) {
-			return slices;
+			return;
 		}
 
 		for (String key : new TreeSet<>(props.stringPropertyNames())) {
@@ -57,16 +118,16 @@ public final class TFBlockTextureBridge {
 				continue;
 			}
 			String path = props.getProperty(key).trim();
-			if (!path.isEmpty()) slices.add(new Slice(sheet, index, path));
+			if (!path.isEmpty()) into.add(new Slice(sheet, index, path));
 		}
-		return slices;
 	}
 
 	public static int run(Map<String, byte[]> archive, File packDir) {
 		List<Slice> slices = manifest();
 		problems = new ArrayList<>();
 		if (slices.isEmpty()) {
-			problems.add("manifest " + MANIFEST + " is empty or missing");
+			problems.add("the sheet manifests " + String.join(" and ", MANIFESTS)
+				+ " are empty or missing");
 			slicedCount = 0;
 			return 0;
 		}
@@ -126,6 +187,7 @@ public final class TFBlockTextureBridge {
 				}
 				ImageIO.write(out, "png", target);
 				written++;
+				recordWritten(slice.path);
 			} catch (IOException | RuntimeException e) {
 				problems.add("could not write " + slice.path + " (" + e + ")");
 			}

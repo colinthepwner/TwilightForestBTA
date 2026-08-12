@@ -6,7 +6,9 @@ import com.twilightforest.entity.MobTFBoar;
 import com.twilightforest.entity.MobTFDeer;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.entity.SpawnListEntry;
+import net.minecraft.core.entity.animal.MobButterfly;
 import net.minecraft.core.entity.animal.MobChicken;
+import net.minecraft.core.entity.animal.MobFireflyCluster;
 import net.minecraft.core.entity.animal.MobWolf;
 import net.minecraft.core.world.biome.Biome;
 import net.minecraft.core.world.biome.SurfaceProperties;
@@ -36,6 +38,9 @@ public class TFBiome extends Biome {
 		this.spawnableCreatureList.add(new SpawnListEntry(MobChicken.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(MobTFDeer.class, 15));
 		this.spawnableCreatureList.add(new SpawnListEntry(MobWolf.class, 5));
+
+		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobFireflyCluster.class, 10));
+		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobButterfly.class, 65));
 	}
 
 	@Override

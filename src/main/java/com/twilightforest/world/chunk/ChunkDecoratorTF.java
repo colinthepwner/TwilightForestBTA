@@ -1,15 +1,20 @@
 package com.twilightforest.world.chunk;
 
+import com.twilightforest.compat.DecorationWindow;
 import com.twilightforest.compat.TFWorldFeature;
 import com.twilightforest.world.biome.TFBiomes;
 import com.twilightforest.world.feature.TFFeature;
+import com.twilightforest.world.structure.TFStructures;
+import com.twilightforest.world.feature.WorldFeatureTFCanopyMushroom;
 import com.twilightforest.world.feature.WorldFeatureTFCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFFoundation;
 import com.twilightforest.world.feature.WorldFeatureTFGlacierMaze;
 import com.twilightforest.world.feature.WorldFeatureTFHollowTree;
 import com.twilightforest.world.feature.WorldFeatureTFMangroveTree;
 import com.twilightforest.world.feature.WorldFeatureTFMonolith;
+import com.twilightforest.world.feature.WorldFeatureTFMyceliumBlob;
 import com.twilightforest.world.feature.WorldFeatureTFOutsideStalagmite;
+import com.twilightforest.world.feature.WorldFeatureTFPenguins;
 import com.twilightforest.world.feature.WorldFeatureTFStoneCircle;
 import com.twilightforest.world.feature.WorldFeatureTFWell;
 import com.twilightforest.world.feature.WorldFeatureTFWitchHut;
@@ -84,6 +89,9 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 
 	@Override
 	public void decorate(@NotNull Chunk chunk) {
+
+		DecorationWindow.open(this.world, chunk.pos.x, chunk.pos.z);
+		try {
 		int chunkX = chunk.pos.x;
 		int chunkZ = chunk.pos.z;
 		int mapX = chunkX * 16;
@@ -108,6 +116,8 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				this.world.getHeightValue(mapX + 8, mapZ + 8), nearType);
 		}
 
+		TFStructures.generate(this.world, this.rand, chunkX, chunkZ);
+
 		boolean insideStructure = nearType > 3;
 
 		if (!insideStructure && this.rand.nextInt(4) == 0) {
@@ -125,8 +135,12 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int lz = mapZ + this.rand.nextInt(16) + 8;
 
 			if (rawY < TFWorldConstants.SEA_LEVEL || this.rand.nextInt(10) == 0) {
-				new WorldFeatureLake(Blocks.FLUID_LAVA_STILL.id())
-					.place(this.world, this.rand, lx, rawY, lz);
+
+				int ly = undergroundY(lx, lz, rawY);
+				if (ly >= 0) {
+					new WorldFeatureLake(Blocks.FLUID_LAVA_STILL.id())
+						.place(this.world, this.rand, lx, ly, lz);
+				}
 			}
 		}
 
@@ -166,7 +180,11 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			boolean wantsMushroom = counts.canopyMushroomChance > 0.0F
 				&& this.rand.nextFloat() <= counts.canopyMushroomChance;
 
-			new WorldFeatureTFCanopyTree().place(this.world, this.rand, rx, ry, rz);
+			if (wantsMushroom) {
+				new WorldFeatureTFCanopyMushroom().place(this.world, this.rand, rx, ry, rz);
+			} else {
+				new WorldFeatureTFCanopyTree().place(this.world, this.rand, rx, ry, rz);
+			}
 		}
 
 		for (int i = 0; i < counts.lakes; i++) {
@@ -177,8 +195,10 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 		}
 
 		for (int i = 0; i < counts.mycelium; i++) {
-			this.rand.nextInt(16);
-			this.rand.nextInt(16);
+			int rx = mapX + this.rand.nextInt(16) + 8;
+			int rz = mapZ + this.rand.nextInt(16) + 8;
+			new WorldFeatureTFMyceliumBlob(5)
+				.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
 		}
 
 		for (int i = 0; i < counts.mangroves; i++) {
@@ -188,9 +208,43 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
 		}
 
-		com.twilightforest.world.structure.TFStructures.generate(this.world, this.rand, chunkX, chunkZ);
-
 		vanillaPass(biome, mapX, mapZ);
+
+		if (biome == TFBiomes.GLACIER && this.rand.nextInt(4) == 0) {
+			int px = mapX + this.rand.nextInt(16) + 8;
+			int pz = mapZ + this.rand.nextInt(16) + 8;
+
+			new WorldFeatureTFPenguins()
+				.place(this.world, this.rand, px, TFWorldConstants.SEA_LEVEL, pz);
+		}
+		} finally {
+
+			DecorationWindow.close(this.world, chunk.pos.x, chunk.pos.z);
+		}
+	}
+
+	private static final int LAVA_FLOOR = 13;
+
+	private static final int LAVA_SURFACE_MARGIN = 7;
+
+	private static final int LAVA_SAMPLE_RADIUS = 4;
+
+	private int undergroundY(int centreX, int centreZ, int rawY) {
+		int surface = Integer.MAX_VALUE;
+		for (int dx = -LAVA_SAMPLE_RADIUS; dx < LAVA_SAMPLE_RADIUS; dx++) {
+			for (int dz = -LAVA_SAMPLE_RADIUS; dz < LAVA_SAMPLE_RADIUS; dz++) {
+				surface = Math.min(surface, groundAt(centreX + dx, centreZ + dz));
+			}
+		}
+
+		int ceiling = surface - LAVA_SURFACE_MARGIN;
+		if (ceiling <= LAVA_FLOOR) {
+
+			return -1;
+		}
+
+		return LAVA_FLOOR
+			+ (rawY * (ceiling - LAVA_FLOOR)) / (TFWorldConstants.WORLD_HEIGHT - 1);
 	}
 
 	private int groundAt(int x, int z) {
@@ -279,8 +333,12 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int ry = this.rand.nextInt(this.rand.nextInt(this.rand.nextInt(height - 16) + 8) + 8);
 			int rz = mapZ + this.rand.nextInt(16) + 8;
-			new WorldFeatureLiquid(Blocks.FLUID_LAVA_FLOWING.id())
-				.place(this.world, this.rand, rx, ry, rz);
+
+			int springY = undergroundY(rx, rz, ry);
+			if (springY >= 0) {
+				new WorldFeatureLiquid(Blocks.FLUID_LAVA_FLOWING.id())
+					.place(this.world, this.rand, rx, springY, rz);
+			}
 		}
 	}
 
