@@ -151,10 +151,10 @@ GRAIN_BROWN = 0.05
 # means "the value barely changes going down a column", i.e. fibres.
 STEM_Y_WEIGHT = 0.25
 
-# How far the inside is mixed towards white FROM THE BROWN CAP'S HUE. Not from the stalk's, which
+# How far the inside is mixed towards CREAM from the brown cap's hue. Not from the stalk's, which
 # BTA's small mushrooms sample at a near-neutral (218, 218, 218) -- lightening that gives a paler
 # grey, and a grey underside is the thing being fixed. Mushroom flesh is warm, so the cap's own hue
-# diluted is the honest source for it, and 0.65 lands on a cream that is clearly not the stem.
+# diluted is the honest source for it.
 INSIDE_LIGHTEN = 0.65
 
 # The inside's grain. HIGHER than the others and deliberately so: this is the one surface that is
@@ -177,9 +177,19 @@ PORE_SIZE = 3
 PORE_WEIGHT = 0.72
 
 
-def lighten(rgb, fraction: float):
-    """Mix a colour towards white. Used for the inside, which is paler than the skin around it."""
-    return tuple(int(round(c + (255 - c) * fraction)) for c in rgb)
+# What the inside is diluted TOWARDS, and the single number that decides whether it reads as cream
+# or as pale grey.
+#
+# ⚠️ NOT WHITE. Mixing the cap's hue towards (255, 255, 255) raises all three channels by the same
+# amount, so the result keeps the cap's small red-blue gap and comes out a warm grey -- it was
+# (214, 203, 195), only 19 apart, and it read as stone. Mixing towards a cream instead widens the gap
+# as it lightens. The blue channel is the whole difference: a mushroom's flesh is yellow-white.
+CREAM = (255, 248, 220)
+
+
+def mix_towards(rgb, target, fraction: float):
+    """Mix a colour towards `target`. Used for the inside, which is paler than the skin around it."""
+    return tuple(int(round(c + (t - c) * fraction)) for c, t in zip(rgb, target))
 
 
 def lum(p) -> float:
@@ -374,7 +384,7 @@ def main() -> int:
     # wear. The flesh of a mushroom is the same stuff whatever colour its skin is, and the brown cap
     # is the one whose hue is already close to flesh. Deriving a red inside from the red cap would
     # give a pink underside, which no mushroom has.
-    inside = lighten(cap_brown, INSIDE_LIGHTEN)
+    inside = mix_towards(cap_brown, CREAM, INSIDE_LIGHTEN)
 
     outputs = {
         "mushroom_skin_brown.png": grained(cap_brown, seed=1, amplitude=GRAIN_BROWN),
