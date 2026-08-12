@@ -68,7 +68,7 @@ public final class TFEntityRenderers {
 		dispatcher.assignRenderer(MobTFPinchBeetle.class,
 			new TFHostileRenderers.Bug<>("geometry.pinchbeetle", 0.7F));
 		dispatcher.assignRenderer(MobTFMosquitoSwarm.class,
-			new TFHostileRenderers.Bug<>("geometry.mosquitoswarm", 0.5F));
+			new TFHostileRenderers.Swarm<>("geometry.mosquitoswarm", 0.5F));
 
 		dispatcher.assignRenderer(MobTFNaga.class, new TFMiscRenderers.Naga());
 		dispatcher.assignRenderer(MobTFNagaSegment.class, new TFMiscRenderers.NagaSegment());

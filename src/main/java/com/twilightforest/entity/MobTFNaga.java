@@ -593,4 +593,13 @@ public class MobTFNaga extends MobMonster {
 		this.segmentHealth = this.getMaxHealth() / 10;
 		this.setSegmentsPerHealth();
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.NAGA);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

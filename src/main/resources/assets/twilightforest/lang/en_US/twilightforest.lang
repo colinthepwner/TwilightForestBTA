@@ -125,3 +125,27 @@ tile.twilightforest.portal.twilightforest.desc=A pool in a flowering clearing. T
 
 # --- Items ------------------------------------------------------------------------------------------
 item.twilightforest.naga_scale.name=Naga Scale
+
+# --- Achievements -----------------------------------------------------------------------------------
+# Names and descriptions are Benimatic's own, out of TFAchievementPage's addStringLocalization calls.
+# The page name is this port's -- upstream passes the literal string "Twilight Forest" to the Forge
+# AchievementPage constructor rather than localising it.
+achievement.page.twilightforest=Twilight Forest
+achievement.page.twilightforest.desc=A dimension of permanent dusk.
+
+achievement.twilight_portal=Twilight Portal
+achievement.twilight_portal.desc=Build a portal to the Twilight Forest
+achievement.twilight_arrival=Twilight Arrival
+achievement.twilight_arrival.desc=Arrive in the Twilight Forest
+achievement.twilight_hunter=Twilight Hunter
+achievement.twilight_hunter.desc=Hunt some of the local wildlife
+achievement.twilight_naga=Naga Hunter
+achievement.twilight_naga.desc=Slay the naga
+achievement.twilight_lich=Lich Hunter
+achievement.twilight_lich.desc=Slay the lich
+achievement.twilight_hill_1=The Boots Are Mine!
+achievement.twilight_hill_1.desc=Defeat a redcap goblin in a small hollow hill
+achievement.twilight_hill_3=I See Right Through You
+achievement.twilight_hill_3.desc=Defeat a twilight wraith in a large hollow hill
+achievement.twilight_hedge=Bug Stomper
+achievement.twilight_hedge.desc=Defeat a spider in a hedge maze

@@ -233,4 +233,13 @@ public class MobTFLich extends MobMonster implements IItemHolding {
 	protected String getDeathSound() {
 		return "mob.skeletonhurt";
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.LICH);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

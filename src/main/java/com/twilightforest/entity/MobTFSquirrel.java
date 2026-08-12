@@ -33,4 +33,11 @@ public class MobTFSquirrel extends MobDeer {
 	protected String getDeathSound() {
 		return null;
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

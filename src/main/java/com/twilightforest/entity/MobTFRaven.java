@@ -33,4 +33,11 @@ public class MobTFRaven extends MobChicken {
 	protected String getDeathSound() {
 		return TwilightForest.MOD_ID + ":mob.tf.raven.squawk";
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

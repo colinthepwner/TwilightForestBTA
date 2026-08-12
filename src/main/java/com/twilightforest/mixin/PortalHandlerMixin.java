@@ -1,6 +1,8 @@
 package com.twilightforest.mixin;
 
 import com.twilightforest.TwilightForest;
+import com.twilightforest.achievement.TFAchievements;
+import com.twilightforest.world.TFDimension;
 import com.twilightforest.block.BlockLogicTFPortal;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogicPortal;
@@ -29,6 +31,10 @@ public class PortalHandlerMixin {
 			newDim.homeDim == null ? oldDim.portalBlock : newDim.portalBlock;
 		if (target == null || !(target.getLogic() instanceof BlockLogicTFPortal portal)) {
 			return;
+		}
+
+		if (newDim == TFDimension.TWILIGHT_FOREST) {
+			TFAchievements.award(entity, TFAchievements.ARRIVAL);
 		}
 
 		WorldType oldType = oldDim.getDimensionData(world).getWorldType();

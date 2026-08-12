@@ -18,4 +18,11 @@ public class MobTFBighorn extends MobSheep {
 	public static DyeColor randomBighornFleeceColor(Random random) {
 		return DyeColor.colorFromBlockMeta(random.nextInt(2) == 0 ? 12 : random.nextInt(15));
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

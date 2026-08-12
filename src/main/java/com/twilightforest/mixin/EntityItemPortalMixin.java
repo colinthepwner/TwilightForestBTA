@@ -1,12 +1,14 @@
 package com.twilightforest.mixin;
 
 import com.twilightforest.TwilightForest;
+import com.twilightforest.achievement.TFAchievements;
 import com.twilightforest.block.BlockLogicTFPortal;
 import com.twilightforest.block.TFBlocks;
 import com.twilightforest.world.TFDimension;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityItem;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.util.helper.MathHelper;
@@ -62,6 +64,9 @@ public abstract class EntityItemPortalMixin extends Entity {
 
 		if (portal.tryToCreatePortal(this.world, bx, by, bz)) {
 			twilightforest$lastFailure = null;
+
+			Player nearby = this.world.getClosestPlayerToEntity(this, 8.0D);
+			TFAchievements.award(nearby, TFAchievements.PORTAL);
 
 			if (--stack.stackSize <= 0) {
 				this.remove();

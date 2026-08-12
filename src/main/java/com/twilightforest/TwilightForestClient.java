@@ -1,5 +1,7 @@
 package com.twilightforest;
 
+import com.twilightforest.achievement.TFAchievementPage;
+
 import com.twilightforest.asset.TFAssetBridge;
 import com.twilightforest.block.entity.TileEntityTFCicada;
 import com.twilightforest.block.entity.TileEntityTFFirefly;
@@ -18,6 +20,8 @@ public class TwilightForestClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+
+		TFAchievementPage.register();
 		ClientEvents.AFTER_CLIENT_START.listen(Key.of(TwilightForest.MOD_ID), this::afterClientStart);
 		ClientEvents.ENTITY_RENDERER_RELOAD.listen(Key.of(TwilightForest.MOD_ID),
 			TFEntityRenderers::registerRenderers);

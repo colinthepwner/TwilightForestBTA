@@ -34,4 +34,11 @@ public class MobTFTinyBird extends MobChicken {
 	protected String getDeathSound() {
 		return TwilightForest.MOD_ID + ":mob.tf.tinybird.hurt";
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

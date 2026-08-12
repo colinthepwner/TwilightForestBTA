@@ -1,5 +1,6 @@
 package com.twilightforest;
 
+import com.twilightforest.achievement.TFAchievements;
 import com.twilightforest.block.TFBlocks;
 import com.twilightforest.entity.TFEntities;
 import com.twilightforest.item.TFItems;
@@ -49,6 +50,8 @@ public class TwilightForest implements ModInitializer {
 		TFDimension.registerWorldTypeGroups();
 
 		TFRecipes.register();
+
+		TFAchievements.register();
 
 		TFTreasure.verify();
 	}

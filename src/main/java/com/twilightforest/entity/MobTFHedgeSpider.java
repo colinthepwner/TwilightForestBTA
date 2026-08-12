@@ -17,4 +17,11 @@ public class MobTFHedgeSpider extends MobSpider {
 			&& this.world.getEntitiesWithinAABBExcludingEntity(this, this.bb).isEmpty()
 			&& !this.world.isAABBInMaterial(this.bb, net.minecraft.core.block.material.Materials.WATER);
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HEDGE);
+	}
 }

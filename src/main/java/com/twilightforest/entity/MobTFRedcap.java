@@ -96,4 +96,11 @@ public class MobTFRedcap extends MobMonster implements IItemHolding {
 
 		return difference < 60.0F || difference > 300.0F;
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HILL_1);
+	}
 }

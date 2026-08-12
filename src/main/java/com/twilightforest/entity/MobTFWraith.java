@@ -184,4 +184,11 @@ public class MobTFWraith extends MobFlying implements Enemy {
 
 		return true;
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HILL_3);
+	}
 }

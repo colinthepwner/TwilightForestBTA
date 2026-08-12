@@ -10,4 +10,11 @@ public class MobTFBoar extends MobPig {
 		this.setTextureIdentifier(TwilightForest.MOD_ID, "wildboar");
 		this.setSize(0.9F, 0.9F);
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }

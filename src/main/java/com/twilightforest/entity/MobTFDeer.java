@@ -21,4 +21,11 @@ public class MobTFDeer extends MobCow {
 	public boolean interact(Player player) {
 		return false;
 	}
+
+	@Override
+	public void onDeath(net.minecraft.core.entity.Entity killer) {
+		super.onDeath(killer);
+		com.twilightforest.achievement.TFAchievements.award(killer,
+			com.twilightforest.achievement.TFAchievements.HUNTER);
+	}
 }
