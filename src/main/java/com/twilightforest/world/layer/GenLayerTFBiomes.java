@@ -9,11 +9,15 @@ public class GenLayerTFBiomes extends GenLayer {
 		TFBiomeIds.DEEP_MUSHROOMS,
 		TFBiomeIds.SWAMP,
 		TFBiomeIds.CLEARING,
+
+		TFBiomeIds.DARK_FOREST,
 	};
 
 	private static final int[] RARE = {
 		TFBiomeIds.LAKE,
 		TFBiomeIds.GLACIER,
+
+		TFBiomeIds.ENCHANTED_FOREST,
 	};
 
 	public GenLayerTFBiomes(long baseSeed) {

@@ -36,6 +36,9 @@ public final class TFBiomes {
 	public static Biome DEEP_MUSHROOMS;
 	public static Biome LARGE_FEATURE;
 
+	public static Biome DARK_FOREST;
+	public static Biome ENCHANTED_FOREST;
+
 	private static boolean hasInit = false;
 
 	public static void init() {
@@ -59,6 +62,10 @@ public final class TFBiomes {
 		LAKE_BORDER = reg("lake_border", new TFBiome("twilight.lake_border"), 0x1175A4);
 		DEEP_MUSHROOMS = reg("deep_mushrooms", new TFBiome("twilight.deep_mushrooms"), 0x59268F);
 		LARGE_FEATURE = reg("large_feature", new Center("twilight.large_feature"), 0xFFF000);
+
+		DARK_FOREST = reg("dark_forest", new TFBiomeDarkForest("twilight.dark_forest"), 13073);
+		ENCHANTED_FOREST =
+			reg("enchanted_forest", new TFBiomeEnchantedForest("twilight.enchanted_forest"), 0x115566);
 	}
 
 	private static Biome reg(String name, Biome biome, int debugColor) {
@@ -69,6 +76,7 @@ public final class TFBiomes {
 		return new Biome[]{
 			LAKE, TWILIGHT_FOREST, TWILIGHT_FOREST_VARIANT, HIGHLANDS, MUSHROOMS, SWAMP, STREAM,
 			SNOW, GLACIER, CLEARING, CLEARING_BORDER, LAKE_BORDER, DEEP_MUSHROOMS, LARGE_FEATURE,
+			DARK_FOREST, ENCHANTED_FOREST,
 		};
 	}
 
@@ -88,6 +96,8 @@ public final class TFBiomes {
 			case TFBiomeIds.LAKE_BORDER: return LAKE_BORDER;
 			case TFBiomeIds.DEEP_MUSHROOMS: return DEEP_MUSHROOMS;
 			case TFBiomeIds.LARGE_FEATURE: return LARGE_FEATURE;
+			case TFBiomeIds.DARK_FOREST: return DARK_FOREST;
+			case TFBiomeIds.ENCHANTED_FOREST: return ENCHANTED_FOREST;
 			default: return TWILIGHT_FOREST;
 		}
 	}

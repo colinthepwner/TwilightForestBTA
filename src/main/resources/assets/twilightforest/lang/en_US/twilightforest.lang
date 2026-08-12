@@ -36,6 +36,9 @@ biome.twilight.clearing_border=Clearing Border
 biome.twilight.lake_border=Lake Border
 biome.twilight.deep_mushrooms=Lots of Mushrooms
 biome.twilight.large_feature=Major Feature
+# From the 1.15.4 donor -- its own setBiomeName strings.
+biome.twilight.dark_forest=Dark Forest
+biome.twilight.enchanted_forest=Enchanted Forest
 
 # --- World type and dimension -----------------------------------------------------------------------
 worldType.twilightforest.default.name=Twilight Forest
@@ -71,6 +74,22 @@ tile.twilightforest.log.mangrove.name=Mangrove Log
 tile.twilightforest.leaves.twilight_oak.name=Twilight Oak Leaves
 tile.twilightforest.leaves.canopy.name=Canopy Tree Leaves
 tile.twilightforest.leaves.mangrove.name=Mangrove Leaves
+
+# --- From the 1.15.4 donor. Benimatic's own strings, out of its lang/en_US.xml. ---
+# tile.TFHedge.1 is "Darkwood Leaves" -- so even upstream calls the hedge variant leaves in the UI,
+# while building it out of the hedge block. The name is his; the block choice is documented on
+# BlockLogicTFHedge.harmless.
+#
+# ⚠️ ONE DEVIATION: upstream's tile.TFLog.3 is "Darkwood Wood", because 1.15.4 names the whole family
+# "<species> Wood". 1.7.1 -- the version being ported, and the one the three names above follow --
+# names them "<species> Log". Kept as Log for consistency with its siblings, which also spares us
+# "Darkwood Wood".
+tile.twilightforest.log.darkwood.name=Darkwood Log
+tile.twilightforest.leaves.darkwood.name=Darkwood Leaves
+tile.twilightforest.leaves.rainbow.name=Rainbow Oak Leaves
+# tile.TFRoots.0 is "Roots". Its metadata-1 sibling "Liveroots" is not ported -- see
+# BlockLogicTFRoots -- so there is no name for it here either.
+tile.twilightforest.roots.name=Roots
 
 # ⚠️ Upstream has ONE mazestone with three metadata variants and one name for all three. Splitting
 # it into three blocks means inventing two names; these follow the vanilla blocks each variant

@@ -226,4 +226,103 @@ public abstract class TFWorldFeature extends WorldFeature {
 		}
 		return world.isAirBlock(x, y, z);
 	}
+
+	protected boolean hasAirAround(World world, int bx, int by, int bz) {
+		return getBlockId(world, bx + 1, by, bz) == 0
+			|| getBlockId(world, bx - 1, by, bz) == 0
+			|| getBlockId(world, bx, by, bz + 1) == 0
+			|| getBlockId(world, bx, by, bz - 1) == 0
+			|| getBlockId(world, bx, by + 1, bz) == 0;
+	}
+
+	protected boolean isNearSolid(World world, int bx, int by, int bz) {
+		return getBlockMaterial(world, bx + 1, by, bz).isSolid()
+			|| getBlockMaterial(world, bx - 1, by, bz).isSolid()
+			|| getBlockMaterial(world, bx, by, bz + 1).isSolid()
+			|| getBlockMaterial(world, bx, by, bz - 1).isSolid();
+	}
+
+	protected static int[] getBresehnamArray(int x1, int y1, int z1, int x2, int y2, int z2) {
+		int[] pixel = {x1, y1, z1};
+		int dx = x2 - x1;
+		int dy = y2 - y1;
+		int dz = z2 - z1;
+		int xInc = dx < 0 ? -1 : 1;
+		int l = Math.abs(dx);
+		int yInc = dy < 0 ? -1 : 1;
+		int m = Math.abs(dy);
+		int zInc = dz < 0 ? -1 : 1;
+		int n = Math.abs(dz);
+		int dx2 = l << 1;
+		int dy2 = m << 1;
+		int dz2 = n << 1;
+
+		int[] lineArray;
+		if (l >= m && l >= n) {
+			lineArray = new int[3 * l + 3];
+			int err1 = dy2 - l;
+			int err2 = dz2 - l;
+			for (int i = 0; i < l * 3; i += 3) {
+				lineArray[i] = pixel[0];
+				lineArray[i + 1] = pixel[1];
+				lineArray[i + 2] = pixel[2];
+				if (err1 > 0) {
+					pixel[1] += yInc;
+					err1 -= dx2;
+				}
+				if (err2 > 0) {
+					pixel[2] += zInc;
+					err2 -= dx2;
+				}
+				err1 += dy2;
+				err2 += dz2;
+				pixel[0] += xInc;
+			}
+		} else if (m >= l && m >= n) {
+			lineArray = new int[3 * m + 3];
+			int err1 = dx2 - m;
+			int err2 = dz2 - m;
+			for (int i = 0; i < m * 3; i += 3) {
+				lineArray[i] = pixel[0];
+				lineArray[i + 1] = pixel[1];
+				lineArray[i + 2] = pixel[2];
+				if (err1 > 0) {
+					pixel[0] += xInc;
+					err1 -= dy2;
+				}
+				if (err2 > 0) {
+					pixel[2] += zInc;
+					err2 -= dy2;
+				}
+				err1 += dx2;
+				err2 += dz2;
+				pixel[1] += yInc;
+			}
+		} else {
+			lineArray = new int[3 * n + 3];
+			int err1 = dy2 - n;
+			int err2 = dx2 - n;
+			for (int i = 0; i < n * 3; i += 3) {
+				lineArray[i] = pixel[0];
+				lineArray[i + 1] = pixel[1];
+				lineArray[i + 2] = pixel[2];
+				if (err1 > 0) {
+					pixel[1] += yInc;
+					err1 -= dz2;
+				}
+				if (err2 > 0) {
+					pixel[0] += xInc;
+					err2 -= dz2;
+				}
+				err1 += dy2;
+				err2 += dx2;
+				pixel[2] += zInc;
+			}
+		}
+
+		lineArray[lineArray.length - 3] = pixel[0];
+		lineArray[lineArray.length - 2] = pixel[1];
+		lineArray[lineArray.length - 1] = pixel[2];
+		return lineArray;
+	}
 }

@@ -7,6 +7,7 @@ import com.twilightforest.world.feature.TFFeature;
 import com.twilightforest.world.structure.TFStructures;
 import com.twilightforest.world.feature.WorldFeatureTFCanopyMushroom;
 import com.twilightforest.world.feature.WorldFeatureTFCanopyTree;
+import com.twilightforest.world.feature.WorldFeatureTFDarkCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFFoundation;
 import com.twilightforest.world.feature.WorldFeatureTFGlacierMaze;
 import com.twilightforest.world.feature.WorldFeatureTFHollowTree;
@@ -82,6 +83,10 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			if (biome == TFBiomes.TWILIGHT_FOREST_VARIANT) {
 
 				return new Counts(3, 0.0F, 0, 0, 0);
+			}
+			if (biome == TFBiomes.DARK_FOREST) {
+
+				return new Counts(5, 0.0F, 0, 0, 0);
 			}
 			return new Counts(1, 0.0F, 0, 0, 0);
 		}
@@ -182,6 +187,9 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 
 			if (wantsMushroom) {
 				new WorldFeatureTFCanopyMushroom().place(this.world, this.rand, rx, ry, rz);
+			} else if (biome == TFBiomes.DARK_FOREST) {
+
+				new WorldFeatureTFDarkCanopyTree().place(this.world, this.rand, rx, ry, rz);
 			} else {
 				new WorldFeatureTFCanopyTree().place(this.world, this.rand, rx, ry, rz);
 			}
@@ -378,6 +386,12 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			if (biome == TFBiomes.MUSHROOMS) return new VanillaCounts(8, 2, 2, 0, 8, 0);
 			if (biome == TFBiomes.DEEP_MUSHROOMS) return new VanillaCounts(1, 2, 2, 0, 12, 0);
 			if (biome == TFBiomes.SWAMP) return new VanillaCounts(2, 2, 2, 1, 8, 10);
+
+			if (biome == TFBiomes.DARK_FOREST) {
+				return new VanillaCounts(10, Counts.CANOPY_OFF, Counts.CANOPY_OFF, 10, 1, 0);
+			}
+
+			if (biome == TFBiomes.ENCHANTED_FOREST) return new VanillaCounts(10, 8, 15, 0, 0, 0);
 
 			return new VanillaCounts(10, 2, 2, 0, 0, 0);
 		}

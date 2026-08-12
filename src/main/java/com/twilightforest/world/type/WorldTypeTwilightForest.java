@@ -12,6 +12,8 @@ import net.minecraft.core.world.generate.chunk.ChunkGenerator;
 import net.minecraft.core.world.type.WorldType;
 import net.minecraft.core.world.type.WorldTypes;
 import net.minecraft.core.world.type.overworld.WorldTypeOverworld;
+import net.minecraft.core.world.config.season.SeasonConfig;
+import net.minecraft.core.world.season.Seasons;
 import net.minecraft.core.world.weather.Weathers;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +33,8 @@ public class WorldTypeTwilightForest extends WorldTypeOverworld {
 				WorldTypeOverworld.defaultProperties("worldType.twilightforest.default")
 					.fillerBlock(Blocks.STONE)
 					.defaultWeather(Weathers.OVERWORLD_CLEAR)
+
+					.seasonConfig(SeasonConfig.builder().withSingleSeason(Seasons.NULL).build())
 					.bounds(0, 127, 0)
 					.portalBounds(0, 127)));
 

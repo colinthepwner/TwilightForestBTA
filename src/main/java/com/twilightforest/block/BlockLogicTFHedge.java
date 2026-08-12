@@ -14,12 +14,23 @@ public class BlockLogicTFHedge extends BlockLogic {
 
 	public static final int DAMAGE = 3;
 
+	private final boolean damaging;
+
 	public BlockLogicTFHedge(Block<?> block) {
-		super(block, Materials.LEAVES);
+		this(block, true);
 	}
 
-	private static boolean shouldDamage(Entity entity) {
-		return !(entity instanceof MobSpider);
+	public static BlockLogicTFHedge harmless(Block<?> block) {
+		return new BlockLogicTFHedge(block, false);
+	}
+
+	private BlockLogicTFHedge(Block<?> block, boolean damaging) {
+		super(block, Materials.LEAVES);
+		this.damaging = damaging;
+	}
+
+	private boolean shouldDamage(Entity entity) {
+		return this.damaging && !(entity instanceof MobSpider);
 	}
 
 	@Override

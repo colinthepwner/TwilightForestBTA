@@ -24,6 +24,15 @@ tile.twilightforest.mazestone.mossy.desc=Passes for ordinary mossy cobblestone, 
 # --- Hedge ------------------------------------------------------------------------------------------
 tile.twilightforest.hedge.desc=A wall of thorns. It bites anything that touches it, except spiders.
 
+# --- The dark and enchanted forests -----------------------------------------------------------------
+# The darkwood canopy's description leads with the thing a player will actually notice -- that it is
+# solid, unlike every other leaf -- because that is what a dark forest feels like from underneath.
+# It deliberately does NOT mention biting, since it does not, and its sibling three lines up does.
+tile.twilightforest.log.darkwood.desc=Black-barked wood from the dark forest.
+tile.twilightforest.leaves.darkwood.desc=A solid canopy, not a loose one. It shuts out the sky, and unlike a hedge it is harmless.
+tile.twilightforest.roots.desc=Grows under a dark forest tree rather than on top of one. Breaks into sticks.
+tile.twilightforest.leaves.rainbow.desc=No two are the same colour. The shade depends on where the leaf grew, not on the season or the soil.
+
 # --- The critters -----------------------------------------------------------------------------------
 tile.twilightforest.firefly.desc=A living light. Clings to walls, floors and ceilings, and drifts sparks when you are near.
 tile.twilightforest.cicada.desc=Clings to bark and leaves, and sings.

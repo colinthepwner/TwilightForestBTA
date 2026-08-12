@@ -32,6 +32,12 @@ public final class TFBlocks {
 	public static Block<?> LEAVES_CANOPY;
 	public static Block<?> LEAVES_MANGROVE;
 
+	public static Block<?> LOG_DARKWOOD;
+
+	public static Block<?> LEAVES_DARKWOOD;
+	public static Block<?> LEAVES_RAINBOW;
+	public static Block<?> ROOTS;
+
 	public static Block<?> MAZESTONE;
 	public static Block<?> MAZESTONE_COBBLE;
 	public static Block<?> MAZESTONE_MOSSY;
@@ -165,7 +171,30 @@ public final class TFBlocks {
 			.build("mushroom_giant.red", 2315,
 				block -> new BlockLogicTFGiantMushroom(block, () -> Blocks.MUSHROOM_RED));
 
-		TwilightForest.LOGGER.info("Registered 15 Twilight Forest blocks (ids 2301-2315).");
+		LOG_DARKWOOD = log.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
+			.build("log.darkwood", 2316, BlockLogicLog::new);
+
+		LEAVES_DARKWOOD = builder.clone()
+			.setHardness(2.0f)
+			.setResistance(10.0f)
+			.setBlockSound(BlockSounds.GRASS)
+			.setTags(BlockTags.MINEABLE_BY_SHEARS)
+			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
+			.build("leaves.darkwood", 2317, BlockLogicTFHedge::harmless);
+
+		LEAVES_RAINBOW = leaves.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
+			.build("leaves.rainbow", 2318, TFBlocks::leaves);
+
+		ROOTS = builder.clone()
+			.setHardness(2.0f)
+			.setBlockSound(BlockSounds.WOOD)
+			.setTags(BlockTags.MINEABLE_BY_AXE)
+			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
+			.build("roots", 2319, BlockLogicTFRoots::new);
+
+		TwilightForest.LOGGER.info("Registered 19 Twilight Forest blocks (ids 2301-2319).");
 	}
 
 	public static void registerPortal() {

@@ -17,6 +17,8 @@ public final class TFBiomeHeights {
 			case TFBiomeIds.TWILIGHT_FOREST_VARIANT:
 			case TFBiomeIds.DEEP_MUSHROOMS: return 0.15f;
 			case TFBiomeIds.HIGHLANDS: return 1.0f;
+
+			case TFBiomeIds.DARK_FOREST: return 0.05f;
 			default: return DEFAULT_MIN;
 		}
 	}
@@ -30,6 +32,7 @@ public final class TFBiomeHeights {
 			case TFBiomeIds.TWILIGHT_FOREST_VARIANT:
 			case TFBiomeIds.DEEP_MUSHROOMS: return 0.4f;
 			case TFBiomeIds.HIGHLANDS: return 2.0f;
+			case TFBiomeIds.DARK_FOREST: return 0.05f;
 			default: return DEFAULT_MAX;
 		}
 	}

@@ -19,6 +19,9 @@ public final class TFBiomeIds {
 
 	public static final int LARGE_FEATURE = 83;
 
+	public static final int DARK_FOREST = 85;
+	public static final int ENCHANTED_FOREST = 86;
+
 	public static final int MIN = LAKE;
-	public static final int MAX = LARGE_FEATURE;
+	public static final int MAX = ENCHANTED_FOREST;
 }

@@ -28,6 +28,10 @@ public final class TFBlockModels {
 	private static final String CICADA = "twilightforest:block/cicada";
 	private static final String HEDGE = "twilightforest:block/hedge";
 
+	private static final String LOG_DARKWOOD_SIDE = "twilightforest:block/log_darkwood_side";
+	private static final String LEAVES_DARKWOOD = "twilightforest:block/leaves_darkwood";
+	private static final String ROOTS = "twilightforest:block/roots";
+
 	private static final String V_LOG_TOP = "minecraft:block/log/oak_top";
 	private static final String V_LOG_SIDE = "minecraft:block/log/oak_side";
 	private static final String V_LEAVES_OAK = "minecraft:block/leaves/oak";
@@ -48,10 +52,13 @@ public final class TFBlockModels {
 		dispatcher.addDispatch(log(TFBlocks.LOG_TWILIGHT_OAK, LOG_OAK_SIDE));
 		dispatcher.addDispatch(log(TFBlocks.LOG_CANOPY, LOG_CANOPY_SIDE));
 		dispatcher.addDispatch(log(TFBlocks.LOG_MANGROVE, LOG_MANGROVE_SIDE));
+		dispatcher.addDispatch(log(TFBlocks.LOG_DARKWOOD, LOG_DARKWOOD_SIDE));
 
 		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_TWILIGHT_OAK, M_LEAVES_OAK));
 		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_CANOPY, M_LEAVES_PINE));
 		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_MANGROVE, M_LEAVES_BIRCH));
+
+		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_RAINBOW, M_LEAVES_OAK));
 
 		dispatcher.addDispatch(new BlockModelTFGiantMushroom<>(TFBlocks.MUSHROOM_GIANT_BROWN,
 			"twilightforest:block/mushroom_skin_brown"));
@@ -64,6 +71,12 @@ public final class TFBlockModels {
 
 		dispatcher.addDispatch(new BlockModelStandard<>(TFBlocks.HEDGE)
 			.withTextures(bridged(HEDGE, V_LEAVES_OAK)));
+
+		dispatcher.addDispatch(new BlockModelStandard<>(TFBlocks.LEAVES_DARKWOOD)
+			.withTextures(bridged(LEAVES_DARKWOOD, V_LEAVES_OAK)));
+
+		dispatcher.addDispatch(new BlockModelStandard<>(TFBlocks.ROOTS)
+			.withTextures(bridged(ROOTS, V_LOG_SIDE)));
 
 		dispatcher.addDispatch(new BlockModelTFCritter<>(TFBlocks.FIREFLY)
 			.withTextures(bridged(FIREFLY, V_TORCH)));
@@ -88,10 +101,13 @@ public final class TFBlockModels {
 		dispatcher.addDispatch(TFBlocks.LEAVES_TWILIGHT_OAK, new BlockColorCustom(Colorizers.oak));
 		dispatcher.addDispatch(TFBlocks.LEAVES_CANOPY, new BlockColorCustom(Colorizers.pine));
 		dispatcher.addDispatch(TFBlocks.LEAVES_MANGROVE, new BlockColorCustom(Colorizers.birch));
+
+		dispatcher.addDispatch(TFBlocks.LEAVES_RAINBOW, new BlockColorTFRainbow());
 	}
 
 	private static final String[] BRIDGED_TEXTURES = {
 		LOG_TOP, LOG_OAK_SIDE, LOG_CANOPY_SIDE, LOG_MANGROVE_SIDE, FIREFLY, CICADA, HEDGE,
+		LOG_DARKWOOD_SIDE, LEAVES_DARKWOOD, ROOTS,
 	};
 
 	private static BlockModelStandard<?> log(Block<?> block, String side) {
