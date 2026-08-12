@@ -63,6 +63,13 @@ public final class TFEntities {
 		register(MobTFTinyBird.class, "tinybird", MobTFTinyBird::new);
 		register(MobTFRaven.class, "raven", MobTFRaven::new);
 
+		register(MobTFKobold.class, "kobold", MobTFKobold::new);
+		register(MobTFMosquitoSwarm.class, "mosquitoswarm", MobTFMosquitoSwarm::new);
+		register(MobTFFireBeetle.class, "firebeetle", MobTFFireBeetle::new);
+		register(MobTFSlimeBeetle.class, "slimebeetle", MobTFSlimeBeetle::new);
+		register(MobTFPinchBeetle.class, "pinchbeetle", MobTFPinchBeetle::new);
+		register(MobTFRedcapSapper.class, "redcapsapper", MobTFRedcapSapper::new);
+
 		TwilightForest.LOGGER.info("Registered {} Twilight Forest entities.", REGISTERED_IDS.size());
 	}
 }

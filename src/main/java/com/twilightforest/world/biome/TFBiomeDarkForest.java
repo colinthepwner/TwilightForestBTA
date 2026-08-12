@@ -1,6 +1,8 @@
 package com.twilightforest.world.biome;
 
 import com.twilightforest.block.TFBlocks;
+import com.twilightforest.entity.MobTFKobold;
+import net.minecraft.core.entity.SpawnListEntry;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.world.generate.feature.WorldFeature;
 import net.minecraft.core.world.generate.feature.tree.WorldFeatureTree;
@@ -12,6 +14,8 @@ public class TFBiomeDarkForest extends TFBiome {
 
 	public TFBiomeDarkForest(String key) {
 		super(key);
+
+		this.spawnableMonsterList.add(new SpawnListEntry(MobTFKobold.class, 10));
 
 		this.withPlacementDefaults(0.7f, 0.8f, 0.0f);
 	}

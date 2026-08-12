@@ -65,6 +65,14 @@ guidebook.section.mob.squirrel.name=Forest Squirrel
 guidebook.section.mob.tinybird.name=Tiny Bird
 guidebook.section.mob.raven.name=Forest Raven
 
+# The small hostiles, also the donor's own registerTFCreature strings.
+guidebook.section.mob.kobold.name=Twilight Kobold
+guidebook.section.mob.mosquitoswarm.name=Mosquito Swarm
+guidebook.section.mob.firebeetle.name=Fire Beetle
+guidebook.section.mob.slimebeetle.name=Slime Beetle
+guidebook.section.mob.pinchbeetle.name=Pinch Beetle
+guidebook.section.mob.redcapsapper.name=Redcap Sapper
+
 # The two projectiles. Upstream never names them -- they are not registered as mobs at all, only as
 # network-visible entities -- so these are this port's own, and exist because BTA asks every
 # registered entity for a display name whether or not anything shows it.

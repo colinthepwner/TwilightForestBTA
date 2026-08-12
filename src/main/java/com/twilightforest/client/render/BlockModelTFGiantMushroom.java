@@ -14,6 +14,9 @@ import org.jetbrains.annotations.Nullable;
 public class BlockModelTFGiantMushroom<T extends BlockLogic> extends BlockModelStandard<T> {
 
 	@NotNull private final IconCoordinate skin;
+
+	@NotNull private final IconCoordinate stem;
+
 	@NotNull private final IconCoordinate pores;
 
 	private boolean standalone;
@@ -21,6 +24,7 @@ public class BlockModelTFGiantMushroom<T extends BlockLogic> extends BlockModelS
 	public BlockModelTFGiantMushroom(@NotNull Block<T> block, @NotNull String skinTexture) {
 		super(block);
 		this.skin = TextureRegistry.getTexture(skinTexture);
+		this.stem = TextureRegistry.getTexture("twilightforest:block/mushroom_skin_stem");
 		this.pores = TextureRegistry.getTexture("twilightforest:block/mushroom_skin_inside");
 
 		this.setAllTextures(skinTexture);
@@ -34,7 +38,7 @@ public class BlockModelTFGiantMushroom<T extends BlockLogic> extends BlockModelS
 		}
 
 		int skinned = BlockLogicTFGiantMushroom.skinnedFaces(data);
-		IconCoordinate faceSkin = data == BlockLogicTFGiantMushroom.STEM ? this.pores : this.skin;
+		IconCoordinate faceSkin = data == BlockLogicTFGiantMushroom.STEM ? this.stem : this.skin;
 		return (skinned & bit(side)) != 0 ? faceSkin : this.pores;
 	}
 

@@ -4,6 +4,7 @@ import com.twilightforest.block.TFBlocks;
 import com.twilightforest.compat.TFWorldFeature;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
+import net.minecraft.core.block.material.Materials;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 
@@ -31,6 +32,10 @@ public class WorldFeatureTFMushrooms extends TFWorldFeature {
 				continue;
 			}
 
+			if (isLeafy(world, px, py - 1, pz)) {
+				continue;
+			}
+
 			int species = speciesFor(world, px, py, pz);
 			Block<?> block = Blocks.getBlock(species);
 			if (block != null && block.canStay(world, new TilePos(px, py, pz))) {
@@ -38,6 +43,10 @@ public class WorldFeatureTFMushrooms extends TFWorldFeature {
 			}
 		}
 		return true;
+	}
+
+	private static boolean isLeafy(World world, int x, int y, int z) {
+		return getBlockMaterial(world, x, y, z) == Materials.LEAVES;
 	}
 
 	private int speciesFor(World world, int x, int y, int z) {

@@ -1,6 +1,7 @@
 package com.twilightforest.compat;
 
 import com.twilightforest.TwilightForest;
+import net.minecraft.core.enums.LightLayer;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 import org.jetbrains.annotations.NotNull;
@@ -171,12 +172,17 @@ public final class DecorationWindow {
 		written += placed;
 
 		if (placed > 0) {
-
 			int baseX = chunkX * 16;
 			int baseZ = chunkZ * 16;
+			int minY = world.getWorldType().getMinY(world);
+			int maxY = world.getWorldType().getMaxY(world);
+
+			world.scheduleLightingUpdate(LightLayer.Sky,
+				baseX, minY, baseZ, baseX + 15, maxY, baseZ + 15);
+
 			world.markBlocksDirty(
-				new TilePos(baseX, world.getWorldType().getMinY(world), baseZ),
-				new TilePos(baseX + 15, world.getWorldType().getMaxY(world), baseZ + 15));
+				new TilePos(baseX, minY, baseZ),
+				new TilePos(baseX + 15, maxY, baseZ + 15));
 		}
 	}
 
