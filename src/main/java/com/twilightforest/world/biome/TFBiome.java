@@ -5,6 +5,7 @@ import com.twilightforest.entity.MobTFBighorn;
 import com.twilightforest.entity.MobTFBoar;
 import com.twilightforest.entity.MobTFBunny;
 import com.twilightforest.entity.MobTFDeer;
+import com.twilightforest.entity.MobTFMobileFirefly;
 import com.twilightforest.entity.MobTFRaven;
 import com.twilightforest.entity.MobTFSquirrel;
 import com.twilightforest.entity.MobTFTinyBird;
@@ -48,6 +49,7 @@ public class TFBiome extends Biome {
 		this.spawnableCreatureList.add(new SpawnListEntry(MobTFBunny.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(MobTFRaven.class, 10));
 
+		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobTFMobileFirefly.class, 10));
 		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobFireflyCluster.class, 10));
 		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobButterfly.class, 65));
 	}

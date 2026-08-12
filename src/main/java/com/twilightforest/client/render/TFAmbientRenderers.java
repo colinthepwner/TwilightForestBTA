@@ -14,6 +14,8 @@ import org.useless.dragonfly.models.entity.StaticEntityModel;
 public final class TFAmbientRenderers {
 	private TFAmbientRenderers() {}
 
+	static final float LIMB_FREQ = 0.6662F;
+
 	public static class Critter<T extends Mob> extends MobRenderer<T> {
 		private static final String MODEL_KEY = "main";
 
@@ -42,12 +44,12 @@ public final class TFAmbientRenderers {
 			float limbSwing = this.getLimbSwing(entity, partialTick);
 			float limbYaw = this.getLimbYaw(entity, partialTick);
 
-			TFMiscRenderers.setRotX(model, "legFrontRight", MathHelper.cos(limbSwing) * 1.4F * limbYaw);
-			TFMiscRenderers.setRotX(model, "legBackLeft", MathHelper.cos(limbSwing) * 1.4F * limbYaw);
+			TFMiscRenderers.setRotX(model, "legFrontRight", MathHelper.cos(limbSwing * LIMB_FREQ) * 1.4F * limbYaw);
+			TFMiscRenderers.setRotX(model, "legBackLeft", MathHelper.cos(limbSwing * LIMB_FREQ) * 1.4F * limbYaw);
 			TFMiscRenderers.setRotX(model, "legFrontLeft",
-				MathHelper.cos(limbSwing + (float) Math.PI) * 1.4F * limbYaw);
+				MathHelper.cos(limbSwing * LIMB_FREQ + (float) Math.PI) * 1.4F * limbYaw);
 			TFMiscRenderers.setRotX(model, "legBackRight",
-				MathHelper.cos(limbSwing + (float) Math.PI) * 1.4F * limbYaw);
+				MathHelper.cos(limbSwing * LIMB_FREQ + (float) Math.PI) * 1.4F * limbYaw);
 			return model;
 		}
 	}
@@ -80,9 +82,9 @@ public final class TFAmbientRenderers {
 
 			float limbSwing = this.getLimbSwing(entity, partialTick);
 			float limbYaw = this.getLimbYaw(entity, partialTick);
-			TFMiscRenderers.setRotX(model, "legRight", MathHelper.cos(limbSwing) * 1.4F * limbYaw);
+			TFMiscRenderers.setRotX(model, "legRight", MathHelper.cos(limbSwing * LIMB_FREQ) * 1.4F * limbYaw);
 			TFMiscRenderers.setRotX(model, "legLeft",
-				MathHelper.cos(limbSwing + (float) Math.PI) * 1.4F * limbYaw);
+				MathHelper.cos(limbSwing * LIMB_FREQ + (float) Math.PI) * 1.4F * limbYaw);
 
 			float flap = entity.oFlap + (entity.flap - entity.oFlap) * partialTick;
 			TFMiscRenderers.setRotZ(model, "wingRight", flap);

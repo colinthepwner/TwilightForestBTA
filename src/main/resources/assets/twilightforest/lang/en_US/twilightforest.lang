@@ -64,6 +64,9 @@ guidebook.section.mob.bunny.name=Forest Bunny
 guidebook.section.mob.squirrel.name=Forest Squirrel
 guidebook.section.mob.tinybird.name=Tiny Bird
 guidebook.section.mob.raven.name=Forest Raven
+# Upstream registers this one simply as "Firefly" -- the block of the same name has its own key
+# under tile.*, so the two do not collide.
+guidebook.section.mob.mobilefirefly.name=Firefly
 
 # The small hostiles, also the donor's own registerTFCreature strings.
 guidebook.section.mob.kobold.name=Twilight Kobold

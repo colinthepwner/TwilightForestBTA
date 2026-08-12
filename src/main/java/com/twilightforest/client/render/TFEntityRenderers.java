@@ -11,6 +11,7 @@ import com.twilightforest.entity.MobTFNagaSegment;
 import com.twilightforest.entity.MobTFBunny;
 import com.twilightforest.entity.MobTFFireBeetle;
 import com.twilightforest.entity.MobTFKobold;
+import com.twilightforest.entity.MobTFMobileFirefly;
 import com.twilightforest.entity.MobTFMosquitoSwarm;
 import com.twilightforest.entity.MobTFPinchBeetle;
 import com.twilightforest.entity.MobTFRedcapSapper;
@@ -47,6 +48,8 @@ public final class TFEntityRenderers {
 		dispatcher.assignRenderer(MobTFWraith.class, new TFHumanoidRenderers.Wraith());
 
 		dispatcher.assignRenderer(MobTFLich.class, new TFHumanoidRenderers.Lich());
+
+		dispatcher.assignRenderer(MobTFMobileFirefly.class, new RendererTFMobileFirefly());
 
 		dispatcher.assignRenderer(EntityTFTinyFirefly.class, new RendererTFTinyFirefly());
 

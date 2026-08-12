@@ -70,6 +70,8 @@ public final class TFEntities {
 		register(MobTFPinchBeetle.class, "pinchbeetle", MobTFPinchBeetle::new);
 		register(MobTFRedcapSapper.class, "redcapsapper", MobTFRedcapSapper::new);
 
+		register(MobTFMobileFirefly.class, "mobilefirefly", MobTFMobileFirefly::new);
+
 		TwilightForest.LOGGER.info("Registered {} Twilight Forest entities.", REGISTERED_IDS.size());
 	}
 }

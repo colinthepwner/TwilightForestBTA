@@ -41,7 +41,7 @@ public final class TFAssetBridge {
 	private static final String MANIFEST = "/assets/twilightforest/asset-bridge.properties";
 	private static final String STAMP = "bridge-source.txt";
 
-	private static final int BRIDGE_REVISION = 25;
+	private static final int BRIDGE_REVISION = 26;
 
 	private static final int MAX_NESTING = 3;
 
