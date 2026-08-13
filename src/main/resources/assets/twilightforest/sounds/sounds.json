@@ -1,4 +1,10 @@
 {
+  "ambient.tf.night_bed": {
+    "sounds": ["ambient/night_bed.ogg"]
+  },
+  "ambient.tf.night_voice": {
+    "sounds": ["ambient/night_voice.ogg"]
+  },
   "mob.tf.cicada": {
     "subtitle": "subtitles.twilightforest.cicada",
     "sounds": [

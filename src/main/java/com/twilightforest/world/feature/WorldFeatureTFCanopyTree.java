@@ -70,7 +70,7 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 		this.drawCircle(dest[0], dest[1] + 1, dest[2], 2, this.leafBlock, this.leafMeta, false);
 	}
 
-	private static final double CICADA_SHARE = 0.25;
+	private static final double CICADA_SHARE = 0.05;
 
 	private void addFirefly(int fireflyHeight, double angle) {
 

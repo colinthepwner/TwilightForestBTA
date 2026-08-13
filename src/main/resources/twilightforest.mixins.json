@@ -12,7 +12,9 @@
     "PortalHandlerMixin",
     "TwilightDaytimeMixin"
   ],
-  "client": [],
+  "client": [
+    "AmbienceTickMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

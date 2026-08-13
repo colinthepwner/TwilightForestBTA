@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(SpawnerMobs.class)
 public class AmbientSpawnCapMixin {
 
-	private static final int AMBIENT_BUDGET = 15;
+	private static final int AMBIENT_BUDGET = 100;
 
 	@Redirect(
 		method = "performSpawning",
