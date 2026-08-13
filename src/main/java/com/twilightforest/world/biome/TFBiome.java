@@ -55,6 +55,13 @@ public class TFBiome extends Biome {
 	}
 
 	@Override
+	public int getSkyColor(float temperature) {
+		return SKY_COLOR;
+	}
+
+	private static final int SKY_COLOR = 0x2B2E63;
+
+	@Override
 	public WorldFeature getTreeFeature(Random random) {
 		if (random.nextInt(5) == 0) {
 			return new WorldFeatureTree(Blocks.LEAVES_BIRCH.id(), Blocks.LOG_BIRCH.id(), 5);

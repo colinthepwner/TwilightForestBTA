@@ -8,9 +8,17 @@ import net.minecraft.core.world.generate.feature.WorldFeature;
 import net.minecraft.core.world.generate.feature.tree.WorldFeatureTree;
 import net.minecraft.core.world.generate.feature.tree.WorldFeatureTreeShrub;
 
+import net.minecraft.core.enums.MobCategory;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class TFBiomeDarkForest extends TFBiome {
+
+	private static final int MONSTER_SPAWN_RATE = 20;
+
+	private final Random monsterGate = new Random();
 
 	public TFBiomeDarkForest(String key) {
 		super(key);
@@ -18,6 +26,16 @@ public class TFBiomeDarkForest extends TFBiome {
 		this.spawnableMonsterList.add(new SpawnListEntry(MobTFKobold.class, 10));
 
 		this.withPlacementDefaults(0.7f, 0.8f, 0.0f);
+	}
+
+	@Override
+	public List<SpawnListEntry> getSpawnableList(MobCategory category) {
+		if (category == MobCategory.MONSTER) {
+			return this.monsterGate.nextInt(MONSTER_SPAWN_RATE) == 0
+				? super.getSpawnableList(category)
+				: Collections.emptyList();
+		}
+		return super.getSpawnableList(category);
 	}
 
 	@Override

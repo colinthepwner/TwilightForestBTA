@@ -4,6 +4,9 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.material.Materials;
+import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.util.helper.Side;
+import net.minecraft.core.world.pos.TilePosc;
 import net.minecraft.core.enums.EnumDropCause;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
@@ -56,6 +59,12 @@ public class BlockLogicTFGiantMushroom extends BlockLogic {
 			case ALL_SKIN -> FACE_TOP | FACE_BOTTOM | FACE_NORTH | FACE_SOUTH | FACE_WEST | FACE_EAST;
 			default -> 0;
 		};
+	}
+
+	@Override
+	public int getPlacedData(Player player, ItemStack stack, World world, TilePosc pos, Side side,
+	                         double xHit, double yHit) {
+		return ALL_SKIN;
 	}
 
 	@Nullable
