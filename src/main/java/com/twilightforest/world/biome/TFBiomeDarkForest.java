@@ -25,7 +25,7 @@ public class TFBiomeDarkForest extends TFBiome {
 
 		this.spawnableMonsterList.add(new SpawnListEntry(MobTFKobold.class, 10));
 
-		this.withPlacementDefaults(0.7f, 0.8f, 0.0f);
+		this.withPlacementDefaults(0.7F, 0.8F, 0.5F);
 	}
 
 	@Override

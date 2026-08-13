@@ -39,6 +39,8 @@ public final class TFBiomes {
 	public static Biome DARK_FOREST;
 	public static Biome ENCHANTED_FOREST;
 
+	private static final float VARIETY = 0.5F;
+
 	private static boolean hasInit = false;
 
 	public static void init() {
@@ -47,20 +49,30 @@ public final class TFBiomes {
 		}
 		hasInit = true;
 
-		LAKE = reg("lake", new Ocean("twilight.lake"), 0x0000FF);
+		LAKE = reg("lake", new Ocean("twilight.lake")
+			.withPlacementDefaults(0.66F, 1.0F, VARIETY), 0x0000FF);
 		TWILIGHT_FOREST = reg("forest", new TFBiome("twilight.forest"), 0x007700);
-		TWILIGHT_FOREST_VARIANT = reg("forest_variant", new Variant("twilight.forest_variant"), 0x11753E);
-		HIGHLANDS = reg("highlands", new Highlands("twilight.highlands"), 0x667766);
-		MUSHROOMS = reg("mushrooms", new TFBiome("twilight.mushrooms"), 0x996633);
-		SWAMP = reg("swamp", new Swamp("twilight.swamp"), 0x999933);
-		STREAM = reg("stream", new TFBiome("twilight.stream"), 0x00A8FF);
-		SNOW = reg("snow", new Conifer("twilight.snow"), 0xCCFFFF);
-		GLACIER = reg("glacier", new Glacier("twilight.glacier"), 0xEEEEEE);
-		CLEARING = reg("clearing", new Clearing("twilight.clearing"), 0xA5F0A5);
+		TWILIGHT_FOREST_VARIANT = reg("forest_variant", new Variant("twilight.forest_variant")
+			.withPlacementDefaults(0.7F, 0.8F, VARIETY), 0x11753E);
+		HIGHLANDS = reg("highlands", new Highlands("twilight.highlands")
+			.withPlacementDefaults(0.5F, 0.3F, VARIETY), 0x667766);
+		MUSHROOMS = reg("mushrooms", new TFBiome("twilight.mushrooms")
+			.withPlacementDefaults(0.5F, 0.8F, VARIETY), 0x996633);
+		SWAMP = reg("swamp", new Swamp("twilight.swamp")
+			.withPlacementDefaults(0.8F, 0.9F, VARIETY), 0x999933);
+		STREAM = reg("stream", new TFBiome("twilight.stream")
+			.withPlacementDefaults(0.5F, 1.0F, VARIETY), 0x00A8FF);
+		SNOW = reg("snow", new Conifer("twilight.snow")
+			.withPlacementDefaults(0.125F, 0.9F, VARIETY), 0xCCFFFF);
+		GLACIER = reg("glacier", new Glacier("twilight.glacier")
+			.withPlacementDefaults(0.0F, 0.1F, VARIETY), 0xEEEEEE);
+		CLEARING = reg("clearing", new Clearing("twilight.clearing")
+			.withPlacementDefaults(0.8F, 0.4F, VARIETY), 0xA5F0A5);
 
 		CLEARING_BORDER = reg("clearing_border", new TFBiome("twilight.clearing_border"), 0x349134);
 		LAKE_BORDER = reg("lake_border", new TFBiome("twilight.lake_border"), 0x1175A4);
-		DEEP_MUSHROOMS = reg("deep_mushrooms", new TFBiome("twilight.deep_mushrooms"), 0x59268F);
+		DEEP_MUSHROOMS = reg("deep_mushrooms", new TFBiome("twilight.deep_mushrooms")
+			.withPlacementDefaults(0.8F, 1.0F, VARIETY), 0x59268F);
 		LARGE_FEATURE = reg("large_feature", new Center("twilight.large_feature"), 0xFFF000);
 
 		DARK_FOREST = reg("dark_forest", new TFBiomeDarkForest("twilight.dark_forest"), 13073);

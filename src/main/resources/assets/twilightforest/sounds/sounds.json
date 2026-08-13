@@ -1,0 +1,57 @@
+{
+  "mob.tf.cicada": {
+    "subtitle": "subtitles.twilightforest.cicada",
+    "sounds": ["mob/tf/cicada2.ogg", "mob/tf/cicada3.ogg"]
+  },
+  "mob.tf.raven.caw": {
+    "subtitle": "subtitles.twilightforest.raven",
+    "sounds": ["mob/tf/raven/caw0.ogg", "mob/tf/raven/caw1.ogg"]
+  },
+  "mob.tf.raven.squawk": {
+    "subtitle": "subtitles.twilightforest.raven",
+    "sounds": ["mob/tf/raven/squawk0.ogg", "mob/tf/raven/squawk1.ogg"]
+  },
+  "mob.tf.tinybird.chirp": {
+    "subtitle": "subtitles.twilightforest.tinybird",
+    "sounds": [
+      "mob/tf/tinybird/chirp0.ogg",
+      "mob/tf/tinybird/chirp1.ogg",
+      "mob/tf/tinybird/chirp2.ogg"
+    ]
+  },
+  "mob.tf.tinybird.hurt": {
+    "subtitle": "subtitles.twilightforest.tinybird",
+    "sounds": ["mob/tf/tinybird/hurt0.ogg", "mob/tf/tinybird/hurt1.ogg"]
+  },
+  "mob.tf.kobold.kobold": {
+    "subtitle": "subtitles.twilightforest.kobold",
+    "sounds": [
+      "mob/tf/kobold/kobold0.ogg",
+      "mob/tf/kobold/kobold1.ogg",
+      "mob/tf/kobold/kobold2.ogg",
+      "mob/tf/kobold/kobold3.ogg",
+      "mob/tf/kobold/kobold4.ogg",
+      "mob/tf/kobold/kobold5.ogg"
+    ]
+  },
+  "mob.tf.kobold.hurt": {
+    "subtitle": "subtitles.twilightforest.kobold",
+    "sounds": [
+      "mob/tf/kobold/hurt0.ogg",
+      "mob/tf/kobold/hurt1.ogg",
+      "mob/tf/kobold/hurt2.ogg"
+    ]
+  },
+  "mob.tf.kobold.die": {
+    "subtitle": "subtitles.twilightforest.kobold",
+    "sounds": [
+      "mob/tf/kobold/die0.ogg",
+      "mob/tf/kobold/die1.ogg",
+      "mob/tf/kobold/die2.ogg"
+    ]
+  },
+  "mob.tf.mosquito.mosquito": {
+    "subtitle": "subtitles.twilightforest.mosquito",
+    "sounds": ["mob/tf/mosquito/mosquito0.wav"]
+  }
+}

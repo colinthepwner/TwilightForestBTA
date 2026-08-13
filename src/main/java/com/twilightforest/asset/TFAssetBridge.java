@@ -40,8 +40,9 @@ public final class TFAssetBridge {
 	public static final String PACK_NAME = "TwilightForestAssets";
 	private static final String MANIFEST = "/assets/twilightforest/asset-bridge.properties";
 	private static final String STAMP = "bridge-source.txt";
+	private static final String SOUND_INDEX = "/assets/twilightforest/sounds/sounds.json";
 
-	private static final int BRIDGE_REVISION = 26;
+	private static final int BRIDGE_REVISION = 27;
 
 	private static final int MAX_NESTING = 3;
 
@@ -98,6 +99,8 @@ public final class TFAssetBridge {
 			return;
 		}
 		sourceArchive = describe(gameDir, used);
+
+		writeSoundIndex(gameDir);
 
 		List<String> missing = new ArrayList<>();
 		int written = 0;
@@ -579,6 +582,19 @@ public final class TFAssetBridge {
 
 	private static File destinationRoot(File gameDir, File packDir, String path) {
 		return path.startsWith("packResources/") ? gameDir : packDir;
+	}
+
+	private static void writeSoundIndex(File gameDir) {
+		try (InputStream in = TFAssetBridge.class.getResourceAsStream(SOUND_INDEX)) {
+			if (in == null) {
+				return;
+			}
+			byte[] bytes = in.readAllBytes();
+			write(new File(gameDir, "packResources/" + TwilightForest.MOD_ID + "/sounds/sounds.json"),
+				bytes);
+		} catch (IOException e) {
+			TwilightForest.LOGGER.warn("Could not write the sound index; the mod will be silent.", e);
+		}
 	}
 
 	private static void write(File target, byte[] bytes) throws IOException {
