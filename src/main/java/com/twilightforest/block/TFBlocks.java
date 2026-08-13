@@ -5,6 +5,10 @@ import com.twilightforest.block.entity.TileEntityTFCicada;
 import com.twilightforest.block.entity.TileEntityTFFirefly;
 import com.twilightforest.TwilightForest;
 import com.twilightforest.world.TFDimension;
+import com.twilightforest.world.feature.WorldFeatureTFMinersTree;
+import com.twilightforest.world.feature.WorldFeatureTFSortingTree;
+import com.twilightforest.world.feature.WorldFeatureTFTreeOfTime;
+import com.twilightforest.world.feature.WorldFeatureTFTreeOfTransformation;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.BlockLogicLeavesBase;
@@ -37,6 +41,21 @@ public final class TFBlocks {
 	public static Block<?> LEAVES_DARKWOOD;
 	public static Block<?> LEAVES_RAINBOW;
 	public static Block<?> ROOTS;
+
+	public static Block<?> LOG_TIMEWOOD;
+	public static Block<?> LOG_TRANSWOOD;
+	public static Block<?> LOG_MINEWOOD;
+	public static Block<?> LOG_SORTINGWOOD;
+
+	public static Block<?> LEAVES_TIMEWOOD;
+	public static Block<?> LEAVES_TRANSFORMATION;
+	public static Block<?> LEAVES_MINERS;
+	public static Block<?> LEAVES_SORTING;
+
+	public static Block<?> SAPLING_TIMEWOOD;
+	public static Block<?> SAPLING_TRANSFORMATION;
+	public static Block<?> SAPLING_MINERS;
+	public static Block<?> SAPLING_SORTING;
 
 	public static Block<?> MAZESTONE;
 	public static Block<?> MAZESTONE_COBBLE;
@@ -194,7 +213,56 @@ public final class TFBlocks {
 			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
 			.build("roots", 2319, BlockLogicTFRoots::new);
 
-		TwilightForest.LOGGER.info("Registered 19 Twilight Forest blocks (ids 2301-2319).");
+		LOG_TIMEWOOD = log.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
+			.build("log.timewood", 2320, BlockLogicLog::new);
+
+		LOG_TRANSWOOD = log.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
+			.build("log.transwood", 2321, BlockLogicLog::new);
+
+		LOG_MINEWOOD = log.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
+			.build("log.minewood", 2322, BlockLogicLog::new);
+
+		LOG_SORTINGWOOD = log.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LOG_OAK))
+			.build("log.sortingwood", 2323, BlockLogicLog::new);
+
+		BlockBuilder sapling = builder.clone()
+			.setHardness(0.0f)
+			.setBlockSound(BlockSounds.GRASS)
+			.setCreativeInventoryPlacement(after(() -> Blocks.SAPLING_OAK));
+
+		SAPLING_TIMEWOOD = sapling.clone().build("sapling.timewood", 2328,
+			block -> new BlockLogicTFSapling(block, WorldFeatureTFTreeOfTime::new));
+
+		SAPLING_TRANSFORMATION = sapling.clone().build("sapling.transformation", 2329,
+			block -> new BlockLogicTFSapling(block, WorldFeatureTFTreeOfTransformation::new));
+
+		SAPLING_MINERS = sapling.clone().build("sapling.miners", 2330,
+			block -> new BlockLogicTFSapling(block, WorldFeatureTFMinersTree::new));
+
+		SAPLING_SORTING = sapling.clone().build("sapling.sorting", 2331,
+			block -> new BlockLogicTFSapling(block, WorldFeatureTFSortingTree::new));
+
+		LEAVES_TIMEWOOD = leaves.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
+			.build("leaves.timewood", 2324, block -> leaves(block, SAPLING_TIMEWOOD));
+
+		LEAVES_TRANSFORMATION = leaves.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
+			.build("leaves.transformation", 2325, block -> leaves(block, SAPLING_TRANSFORMATION));
+
+		LEAVES_MINERS = leaves.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
+			.build("leaves.miners", 2326, block -> leaves(block, SAPLING_MINERS));
+
+		LEAVES_SORTING = leaves.clone()
+			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
+			.build("leaves.sorting", 2327, block -> leaves(block, SAPLING_SORTING));
+
+		TwilightForest.LOGGER.info("Registered 31 Twilight Forest blocks (ids 2301-2331).");
 	}
 
 	public static void registerPortal() {
@@ -213,5 +281,9 @@ public final class TFBlocks {
 
 	private static BlockLogicLeavesBase leaves(Block<?> block) {
 		return new BlockLogicLeavesBase(block, Materials.LEAVES, Blocks.SAPLING_OAK);
+	}
+
+	private static BlockLogicLeavesBase leaves(Block<?> block, Block<?> sapling) {
+		return new BlockLogicLeavesBase(block, Materials.LEAVES, sapling);
 	}
 }

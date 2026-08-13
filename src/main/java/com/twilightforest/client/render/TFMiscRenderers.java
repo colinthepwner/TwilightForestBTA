@@ -28,6 +28,13 @@ public final class TFMiscRenderers {
 			setModel(MODEL_KEY, "geometry.penguin", 0.0D);
 		}
 
+		@Override
+		protected float getLimbPitch(@NotNull MobTFPenguin entity, float partialTick) {
+			float cycle = MathHelper.lerp(entity.oFlap, entity.flap, partialTick);
+			float amplitude = MathHelper.lerp(entity.oFlapSpeed, entity.flapSpeed, partialTick);
+			return (MathHelper.sin(cycle) + 1.0F) * amplitude;
+		}
+
 		@Nullable
 		@Override
 		protected StaticEntityModel getAndSetupModelForLayer(@NotNull MobTFPenguin entity, float brightness,
@@ -54,7 +61,7 @@ public final class TFMiscRenderers {
 			setRotX(model, "legRight", MathHelper.cos(limbSwing) * 0.7F * limbYaw);
 			setRotX(model, "legLeft", MathHelper.cos(limbSwing + (float) Math.PI) * 0.7F * limbYaw);
 
-			float flap = entity.oFlap + (entity.flap - entity.oFlap) * partialTick;
+			float flap = this.getLimbPitch(entity, partialTick);
 			setRotZ(model, "wingRight", flap);
 			setRotZ(model, "wingLeft", -flap);
 			return model;

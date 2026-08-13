@@ -3,6 +3,8 @@ package com.twilightforest.entity;
 import com.twilightforest.TwilightForest;
 import net.minecraft.core.entity.animal.MobChicken;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePosc;
+import org.jetbrains.annotations.NotNull;
 
 public class MobTFRaven extends MobChicken {
 
@@ -17,6 +19,11 @@ public class MobTFRaven extends MobChicken {
 	@Override
 	public int getMaxHealth() {
 		return MAX_HEALTH;
+	}
+
+	@Override
+	protected float getBlockPathWeight(@NotNull TilePosc pos) {
+		return TFAmbientPathing.weigh(this.world, pos);
 	}
 
 	@Override

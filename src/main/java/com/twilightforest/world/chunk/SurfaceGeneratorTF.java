@@ -29,6 +29,46 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 			ImprovedPerlinNoise.genOctaves(world.getRandomSeed(), 4, 40));
 	}
 
+	private static final boolean TRACE_PLATEAU = false;
+	private static final int TRACE_Z = -175;
+	private static final int TRACE_X0 = -404;
+	private static final int TRACE_X1 = -395;
+
+	private static boolean tracedChunk(int chunkX, int chunkZ) {
+		return TRACE_PLATEAU && chunkZ == (TRACE_Z >> 4)
+			&& chunkX >= (TRACE_X0 >> 4) && chunkX <= (TRACE_X1 >> 4);
+	}
+
+	private static int topSolid(ChunkGeneratorResult result, int x, int z, int maxY) {
+		for (int y = maxY; y >= 0; y--) {
+			if (result.getBlock(x, y, z) != 0) {
+				return y;
+			}
+		}
+		return -1;
+	}
+
+	private void tracePass(String pass, ChunkGeneratorResult result, int chunkX, int chunkZ, int maxY) {
+		if (!tracedChunk(chunkX, chunkZ)) {
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int wx = TRACE_X0; wx <= TRACE_X1; wx++) {
+			if ((wx >> 4) != chunkX) {
+				continue;
+			}
+			int lx = wx - (chunkX << 4);
+			int lz = TRACE_Z - (chunkZ << 4);
+			sb.append(" x=").append(wx).append(':')
+				.append(topSolid(result, lx, lz, maxY))
+				.append('/').append(result.getBlock(lx, 32, lz));
+		}
+		if (sb.length() > 0) {
+			com.twilightforest.TwilightForest.LOGGER.info(
+				"[plateau] after {} chunk({},{}) topSolid/blockAt32:{}", pass, chunkX, chunkZ, sb);
+		}
+	}
+
 	@Override
 	public void generateSurface(@NotNull Chunk chunk, @NotNull ChunkGeneratorResult result) {
 		int chunkX = chunk.pos.x;
@@ -39,9 +79,14 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 		Biome[] biomes = biomeGrid(chunk);
 		double[] temperature = chunk.temperature;
 
+		int maxY = this.world.getWorldType().getMaxY(this.world);
+		tracePass("terrain", result, chunkX, chunkZ, maxY);
 		addGlaciers(result, biomes, temperature);
+		tracePass("glaciers", result, chunkX, chunkZ, maxY);
 		raiseHills(result, chunkX, chunkZ);
+		tracePass("raiseHills", result, chunkX, chunkZ, maxY);
 		replaceBlocksForBiome(result, biomes, temperature, chunkX, chunkZ);
+		tracePass("replaceBlocks", result, chunkX, chunkZ, maxY);
 	}
 
 	private Biome[] biomeGrid(Chunk chunk) {
@@ -92,6 +137,16 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 	}
 
 	private void raiseHills(ChunkGeneratorResult result, int chunkX, int chunkZ) {
+		if (tracedChunk(chunkX, chunkZ)) {
+			com.twilightforest.TwilightForest.LOGGER.info(
+				"[plateau] raiseHills chunk({},{}) nearChunkFeature={} htype={} hsize={} centre={},{}",
+				chunkX, chunkZ,
+				TFFeature.nearChunkFeature(this.world, chunkX, chunkZ),
+				TFFeature.nearestFeatureType(this.world, chunkX, chunkZ),
+				TFFeature.nearestFeatureSize(this.world, chunkX, chunkZ),
+				TFFeature.nearestFeatureCenter(this.world, chunkX, chunkZ)[0],
+				TFFeature.nearestFeatureCenter(this.world, chunkX, chunkZ)[1]);
+		}
 		if (!TFFeature.nearChunkFeature(this.world, chunkX, chunkZ)) {
 			return;
 		}
@@ -173,6 +228,18 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 						}
 					}
 
+					int worldX = (chunkX << 4) + x;
+					int worldZ = (chunkZ << 4) + z;
+					boolean trace = tracedChunk(chunkX, chunkZ)
+						&& worldZ == TRACE_Z && worldX >= TRACE_X0 && worldX <= TRACE_X1;
+					if (trace) {
+						com.twilightforest.TwilightForest.LOGGER.info(
+							"[plateau]   col x={} z={} dx={} dz={} boundary={} squish={} mazeHeight={} "
+								+ "topSolidBefore={}",
+							worldX, worldZ, dx, dz, boundary, squish, mazeHeight,
+							topSolid(result, x, z, maxY));
+					}
+
 					for (int y = 0; y <= maxY; y++) {
 						int here = result.getBlock(x, y, z);
 						if (y < mazeHeight && (here == 0 || here == water)) {
@@ -181,6 +248,12 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 						if (y >= mazeHeight && here != water) {
 							result.setBlock(x, y, z, 0);
 						}
+					}
+
+					if (trace) {
+						com.twilightforest.TwilightForest.LOGGER.info(
+							"[plateau]   col x={} z={} -> topSolidAfter={}",
+							worldX, worldZ, topSolid(result, x, z, maxY));
 					}
 				}
 			}

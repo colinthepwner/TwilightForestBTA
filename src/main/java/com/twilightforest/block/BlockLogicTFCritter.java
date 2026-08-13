@@ -124,7 +124,8 @@ public abstract class BlockLogicTFCritter extends BlockLogicTorch {
 	private void dropCritterIfCantStay(@NotNull World world, @NotNull TilePosc tilePos) {
 		int data = world.getBlockData(tilePos);
 		int orientation = data & MASK_DIRECTION;
-		if (this.canAttachTo(world, supportOf(tilePos, orientation))) {
+		TilePos support = supportOf(tilePos, orientation);
+		if (support == null || this.canAttachTo(world, support)) {
 			return;
 		}
 		this.dropWithCause(world, EnumDropCause.WORLD, tilePos, data, null, null);

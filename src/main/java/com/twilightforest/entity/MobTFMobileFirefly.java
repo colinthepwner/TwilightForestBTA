@@ -1,11 +1,12 @@
 package com.twilightforest.entity;
 
 import net.minecraft.core.entity.MobFlying;
+import net.minecraft.core.entity.animal.AmbientCreature;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 
-public class MobTFMobileFirefly extends MobFlying {
+public class MobTFMobileFirefly extends MobFlying implements AmbientCreature {
 
 	private TilePos flightTarget;
 
@@ -70,6 +71,10 @@ public class MobTFMobileFirefly extends MobFlying {
 
 		float toTarget = (float) (Math.atan2(this.zd, this.xd) * 180.0D / Math.PI) - 90.0F;
 		this.yRot += MathHelper.wrapDegrees(toTarget - this.yRot);
+	}
+
+	public float getGlowBrightness() {
+		return (float) Math.sin(this.tickCount / 7.0D) + 1.0F;
 	}
 
 	private double distanceToTargetSq() {

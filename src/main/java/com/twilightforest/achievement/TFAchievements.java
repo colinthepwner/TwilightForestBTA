@@ -19,6 +19,7 @@ public final class TFAchievements {
 	public static Achievement ARRIVAL;
 	public static Achievement HUNTER;
 	public static Achievement NAGA;
+	public static Achievement NAGA_ARMOR;
 	public static Achievement LICH;
 	public static Achievement HILL_1;
 	public static Achievement HILL_3;
@@ -39,6 +40,10 @@ public final class TFAchievements {
 		HUNTER = make("twilight_hunter", new ItemStack(Items.FEATHER_CHICKEN), ARRIVAL);
 		NAGA = make("twilight_naga", new ItemStack(TFItems.NAGA_SCALE), HUNTER);
 
+		NAGA_ARMOR = make("twilight_naga_armors", TFItems.NAGA_SCALE_TUNIC != null
+			? new ItemStack(TFItems.NAGA_SCALE_TUNIC) : new ItemStack(TFItems.NAGA_SCALE), NAGA)
+			.setType(Achievement.TYPE_SPECIAL);
+
 		LICH = make("twilight_lich", new ItemStack(Items.BONE), HUNTER);
 
 		HILL_1 = make("twilight_hill_1", new ItemStack(Blocks.ORE_IRON_STONE), ARRIVAL);
@@ -46,7 +51,7 @@ public final class TFAchievements {
 
 		HEDGE = make("twilight_hedge", new ItemStack(TFBlocks.HEDGE), ARRIVAL);
 
-		TwilightForest.LOGGER.info("Registered 8 Twilight Forest achievements.");
+		TwilightForest.LOGGER.info("Registered 9 Twilight Forest achievements.");
 	}
 
 	public static void award(Entity killer, Achievement achievement) {

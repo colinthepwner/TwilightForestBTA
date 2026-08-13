@@ -1,7 +1,10 @@
 {
   "mob.tf.cicada": {
     "subtitle": "subtitles.twilightforest.cicada",
-    "sounds": ["mob/tf/cicada2.ogg", "mob/tf/cicada3.ogg"]
+    "sounds": [
+      { "name": "mob/tf/cicada2.ogg", "attenuation_distance": 48 },
+      { "name": "mob/tf/cicada3.ogg", "attenuation_distance": 48 }
+    ]
   },
   "mob.tf.raven.caw": {
     "subtitle": "subtitles.twilightforest.raven",

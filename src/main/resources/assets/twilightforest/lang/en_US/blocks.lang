@@ -33,6 +33,34 @@ tile.twilightforest.leaves.darkwood.desc=A solid canopy, not a loose one. It shu
 tile.twilightforest.roots.desc=Grows under a dark forest tree rather than on top of one. Breaks into sticks.
 tile.twilightforest.leaves.rainbow.desc=No two are the same colour. The shade depends on where the leaf grew, not on the season or the soil.
 
+# --- The four magic trees ---------------------------------------------------------------------------
+# These descriptions have a harder job than the rest of the file, because what these blocks DO is the
+# one thing this port does not carry: the powers live in a fifth block per species -- the Timewood
+# Clock, the Heart of Transformation, the Minewood Core, the Sortingwood Engine -- and upstream marks
+# all four [WIP] in its own lang file. So each line says what the wood is FOR without promising a
+# behaviour the player will not find, and the leaf lines describe the one thing that is genuinely
+# here and genuinely worth looking at, which is the colour.
+tile.twilightforest.log.timewood.desc=Cut from a tree that keeps its own hours.
+tile.twilightforest.log.transwood.desc=Pale wood from a tree that changes what stands near it.
+tile.twilightforest.log.minewood.desc=Dense wood from a tree that grows over buried stone.
+tile.twilightforest.log.sortingwood.desc=Wood from a tree that likes things in their proper place.
+tile.twilightforest.leaves.timewood.desc=Green to burnt orange, and which one depends entirely on where the leaf is.
+tile.twilightforest.leaves.transformation.desc=Cyan fading to slate in bands up the tree, rather than across the forest.
+tile.twilightforest.leaves.miners.desc=Two yellows so close together that the whole crown seems to glow.
+tile.twilightforest.leaves.sorting.desc=Cycles from near-black to bright yellow-green four times as fast as Timewood does.
+
+# The saplings. These carry the honest version of what upstream compresses into a [WIP] tag -- see
+# the note in twilightforest.lang for why the tag itself is not shipped. Each line says what the tree
+# is and, where it matters, that its heart is missing; a player who plants one and waits for a clock
+# to appear should be told beforehand rather than left to wonder.
+#
+# The leaf drop is worth mentioning on the sapling rather than on the leaves, because it is the
+# sapling the player is looking for when they want a second tree.
+tile.twilightforest.sapling.timewood.desc=Grows a squat Timewood tree with a ladder up the middle. Its clock is not built yet.
+tile.twilightforest.sapling.transformation.desc=Grows a low, wide Transwood canopy. Its heart is not built yet.
+tile.twilightforest.sapling.miners.desc=Grows a narrow Minewood fan, roots and all. Its core is not built yet.
+tile.twilightforest.sapling.sorting.desc=Grows the smallest tree in the forest, four blocks of Sortingwood. Its engine is not built yet.
+
 # --- The critters -----------------------------------------------------------------------------------
 tile.twilightforest.firefly.desc=A living light. Clings to walls, floors and ceilings, and drifts sparks when you are near.
 tile.twilightforest.cicada.desc=Clings to bark and leaves, and sings.

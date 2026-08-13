@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves/leaves_smart",
+  "textures": {
+    "all": "twilightforest:block/leaves_timewood"
+  }
+}

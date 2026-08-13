@@ -4,8 +4,10 @@
   "package": "com.twilightforest.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AmbientSpawnCapMixin",
     "ButterflySpawnMixin",
     "EntityItemPortalMixin",
+    "FireflySpawnMixin",
     "GlacierThawMixin",
     "PortalHandlerMixin",
     "TwilightDaytimeMixin"

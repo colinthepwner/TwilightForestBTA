@@ -63,6 +63,13 @@ public final class TFAmbientRenderers {
 			setModel(MODEL_KEY, geometry, 0.0D);
 		}
 
+		@Override
+		protected float getLimbPitch(@NotNull T entity, float partialTick) {
+			float cycle = MathHelper.lerp(entity.oFlap, entity.flap, partialTick);
+			float amplitude = MathHelper.lerp(entity.oFlapSpeed, entity.flapSpeed, partialTick);
+			return (MathHelper.sin(cycle) + 1.0F) * amplitude;
+		}
+
 		@Nullable
 		@Override
 		protected StaticEntityModel getAndSetupModelForLayer(@NotNull T entity, float brightness,
@@ -86,7 +93,7 @@ public final class TFAmbientRenderers {
 			TFMiscRenderers.setRotX(model, "legLeft",
 				MathHelper.cos(limbSwing * LIMB_FREQ + (float) Math.PI) * 1.4F * limbYaw);
 
-			float flap = entity.oFlap + (entity.flap - entity.oFlap) * partialTick;
+			float flap = this.getLimbPitch(entity, partialTick);
 			TFMiscRenderers.setRotZ(model, "wingRight", flap);
 			TFMiscRenderers.setRotZ(model, "wingLeft", -flap);
 			return model;

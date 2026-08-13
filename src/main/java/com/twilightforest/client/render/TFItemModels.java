@@ -8,29 +8,42 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.core.item.Item;
 
 @Environment(EnvType.CLIENT)
 public final class TFItemModels {
 	private TFItemModels() {}
 
 	public static void registerItemModels(ItemModelDispatcher dispatcher) {
-		if (TFItems.NAGA_SCALE == null) {
+		int registered = 0;
+		int bridged = 0;
 
-			return;
+		for (Item item : new Item[]{
+			TFItems.NAGA_SCALE,
+			TFItems.NAGA_SCALE_TUNIC,
+			TFItems.NAGA_SCALE_LEGGINGS,
+		}) {
+			if (item == null) continue;
+			registered++;
+			if (register(dispatcher, item)) bridged++;
 		}
 
-		boolean bridged = hasTexture(TFItems.NAGA_SCALE.namespaceID);
+		TwilightForest.LOGGER.info(
+			"Registered item models for {} Twilight Forest item(s); {} of them had a texture bridged "
+				+ "out of the original's items.png, the rest draw as the placeholder.",
+			registered, bridged);
+	}
 
-		ItemModelStandard model = new ItemModelStandard(TFItems.NAGA_SCALE, bridged);
+	private static boolean register(ItemModelDispatcher dispatcher, Item item) {
+
+		boolean bridged = hasTexture(item.namespaceID);
+
+		ItemModelStandard model = new ItemModelStandard(item, bridged);
 		if (!bridged) {
 			model.icon = ItemModelStandard.ITEM_TEXTURE_MISSING;
 		}
 		dispatcher.addDispatch(model);
-
-		TwilightForest.LOGGER.info(
-			"Registered item models for 1 Twilight Forest item; its texture {}.",
-			bridged ? "was bridged out of the original's items.png"
-				: "is missing, so it draws as the placeholder");
+		return bridged;
 	}
 
 	private static boolean hasTexture(net.minecraft.core.util.collection.NamespaceID id) {

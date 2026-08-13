@@ -108,6 +108,48 @@ tile.twilightforest.leaves.rainbow.name=Rainbow Oak Leaves
 # BlockLogicTFRoots -- so there is no name for it here either.
 tile.twilightforest.roots.name=Roots
 
+# --- The four magic trees. All eight names are Benimatic's, verbatim from the same lang/en_US.xml.
+#
+# No "Log"/"Wood" deviation to make here, unlike Darkwood above: upstream names the logs Timewood,
+# Transwood, Minewood and Sortingwood -- one word each, with the wood already in the name -- so
+# there is nothing to normalise and "Timewood Log" would read as a stutter.
+#
+# ⚠️ The four leaf names are NOT parallel with each other in upstream, and are kept unparallel.
+# "Timewood Leaves" takes the log's name; "Leaves of Transformation" and "Miner's Leaves" take the
+# TREE's name and in two different grammatical shapes; "Sorting Leaves" takes neither cleanly. An
+# obvious tidy would be Timewood / Transwood / Minewood / Sortingwood Leaves, and it would be four
+# invented strings replacing four real ones.
+tile.twilightforest.log.timewood.name=Timewood
+tile.twilightforest.log.transwood.name=Transwood
+tile.twilightforest.log.minewood.name=Minewood
+tile.twilightforest.log.sortingwood.name=Sortingwood
+tile.twilightforest.leaves.timewood.name=Timewood Leaves
+tile.twilightforest.leaves.transformation.name=Leaves of Transformation
+tile.twilightforest.leaves.miners.name=Miner's Leaves
+tile.twilightforest.leaves.sorting.name=Sorting Leaves
+
+# The blocks at the four trees' hearts -- tile.TFMagicLogSpecial.0-3, "Timewood Clock",
+# "Heart of Transformation", "Minewood Core" and "Sortingwood Engine" -- are marked [WIP] by
+# upstream itself and are not ported, so they have no names here. The generators write an ordinary
+# magic log where each one goes; see WorldFeatureTFTreeOfTime.
+#
+# --- The four magic saplings, tile.TFSapling.5-8. Benimatic's names, MINUS the [WIP] suffix.
+#
+# ⚠️ Upstream writes "Tree of Time Sapling [WIP]" and so on for all four, and this is the one place
+# in the port where that tag is deliberately dropped rather than honoured by not porting the thing.
+# The distinction is what the tag is about: the four MagicLogSpecial blocks are [WIP] because their
+# behaviour is unfinished, so they are not ported at all. These saplings are [WIP] because the TREE'S
+# POWERS are unfinished -- the sapling itself takes root, respects light and bonemeal, and grows the
+# tree. Shipping a working block labelled [WIP] in the player's inventory would say something untrue
+# about it. What is actually missing is said in words in blocks.lang instead.
+#
+# They are also the only way to obtain any of the four trees: nothing in world generation places one,
+# in this port or upstream. See BlockLogicTFSapling and docs/tf-1.15.4-inventory.md section 4.
+tile.twilightforest.sapling.timewood.name=Tree of Time Sapling
+tile.twilightforest.sapling.transformation.name=Tree of Transformation Sapling
+tile.twilightforest.sapling.miners.name=Miner's Tree Sapling
+tile.twilightforest.sapling.sorting.name=Sorting Tree Sapling
+
 # ⚠️ Upstream has ONE mazestone with three metadata variants and one name for all three. Splitting
 # it into three blocks means inventing two names; these follow the vanilla blocks each variant
 # disguises itself as, which is the only honest reading of what they are.
@@ -127,7 +169,12 @@ tile.twilightforest.portal.twilightforest.name=Twilight Forest Portal
 tile.twilightforest.portal.twilightforest.desc=A pool in a flowering clearing. Throw in a diamond.
 
 # --- Items ------------------------------------------------------------------------------------------
+# Benimatic's own names, out of 1.15.4's registerTFItem calls. "Tunic" rather than "Chestplate" is
+# his word and is worth keeping: the naga set has no helmet and no boots, and calling the body piece
+# a tunic is what stops it reading as a broken suit of armour.
 item.twilightforest.naga_scale.name=Naga Scale
+item.twilightforest.naga_scale_tunic.name=Naga Scale Tunic
+item.twilightforest.naga_scale_leggings.name=Naga Scale Leggings
 
 # --- Achievements -----------------------------------------------------------------------------------
 # Names and descriptions are Benimatic's own, out of TFAchievementPage's addStringLocalization calls.
@@ -144,6 +191,12 @@ achievement.twilight_hunter=Twilight Hunter
 achievement.twilight_hunter.desc=Hunt some of the local wildlife
 achievement.twilight_naga=Naga Hunter
 achievement.twilight_naga.desc=Slay the naga
+# ⚠️ The description is Benimatic's and is kept word for word, including the American spelling of
+# "armor" that the rest of this file avoids -- it is the achievement's name as players know it, and
+# it is also the evidence that upstream's own check for it is looking at the wrong item. See
+# NagaArmorerMixin.
+achievement.twilight_naga_armors=Naga Armorer
+achievement.twilight_naga_armors.desc=Craft naga scale chest and leg armor
 achievement.twilight_lich=Lich Hunter
 achievement.twilight_lich.desc=Slay the lich
 achievement.twilight_hill_1=The Boots Are Mine!

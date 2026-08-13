@@ -51,7 +51,7 @@ public class TFBiome extends Biome {
 
 		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobTFMobileFirefly.class, 40));
 
-		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobFireflyCluster.class, 2));
+		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobFireflyCluster.class, 60));
 		this.spawnableAmbientCreatureList.add(new SpawnListEntry(MobButterfly.class, 65));
 	}
 

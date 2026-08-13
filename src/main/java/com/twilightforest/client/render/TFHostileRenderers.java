@@ -24,6 +24,16 @@ public final class TFHostileRenderers {
 	public static class Bug<T extends Mob> extends MobRenderer<T> {
 		private static final String MODEL_KEY = "main";
 
+		private static final float SPLAY = 0.28559935F;
+
+		private static final float MIDDLE_SPLAY = 0.74F;
+
+		private static final float FAN = (float) (Math.PI / 8);
+
+		private static final float SWING = 0.4F;
+
+		private static final float RATE = 0.6662F;
+
 		public Bug(String geometry, float shadowSize) {
 			super(shadowSize);
 			setModel(MODEL_KEY, geometry, 0.0D);
@@ -45,7 +55,42 @@ public final class TFHostileRenderers {
 				head.rotX = this.getHeadPitch(entity, partialTick) * MathHelper.DEG_TO_RAD;
 				head.rotY = (this.getHeadYaw(entity, partialTick) - bodyYaw) * MathHelper.DEG_TO_RAD;
 			}
+
+			float limbSwing = this.getLimbSwing(entity, partialTick);
+			float limbYaw = this.getLimbYaw(entity, partialTick);
+
+			float strideRear = stride(limbSwing, 0.0F, limbYaw);
+			float strideMiddle = stride(limbSwing, (float) Math.PI, limbYaw);
+			float strideFront = stride(limbSwing, (float) (Math.PI * 3.0 / 2.0), limbYaw);
+
+			float liftRear = lift(limbSwing, 0.0F, limbYaw);
+			float liftMiddle = lift(limbSwing, (float) Math.PI, limbYaw);
+			float liftFront = lift(limbSwing, (float) (Math.PI * 3.0 / 2.0), limbYaw);
+
+			setLeg(model, "leg1", FAN * 2.0F + strideRear, -SPLAY + liftRear);
+			setLeg(model, "leg2", -FAN * 2.0F - strideRear, SPLAY - liftRear);
+			setLeg(model, "leg3", FAN + strideMiddle, -SPLAY * MIDDLE_SPLAY + liftMiddle);
+			setLeg(model, "leg4", -FAN - strideMiddle, SPLAY * MIDDLE_SPLAY - liftMiddle);
+			setLeg(model, "leg5", -FAN * 2.0F + strideFront, -SPLAY + liftFront);
+			setLeg(model, "leg6", FAN * 2.0F - strideFront, SPLAY - liftFront);
+
 			return model;
+		}
+
+		private static float stride(float limbSwing, float phase, float limbYaw) {
+			return -(MathHelper.cos(limbSwing * RATE * 2.0F + phase) * SWING) * limbYaw;
+		}
+
+		private static float lift(float limbSwing, float phase, float limbYaw) {
+			return Math.abs(MathHelper.sin(limbSwing * RATE + phase) * SWING) * limbYaw;
+		}
+
+		private static void setLeg(StaticEntityModel model, String bone, float rotY, float rotZ) {
+			BoneTransform t = model.getTransform(bone);
+			if (t != null) {
+				t.rotY = rotY;
+				t.rotZ = rotZ;
+			}
 		}
 	}
 

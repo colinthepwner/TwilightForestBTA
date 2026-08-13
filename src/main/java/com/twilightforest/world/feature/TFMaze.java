@@ -1,6 +1,7 @@
 package com.twilightforest.world.feature;
 
 import com.twilightforest.block.TFBlocks;
+import net.minecraft.core.block.BlockLogicTorch;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.world.World;
 
@@ -31,7 +32,8 @@ public class TFMaze {
 	public int wallBlockId = TFBlocks.MAZESTONE_MOSSY.id();
 	public int rootBlockId = TFBlocks.MAZESTONE.id();
 	public int torchBlockId = Blocks.TORCH_COAL.id();
-	public int torchBlockMeta = 0;
+
+	public int torchBlockMeta = BlockLogicTorch.SIDE_BOTTOM;
 
 	public int worldX;
 	public int worldY;

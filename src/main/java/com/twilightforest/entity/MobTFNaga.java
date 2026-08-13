@@ -161,13 +161,15 @@ public class MobTFNaga extends MobMonster {
 			}
 		}
 
-		if (!this.hasPath()) {
+		if (!this.hasPath() || this.pathToEntity.isDone()) {
+			this.pathToEntity = null;
 			this.acquireNewPath();
 		}
 
 		boolean inWater = this.isInWater();
 		boolean inLava = this.isInLava();
-		Vector3dc next = this.hasPath() ? this.pathToEntity.getPos(this) : null;
+		Vector3dc next = this.hasPath() && !this.pathToEntity.isDone()
+			? this.pathToEntity.getPos(this) : null;
 		double reach = this.bbWidth * 4.0F;
 
 		while (next != null && next.distanceSquared(this.x, next.y(), this.z) < reach * reach) {

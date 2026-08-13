@@ -15,10 +15,12 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 
 	private final int height = 0;
 
-	private int treeBlock;
-	private int treeMeta;
-	private int leafBlock;
-	private int leafMeta;
+	protected int minHeight = 20;
+
+	protected int treeBlock = TFBlocks.LOG_CANOPY.id();
+	protected int treeMeta = 0;
+	protected int leafBlock = TFBlocks.LEAVES_CANOPY.id();
+	protected int leafMeta = 0;
 
 	@Override
 	public boolean generate(World world, Random random, int treeX, int treeY, int treeZ) {
@@ -27,11 +29,6 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 		this.x = treeX;
 		this.y = treeY;
 		this.z = treeZ;
-
-		this.treeBlock = TFBlocks.LOG_CANOPY.id();
-		this.treeMeta = 0;
-		this.leafBlock = TFBlocks.LEAVES_CANOPY.id();
-		this.leafMeta = 0;
 
 		int below = getBlockId(world, this.x, this.y - 1, this.z);
 		if ((below != Blocks.GRASS.id() && below != Blocks.DIRT.id())
@@ -44,12 +41,12 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 			return false;
 		}
 
-		this.buildBranch(0, 20.0, 0.0, 0.0);
+		this.buildBranch(0, this.minHeight, 0.0, 0.0);
 
 		int numBranches = 3 + this.treeRNG.nextInt(2);
 		double offset = this.treeRNG.nextDouble();
 		for (int b = 0; b < numBranches; b++) {
-			this.buildBranch(10 + b, 9.0, 0.3 * b + offset, 0.2);
+			this.buildBranch(this.minHeight - 10 + b, 9.0, 0.3 * b + offset, 0.2);
 		}
 
 		this.addFirefly(3 + this.treeRNG.nextInt(7), this.treeRNG.nextDouble());
@@ -73,19 +70,24 @@ public class WorldFeatureTFCanopyTree extends TFWorldFeature {
 		this.drawCircle(dest[0], dest[1] + 1, dest[2], 2, this.leafBlock, this.leafMeta, false);
 	}
 
-	private void addFirefly(int fireflyHeight, double angle) {
-		int iAngle = (int) (angle * 4.0);
+	private static final double CICADA_SHARE = 0.25;
 
-		int torch = TFBlocks.FIREFLY.id();
+	private void addFirefly(int fireflyHeight, double angle) {
+
+		double quarters = angle * 4.0;
+		int iAngle = (int) quarters;
+
+		int critter = (quarters - iAngle) < CICADA_SHARE ? TFBlocks.CICADA.id() : TFBlocks.FIREFLY.id();
+
 		switch (iAngle) {
 
-			case 0 -> this.putBlockAndMetadata(this.x + 1, this.y + fireflyHeight, this.z, torch, 1, false);
+			case 0 -> this.putBlockAndMetadata(this.x + 1, this.y + fireflyHeight, this.z, critter, 1, false);
 
-			case 1 -> this.putBlockAndMetadata(this.x - 1, this.y + fireflyHeight, this.z, torch, 2, false);
+			case 1 -> this.putBlockAndMetadata(this.x - 1, this.y + fireflyHeight, this.z, critter, 2, false);
 
-			case 2 -> this.putBlockAndMetadata(this.x, this.y + fireflyHeight, this.z + 1, torch, 3, false);
+			case 2 -> this.putBlockAndMetadata(this.x, this.y + fireflyHeight, this.z + 1, critter, 3, false);
 
-			case 3 -> this.putBlockAndMetadata(this.x, this.y + fireflyHeight, this.z - 1, torch, 4, false);
+			case 3 -> this.putBlockAndMetadata(this.x, this.y + fireflyHeight, this.z - 1, critter, 4, false);
 			default -> {  }
 		}
 	}

@@ -59,7 +59,7 @@ public class WorldTypeTwilightForest extends WorldTypeOverworld {
 
 	@Override
 	public int[] getOceanBlockIds() {
-		return new int[]{0};
+		return new int[]{Blocks.FLUID_WATER_STILL.id(), Blocks.FLUID_WATER_FLOWING.id()};
 	}
 
 	@NotNull

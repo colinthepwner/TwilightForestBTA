@@ -5,6 +5,7 @@ import com.twilightforest.compat.TFWorldFeature;
 import com.twilightforest.world.biome.TFBiomes;
 import com.twilightforest.world.feature.TFFeature;
 import com.twilightforest.world.structure.TFStructures;
+import com.twilightforest.world.feature.WorldFeatureTFBigMushroom;
 import com.twilightforest.world.feature.WorldFeatureTFCanopyMushroom;
 import com.twilightforest.world.feature.WorldFeatureTFCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFDarkCanopyTree;
@@ -43,6 +44,27 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 	private final Random rand = new Random();
 
 	private static boolean loggedFirstChunk = false;
+
+	private static final boolean TRACE_CARVE = false;
+	private static final int WATCH_X = -399;
+	private static final int WATCH_Y = 32;
+	private static final int WATCH_Z = -175;
+	private static int watchLast = Integer.MIN_VALUE;
+
+	private void watch(String stage, int chunkX, int chunkZ) {
+		if (!TRACE_CARVE) {
+			return;
+		}
+		if (Math.abs(chunkX - (WATCH_X >> 4)) > 2 || Math.abs(chunkZ - (WATCH_Z >> 4)) > 2) {
+			return;
+		}
+		int now = this.world.getBlockId(WATCH_X, WATCH_Y, WATCH_Z);
+		if (now != watchLast) {
+			com.twilightforest.TwilightForest.LOGGER.info(
+				"[carve] {} <- chunk({},{}) block {} -> {}", stage, chunkX, chunkZ, watchLast, now);
+			watchLast = now;
+		}
+	}
 
 	public ChunkDecoratorTF(@NotNull World world) {
 		this.world = world;
@@ -122,7 +144,9 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				this.world.getHeightValue(mapX + 8, mapZ + 8), nearType);
 		}
 
+		watch("before-structures", chunkX, chunkZ);
 		TFStructures.generate(this.world, this.rand, chunkX, chunkZ);
+		watch("structures", chunkX, chunkZ);
 
 		boolean insideStructure = nearType > 3;
 
@@ -132,6 +156,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int lz = mapZ + this.rand.nextInt(16) + 8;
 			new WorldFeatureLake(Blocks.FLUID_WATER_STILL.id())
 				.place(this.world, this.rand, lx, ly, lz);
+			watch("chunk-water-lake", chunkX, chunkZ);
 		}
 
 		if (!insideStructure && this.rand.nextInt(32) == 0) {
@@ -146,6 +171,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				if (ly >= 0) {
 					new WorldFeatureLake(Blocks.FLUID_LAVA_STILL.id())
 						.place(this.world, this.rand, lx, ly, lz);
+					watch("lava-lake", chunkX, chunkZ);
 				}
 			}
 		}
@@ -168,6 +194,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int rz = mapZ + this.rand.nextInt(16) + 8;
 			new WorldFeatureTFHollowTree()
 				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
+			watch("hollow-tree", chunkX, chunkZ);
 		}
 
 		if (this.rand.nextInt(6) == 0) {
@@ -175,6 +202,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			int rz = mapZ + this.rand.nextInt(16) + 8;
 			randomFeature(this.rand)
 				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
+			watch("small-feature", chunkX, chunkZ);
 		}
 
 		int canopyCount = counts.canopy + this.rand.nextInt(2);
@@ -187,7 +215,12 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				&& this.rand.nextFloat() <= counts.canopyMushroomChance;
 
 			if (wantsMushroom) {
-				new WorldFeatureTFCanopyMushroom().place(this.world, this.rand, rx, ry, rz);
+
+				if (this.rand.nextInt(2) == 0) {
+					new WorldFeatureTFBigMushroom().place(this.world, this.rand, rx, ry, rz);
+				} else {
+					new WorldFeatureTFCanopyMushroom().place(this.world, this.rand, rx, ry, rz);
+				}
 			} else if (biome == TFBiomes.DARK_FOREST) {
 
 				new WorldFeatureTFDarkCanopyTree().place(this.world, this.rand, rx, ry, rz);
@@ -196,6 +229,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			}
 		}
 
+		watch("canopy-trees", chunkX, chunkZ);
 		for (int i = 0; i < counts.lakes; i++) {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
@@ -203,6 +237,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
 		}
 
+		watch("biome-lakes", chunkX, chunkZ);
 		for (int i = 0; i < counts.mycelium; i++) {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
@@ -210,6 +245,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				.place(this.world, this.rand, rx, this.world.getHeightValue(rx, rz), rz);
 		}
 
+		watch("mycelium", chunkX, chunkZ);
 		for (int i = 0; i < counts.mangroves; i++) {
 			int rx = mapX + this.rand.nextInt(16) + 8;
 			int rz = mapZ + this.rand.nextInt(16) + 8;
@@ -217,7 +253,9 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 				.place(this.world, this.rand, rx, groundAt(rx, rz), rz);
 		}
 
+		watch("mangroves", chunkX, chunkZ);
 		vanillaPass(biome, mapX, mapZ);
+		watch("vanilla-pass", chunkX, chunkZ);
 
 		if (biome == TFBiomes.GLACIER && this.rand.nextInt(4) == 0) {
 			int px = mapX + this.rand.nextInt(16) + 8;
@@ -228,7 +266,9 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 		}
 		} finally {
 
+			watch("before-window-close", chunk.pos.x, chunk.pos.z);
 			DecorationWindow.close(this.world, chunk.pos.x, chunk.pos.z);
+			watch("window-close", chunk.pos.x, chunk.pos.z);
 		}
 	}
 

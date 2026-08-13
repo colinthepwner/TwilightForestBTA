@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves/leaves",
+  "textures": {
+    "all": "twilightforest:block/leaves_transformation"
+  }
+}

@@ -4,6 +4,7 @@ import com.twilightforest.TwilightForest;
 import com.twilightforest.entity.projectile.EntityTFLichBolt;
 import com.twilightforest.entity.projectile.EntityTFNatureBolt;
 import com.twilightforest.entity.projectile.EntityTFProjectile;
+import com.twilightforest.entity.projectile.EntityTFSlimeProjectile;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.entity.factories.EntityFactory;
@@ -71,6 +72,8 @@ public final class TFEntities {
 		register(MobTFRedcapSapper.class, "redcapsapper", MobTFRedcapSapper::new);
 
 		register(MobTFMobileFirefly.class, "mobilefirefly", MobTFMobileFirefly::new);
+
+		register(EntityTFSlimeProjectile.class, "slimeprojectile", EntityTFSlimeProjectile::new);
 
 		TwilightForest.LOGGER.info("Registered {} Twilight Forest entities.", REGISTERED_IDS.size());
 	}

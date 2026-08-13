@@ -18,7 +18,8 @@ public class MobTFPinchBeetle extends MobMonster {
 		super(world);
 		this.setTextureIdentifier(TwilightForest.MOD_ID, "pinchbeetle");
 		this.setSize(WIDTH_FREE, HEIGHT_FREE);
-		this.moveSpeed = 0.23F;
+
+		this.moveSpeed = 0.7F;
 		this.attackStrength = 8;
 	}
 

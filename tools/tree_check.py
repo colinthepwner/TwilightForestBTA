@@ -50,9 +50,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from scan_world import level_of, region_chunks  # noqa: E402
 
-# Twilight Forest's three logs, then the vanilla ones a Twilight biome can plant (birch and pine
+# Twilight Forest's four logs, then the vanilla ones a Twilight biome can plant (birch and pine
 # come out of getTreeFeature just as often as the mod's own oak).
-TF_LOGS = {2301, 2302, 2303}
+#
+# ⚠️ 2316 IS DARKWOOD AND LEAVING IT OUT DID NOT UNDERCOUNT -- IT INVENTED FLOATING TREES. A log id
+# this tool does not know is not merely skipped: it is a HOLE in the 26-connected flood fill. A dark
+# canopy tree whose trunk carries one darkwood log part way up gets cut in two, and the upper half
+# then has no ground under it by construction. Measured on seed 777: three "floating" trees, of which
+# x=484 z=-251 was a single trunk split at the one darkwood log at y=41, and x=438 z=-46 likewise.
+# Adding 2316 also brings the dark forest's own trees into the population for the first time -- they
+# were 45% of that seed's map and contributed nothing to the denominator.
+TF_LOGS = {2301, 2302, 2303, 2316}
 # BTA's own logs, id-checked against Blocks.class in the deobfuscated 8.0.1 jar: oak 280, pine 281,
 # birch 282, cherry 283, eucalyptus 284, mossy oak 285, thorn 286, palm 287. Birch and pine come out
 # of getTreeFeature as often as the mod's own oak, so leaving them out undercounts the population
@@ -77,7 +85,13 @@ GROWS_TREES = {GRASS, 201, 202, DIRT, 221, 225, 226}
 # hollow hill's shell or the glacier's surface leaves under a tree, and sand shows up under the
 # mangroves the swamp places directly rather than through the sapling path.
 OTHER_FOOTING = {1, 7, 250, 730, 731, 740}
-GROUND = GROWS_TREES | OTHER_FOOTING
+# ⚠️ ROOTS (2319) ARE FOOTING. WorldFeatureTFDarkCanopyTree draws its root system DOWNWARDS from the
+# trunk base, so the lowest log of a dark canopy tree has roots under it, not soil -- the soil is
+# under the roots. Without this, every dark canopy tree in the world reads as standing on air: on
+# seed 777, 20 of the 21 clusters that the darkwood fix exposed were trees standing on their own
+# roots. Roots reaching down into ground IS the tree being rooted; it is the evidence buildRoot ran.
+ROOTS = 2319
+GROUND = GROWS_TREES | OTHER_FOOTING | {ROOTS}
 
 WATER = {270, 271}
 

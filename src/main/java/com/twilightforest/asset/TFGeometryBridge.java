@@ -215,6 +215,8 @@ public final class TFGeometryBridge {
 			return result;
 		}
 
+		clearConvertedModels(result, packDir);
+
 		for (ModelEntry entry : m.models) {
 
 			if (entry.textures.isEmpty()) {
@@ -318,6 +320,7 @@ public final class TFGeometryBridge {
 
 				for (Map.Entry<String, List<String>> art : entry.textures.entrySet()) {
 					byte[] image = archive.get(art.getKey().toLowerCase(Locale.ROOT));
+					reportUvScale(entry, art.getKey(), image, result);
 					for (String path : art.getValue()) write(new File(packDir, path), image);
 				}
 				write(new File(packDir, "assets/twilightforest/models/entity/" + entry.id + ".json"),
@@ -338,6 +341,18 @@ public final class TFGeometryBridge {
 
 		publish(result);
 		return result;
+	}
+
+	private static void clearConvertedModels(Result result, File packDir) {
+		File dir = new File(packDir, "assets/twilightforest/models/entity");
+		File[] stale = dir.listFiles((unused, name) -> name.endsWith(".json"));
+		if (stale == null) return;
+		for (File file : stale) {
+			if (file.isFile() && !file.delete()) {
+				result.problems.add("could not delete the stale model '" + file.getName()
+					+ "', so the pack may keep serving it instead of a newer or built-in one");
+			}
+		}
 	}
 
 	private static void writeModelManifest(Result result, File packDir) {
@@ -367,7 +382,7 @@ public final class TFGeometryBridge {
 		}
 	}
 
-	private static final List<String> BUILTIN_MODEL_IDS = Arrays.asList();
+	private static final List<String> BUILTIN_MODEL_IDS = Arrays.asList("mosquitoswarm");
 
 	private static void publish(Result result) {
 		convertedCount = result.converted.size();
@@ -1369,6 +1384,31 @@ public final class TFGeometryBridge {
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		return new double[]{v[0] * cos - v[1] * sin, v[0] * sin + v[1] * cos, v[2]};
+	}
+
+	private static void reportUvScale(ModelEntry entry, String name, byte[] image, Result result) {
+		int[] size = pngSize(image);
+		if (size == null) return;
+		if (size[0] == entry.uvWidth && size[1] == entry.uvHeight) return;
+
+		boolean scaled = size[0] % entry.uvWidth == 0 && size[1] % entry.uvHeight == 0
+			&& size[0] / entry.uvWidth == size[1] / entry.uvHeight;
+		result.problems.add(entry.id + ": uv-size is " + entry.uvWidth + "x" + entry.uvHeight
+			+ " but " + name + " is " + size[0] + "x" + size[1]
+			+ (scaled
+				? " -- consistent with " + (size[0] / entry.uvWidth) + "x double-resolution art, so this is"
+					+ " only worth checking"
+				: " -- the two disagree in shape, so every box samples the wrong part of the skin"));
+	}
+
+	private static int[] pngSize(byte[] image) {
+		if (image == null || image.length < 24) return null;
+		if ((image[0] & 0xFF) != 0x89 || image[1] != 'P' || image[2] != 'N' || image[3] != 'G') return null;
+		int width = ((image[16] & 0xFF) << 24) | ((image[17] & 0xFF) << 16)
+			| ((image[18] & 0xFF) << 8) | (image[19] & 0xFF);
+		int height = ((image[20] & 0xFF) << 24) | ((image[21] & 0xFF) << 16)
+			| ((image[22] & 0xFF) << 8) | (image[23] & 0xFF);
+		return width > 0 && height > 0 ? new int[]{width, height} : null;
 	}
 
 	static String toGeometryJson(String id, List<Bone> bones, int textureWidth, int textureHeight) {

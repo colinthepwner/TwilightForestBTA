@@ -11,6 +11,7 @@ import net.minecraft.client.render.block.model.BlockModelAxisAligned;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.block.model.BlockModelTransparent;
+import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
 import net.minecraft.client.render.block.model.generic.BlockModelGenericLeaves;
 import net.minecraft.client.render.colorizer.Colorizers;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
@@ -32,6 +33,31 @@ public final class TFBlockModels {
 	private static final String LEAVES_DARKWOOD = "twilightforest:block/leaves_darkwood";
 	private static final String ROOTS = "twilightforest:block/roots";
 
+	private static final String LOG_TIMEWOOD_SIDE = "twilightforest:block/log_timewood_side";
+	private static final String LOG_TIMEWOOD_TOP = "twilightforest:block/log_timewood_top";
+	private static final String LOG_TRANSWOOD_SIDE = "twilightforest:block/log_transwood_side";
+	private static final String LOG_TRANSWOOD_TOP = "twilightforest:block/log_transwood_top";
+	private static final String LOG_MINEWOOD_SIDE = "twilightforest:block/log_minewood_side";
+	private static final String LOG_MINEWOOD_TOP = "twilightforest:block/log_minewood_top";
+	private static final String LOG_SORTINGWOOD_SIDE = "twilightforest:block/log_sortingwood_side";
+	private static final String LOG_SORTINGWOOD_TOP = "twilightforest:block/log_sortingwood_top";
+
+	private static final String LEAVES_TIMEWOOD = "twilightforest:block/leaves_timewood";
+	private static final String LEAVES_TRANSFORMATION = "twilightforest:block/leaves_transformation";
+	private static final String LEAVES_SORTING = "twilightforest:block/leaves_sorting";
+
+	private static final String SAPLING_TIMEWOOD = "twilightforest:block/sapling_timewood";
+	private static final String SAPLING_TRANSFORMATION = "twilightforest:block/sapling_transformation";
+	private static final String SAPLING_MINERS = "twilightforest:block/sapling_miners";
+	private static final String SAPLING_SORTING = "twilightforest:block/sapling_sorting";
+
+	private static final String M_SAPLING_TIMEWOOD = "twilightforest:block/sapling/timewood";
+	private static final String M_SAPLING_TRANSFORMATION = "twilightforest:block/sapling/transformation";
+	private static final String M_SAPLING_MINERS = "twilightforest:block/sapling/miners";
+	private static final String M_SAPLING_SORTING = "twilightforest:block/sapling/sorting";
+
+	private static final String M_SAPLING_OAK = "minecraft:block/sapling/oak";
+
 	private static final String V_LOG_TOP = "minecraft:block/log/oak_top";
 	private static final String V_LOG_SIDE = "minecraft:block/log/oak_side";
 	private static final String V_LEAVES_OAK = "minecraft:block/leaves/oak";
@@ -39,6 +65,11 @@ public final class TFBlockModels {
 	private static final String M_LEAVES_OAK = "minecraft:block/leaves/oak";
 	private static final String M_LEAVES_PINE = "minecraft:block/leaves/pine";
 	private static final String M_LEAVES_BIRCH = "minecraft:block/leaves/birch";
+
+	private static final String M_LEAVES_TIMEWOOD = "twilightforest:block/leaves/timewood";
+	private static final String M_LEAVES_TRANSFORMATION = "twilightforest:block/leaves/transformation";
+	private static final String M_LEAVES_MINERS = "twilightforest:block/leaves/miners";
+	private static final String M_LEAVES_SORTING = "twilightforest:block/leaves/sorting";
 	private static final String V_STONE = "minecraft:block/stone";
 	private static final String V_COBBLE = "minecraft:block/cobbled_stone";
 	private static final String V_COBBLE_MOSSY = "minecraft:block/cobbled_stone_mossy";
@@ -59,6 +90,26 @@ public final class TFBlockModels {
 		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_MANGROVE, M_LEAVES_BIRCH));
 
 		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_RAINBOW, M_LEAVES_OAK));
+
+		dispatcher.addDispatch(magicLog(TFBlocks.LOG_TIMEWOOD, LOG_TIMEWOOD_SIDE, LOG_TIMEWOOD_TOP));
+		dispatcher.addDispatch(magicLog(TFBlocks.LOG_TRANSWOOD, LOG_TRANSWOOD_SIDE, LOG_TRANSWOOD_TOP));
+		dispatcher.addDispatch(magicLog(TFBlocks.LOG_MINEWOOD, LOG_MINEWOOD_SIDE, LOG_MINEWOOD_TOP));
+		dispatcher.addDispatch(magicLog(TFBlocks.LOG_SORTINGWOOD, LOG_SORTINGWOOD_SIDE, LOG_SORTINGWOOD_TOP));
+
+		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_TIMEWOOD,
+			bridgedModel(LEAVES_TIMEWOOD, M_LEAVES_TIMEWOOD)));
+		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_TRANSFORMATION,
+			bridgedModel(LEAVES_TRANSFORMATION, M_LEAVES_TRANSFORMATION)));
+		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_MINERS,
+			bridgedModel(LEAVES_TIMEWOOD, M_LEAVES_MINERS)));
+		dispatcher.addDispatch(new BlockModelGenericLeaves<>(TFBlocks.LEAVES_SORTING,
+			bridgedModel(LEAVES_SORTING, M_LEAVES_SORTING)));
+
+		dispatcher.addDispatch(sapling(TFBlocks.SAPLING_TIMEWOOD, SAPLING_TIMEWOOD, M_SAPLING_TIMEWOOD));
+		dispatcher.addDispatch(sapling(TFBlocks.SAPLING_TRANSFORMATION, SAPLING_TRANSFORMATION,
+			M_SAPLING_TRANSFORMATION));
+		dispatcher.addDispatch(sapling(TFBlocks.SAPLING_MINERS, SAPLING_MINERS, M_SAPLING_MINERS));
+		dispatcher.addDispatch(sapling(TFBlocks.SAPLING_SORTING, SAPLING_SORTING, M_SAPLING_SORTING));
 
 		dispatcher.addDispatch(new BlockModelTFGiantMushroom<>(TFBlocks.MUSHROOM_GIANT_BROWN,
 			"twilightforest:block/mushroom_skin_brown"));
@@ -93,7 +144,7 @@ public final class TFBlockModels {
 			if (hasTexture(id)) available++;
 		}
 		TwilightForest.LOGGER.info(
-			"Registered block models for 14 Twilight Forest blocks; {} of {} bridged tiles were available.",
+			"Registered block models for 32 Twilight Forest blocks; {} of {} bridged tiles were available.",
 			available, BRIDGED_TEXTURES.length);
 	}
 
@@ -103,16 +154,40 @@ public final class TFBlockModels {
 		dispatcher.addDispatch(TFBlocks.LEAVES_MANGROVE, new BlockColorCustom(Colorizers.birch));
 
 		dispatcher.addDispatch(TFBlocks.LEAVES_RAINBOW, new BlockColorTFRainbow());
+
+		dispatcher.addDispatch(TFBlocks.LEAVES_TIMEWOOD, BlockColorTFMagicLeaves.timewood());
+		dispatcher.addDispatch(TFBlocks.LEAVES_TRANSFORMATION, BlockColorTFMagicLeaves.transformation());
+		dispatcher.addDispatch(TFBlocks.LEAVES_MINERS, BlockColorTFMagicLeaves.miners());
+		dispatcher.addDispatch(TFBlocks.LEAVES_SORTING, BlockColorTFMagicLeaves.sorting());
 	}
 
 	private static final String[] BRIDGED_TEXTURES = {
 		LOG_TOP, LOG_OAK_SIDE, LOG_CANOPY_SIDE, LOG_MANGROVE_SIDE, FIREFLY, CICADA, HEDGE,
 		LOG_DARKWOOD_SIDE, LEAVES_DARKWOOD, ROOTS,
+		LOG_TIMEWOOD_SIDE, LOG_TIMEWOOD_TOP, LOG_TRANSWOOD_SIDE, LOG_TRANSWOOD_TOP,
+		LOG_MINEWOOD_SIDE, LOG_MINEWOOD_TOP, LOG_SORTINGWOOD_SIDE, LOG_SORTINGWOOD_TOP,
+		LEAVES_TIMEWOOD, LEAVES_TRANSFORMATION, LEAVES_SORTING,
+		SAPLING_TIMEWOOD, SAPLING_TRANSFORMATION, SAPLING_MINERS, SAPLING_SORTING,
 	};
 
 	private static BlockModelStandard<?> log(Block<?> block, String side) {
 		String top = bridged(LOG_TOP, V_LOG_TOP);
 		return new BlockModelAxisAligned<>(block).withTextures(top, top, bridged(side, V_LOG_SIDE));
+	}
+
+	private static BlockModelStandard<?> magicLog(Block<?> block, String side, String top) {
+		return new BlockModelAxisAligned<>(block)
+			.withTextures(bridged(top, V_LOG_TOP), bridged(top, V_LOG_TOP), bridged(side, V_LOG_SIDE));
+	}
+
+	private static String bridgedModel(String textureId, String model) {
+		return hasTexture(textureId) ? model : M_LEAVES_OAK;
+	}
+
+	private static BlockModelGeneric<?> sapling(Block<?> block, String textureId, String model) {
+		String chosen = hasTexture(textureId) ? model : M_SAPLING_OAK;
+		return new BlockModelGeneric<>(block, BlockModelDispatcher.loadDataModel(chosen))
+			.render3D(false);
 	}
 
 	private static String bridged(String id, String fallback) {
