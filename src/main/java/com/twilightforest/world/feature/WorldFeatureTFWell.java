@@ -8,11 +8,36 @@ import java.util.Random;
 
 public class WorldFeatureTFWell extends TFWorldFeature {
 
+	private static final int WATER_MARGIN = 1;
+
 	@Override
 	public boolean generate(World world, Random rand, int x, int y, int z) {
-		return rand.nextInt(4) == 0
+
+		boolean big = rand.nextInt(4) == 0;
+		int size = big ? 4 : 3;
+
+		if (nearWater(world, x, y, z, size)) {
+			return false;
+		}
+		return big
 			? this.generate4x4Well(world, rand, x, y, z)
 			: this.generate3x3Well(world, rand, x, y, z);
+	}
+
+	private boolean nearWater(World world, int x, int y, int z, int size) {
+		int still = Blocks.FLUID_WATER_STILL.id();
+		int flowing = Blocks.FLUID_WATER_FLOWING.id();
+		for (int cx = -WATER_MARGIN; cx < size + WATER_MARGIN; cx++) {
+			for (int cz = -WATER_MARGIN; cz < size + WATER_MARGIN; cz++) {
+				for (int cy = -1; cy < size; cy++) {
+					int id = getBlockId(world, x + cx, y + cy, z + cz);
+					if (id == still || id == flowing) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public boolean generate3x3Well(World world, Random rand, int x, int y, int z) {
