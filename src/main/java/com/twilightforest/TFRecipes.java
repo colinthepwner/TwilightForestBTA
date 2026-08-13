@@ -17,7 +17,9 @@ public final class TFRecipes {
 		planksFrom(TFBlocks.LOG_CANOPY, "canopy_log_to_planks");
 		planksFrom(TFBlocks.LOG_MANGROVE, "mangrove_log_to_planks");
 
-		TwilightForest.LOGGER.info("Registered 3 Twilight Forest recipes.");
+		planksFrom(TFBlocks.LOG_DARKWOOD, "darkwood_log_to_planks");
+
+		TwilightForest.LOGGER.info("Registered 4 Twilight Forest recipes.");
 	}
 
 	private static void planksFrom(net.minecraft.core.block.Block<?> log, String name) {

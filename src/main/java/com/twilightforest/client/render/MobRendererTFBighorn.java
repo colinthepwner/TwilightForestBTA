@@ -25,7 +25,7 @@ public class MobRendererTFBighorn extends MobRendererTFQuadruped<MobTFBighorn> {
 
 	@Override
 	protected int maxRenderLayer(@NotNull MobTFBighorn entity) {
-		return 1;
+		return entity.getSheared() ? 1 : 2;
 	}
 
 	@Nullable
