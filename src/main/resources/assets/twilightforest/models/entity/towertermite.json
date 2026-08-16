@@ -1,0 +1,281 @@
+{
+ "format_version": "1.12.0",
+ "minecraft:geometry": [
+  {
+   "description": {
+    "identifier": "geometry.towertermite",
+    "texture_width": 64,
+    "texture_height": 32,
+    "visible_bounds_width": 1.0,
+    "visible_bounds_height": 0.75,
+    "visible_bounds_offset": [
+     0,
+     0.25,
+     0
+    ]
+   },
+   "bones": [
+    {
+     "name": "segment0",
+     "pivot": [
+      0.0,
+      2.0,
+      -3.5
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -1.5,
+        0.0,
+        -4.5
+       ],
+       "size": [
+        3,
+        2,
+        2
+       ],
+       "uv": [
+        0,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "name": "segment1",
+     "pivot": [
+      0.0,
+      3.0,
+      -1.5
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -2.0,
+        0.0,
+        -2.5
+       ],
+       "size": [
+        4,
+        3,
+        2
+       ],
+       "uv": [
+        0,
+        4
+       ]
+      }
+     ]
+    },
+    {
+     "name": "segment2",
+     "pivot": [
+      0.0,
+      4.0,
+      1.0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -3.0,
+        0.0,
+        -0.5
+       ],
+       "size": [
+        6,
+        4,
+        3
+       ],
+       "uv": [
+        0,
+        9
+       ]
+      }
+     ]
+    },
+    {
+     "name": "segment3",
+     "pivot": [
+      0.0,
+      3.0,
+      4.0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -1.5,
+        0.0,
+        2.5
+       ],
+       "size": [
+        3,
+        3,
+        3
+       ],
+       "uv": [
+        0,
+        16
+       ]
+      }
+     ]
+    },
+    {
+     "name": "segment4",
+     "pivot": [
+      0.0,
+      2.0,
+      7.0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -1.0,
+        0.0,
+        5.5
+       ],
+       "size": [
+        2,
+        2,
+        3
+       ],
+       "uv": [
+        0,
+        22
+       ]
+      }
+     ]
+    },
+    {
+     "name": "segment5",
+     "pivot": [
+      0.0,
+      1.0,
+      9.5
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -1.0,
+        0.0,
+        8.5
+       ],
+       "size": [
+        2,
+        1,
+        2
+       ],
+       "uv": [
+        11,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "name": "segment6",
+     "pivot": [
+      0.0,
+      1.0,
+      11.5
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -0.5,
+        0.0,
+        10.5
+       ],
+       "size": [
+        1,
+        1,
+        2
+       ],
+       "uv": [
+        13,
+        4
+       ]
+      }
+     ]
+    },
+    {
+     "name": "plate0",
+     "pivot": [
+      0.0,
+      8.0,
+      1.0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -5.0,
+        0.0,
+        -0.5
+       ],
+       "size": [
+        10,
+        8,
+        3
+       ],
+       "uv": [
+        20,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "name": "plate1",
+     "pivot": [
+      0.0,
+      4.0,
+      7.0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -3.0,
+        0.0,
+        5.5
+       ],
+       "size": [
+        6,
+        4,
+        3
+       ],
+       "uv": [
+        20,
+        11
+       ]
+      }
+     ]
+    },
+    {
+     "name": "plate2",
+     "pivot": [
+      0.0,
+      5.0,
+      -1.5
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -3.0,
+        0.0,
+        -3.0
+       ],
+       "size": [
+        6,
+        5,
+        2
+       ],
+       "uv": [
+        20,
+        18
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

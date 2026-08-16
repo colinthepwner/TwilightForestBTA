@@ -1,6 +1,7 @@
 package com.twilightforest.world.feature;
 
 import com.twilightforest.block.TFBlocks;
+import com.twilightforest.world.structure.StructureComponentTF;
 import net.minecraft.core.block.BlockLogicTorch;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.world.World;
@@ -13,8 +14,11 @@ public class TFMaze {
 
 	static final int ROOM = 5;
 
-	private final int width;
-	private final int depth;
+	static final int DOOR = 6;
+
+	public final int width;
+	public final int depth;
+
 	private final int rawWidth;
 	private final int rawDepth;
 	private final int[] storage;
@@ -25,21 +29,46 @@ public class TFMaze {
 
 	public int tall = 3;
 
+	public int head = 0;
+
 	public int roots = 0;
 
 	public int type;
 
 	public int wallBlockId = TFBlocks.MAZESTONE_MOSSY.id();
+
+	public int wallBlockMeta = 0;
+
+	public int wallVar0Id;
+	public int wallVar0Meta;
+
+	public float wallVarRarity = 0.0f;
+
+	public int headBlockId;
+	public int headBlockMeta;
+
 	public int rootBlockId = TFBlocks.MAZESTONE.id();
+	public int rootBlockMeta = 0;
+
+	public int pillarBlockId = -1;
+	public int pillarBlockMeta = 0;
+
+	public int doorBlockId;
+	public int doorBlockMeta;
+
+	public float doorRarity = 0.0f;
+
 	public int torchBlockId = Blocks.TORCH_COAL.id();
 
 	public int torchBlockMeta = BlockLogicTorch.SIDE_BOTTOM;
+
+	public float torchRarity = 0.75f;
 
 	public int worldX;
 	public int worldY;
 	public int worldZ;
 
-	private final Random rand = new Random();
+	public final Random rand = new Random();
 
 	public TFMaze(int cellsWidth, int cellsDepth) {
 		this.width = cellsWidth;
@@ -84,7 +113,7 @@ public class TFMaze {
 		return getWall(sx, sz, dx, dz) == 0;
 	}
 
-	protected void putRaw(int rawX, int rawZ, int value) {
+	public void putRaw(int rawX, int rawZ, int value) {
 		if (rawX >= 0 && rawX < this.rawWidth && rawZ >= 0 && rawZ < this.rawDepth) {
 			this.storage[rawZ * this.rawWidth + rawX] = value;
 		}
@@ -147,7 +176,12 @@ public class TFMaze {
 			dz = sz - 1;
 		}
 
-		putWall(sx, sz, dx, dz, 2);
+		if (this.rand.nextFloat() <= this.doorRarity) {
+			putWall(sx, sz, dx, dz, DOOR);
+		} else {
+			putWall(sx, sz, dx, dz, 2);
+		}
+
 		rbGen(dx, dz);
 		rbGen(sx, sz);
 		rbGen(sx, sz);
@@ -160,6 +194,18 @@ public class TFMaze {
 		putRaw(hx, this.rawDepth - 1, ROOM);
 		putRaw(0, hz, ROOM);
 		putRaw(this.rawWidth - 1, hz, ROOM);
+	}
+
+	public void carveRoom0(int cx, int cz) {
+		putCell(cx, cz, ROOM);
+		putCell(cx + 1, cz, ROOM);
+		putWall(cx, cz, cx + 1, cz, ROOM);
+		putCell(cx - 1, cz, ROOM);
+		putWall(cx, cz, cx - 1, cz, ROOM);
+		putCell(cx, cz + 1, ROOM);
+		putWall(cx, cz, cx, cz + 1, ROOM);
+		putCell(cx, cz - 1, ROOM);
+		putWall(cx, cz, cx, cz - 1, ROOM);
 	}
 
 	public void carveRoom1(int cx, int cz) {
@@ -204,12 +250,16 @@ public class TFMaze {
 						column(world, mdx, dy, mdz);
 					}
 				} else if (isEven(x)) {
-					for (int i = 1; i <= this.oddBias; i++) {
-						column(world, mdx, dy, mdz + i);
+					for (int even = 0; even < this.evenBias; even++) {
+						for (int odd = 1; odd <= this.oddBias; odd++) {
+							column(world, mdx + even, dy, mdz + odd);
+						}
 					}
 				} else if (isEven(z)) {
-					for (int i = 1; i <= this.oddBias; i++) {
-						column(world, mdx + i, dy, mdz);
+					for (int even = 0; even < this.evenBias; even++) {
+						for (int odd = 1; odd <= this.oddBias; odd++) {
+							column(world, mdx + odd, dy, mdz + even);
+						}
 					}
 				}
 			}
@@ -219,11 +269,14 @@ public class TFMaze {
 	}
 
 	private void column(World world, int x, int y, int z) {
+		for (int i = 0; i < this.head; i++) {
+			world.setBlockAndMetadataWithNotify(x, y + this.tall + i, z, this.headBlockId, this.headBlockMeta);
+		}
 		for (int i = 0; i < this.tall; i++) {
-			world.setBlockWithNotify(x, y + i, z, this.wallBlockId);
+			world.setBlockAndMetadataWithNotify(x, y + i, z, this.wallBlockId, this.wallBlockMeta);
 		}
 		for (int i = 1; i <= this.roots; i++) {
-			world.setBlockWithNotify(x, y - i, z, this.rootBlockId);
+			world.setBlockAndMetadataWithNotify(x, y - i, z, this.rootBlockId, this.rootBlockMeta);
 		}
 	}
 
@@ -285,6 +338,178 @@ public class TFMaze {
 		}
 	}
 
+	public void copyToStructure(World world, int dx, int dy, int dz,
+	                            StructureComponentTF component, StructureComponentTF.BoundingBox clip) {
+		for (int x = 0; x < this.rawWidth; x++) {
+			for (int z = 0; z < this.rawDepth; z++) {
+				int raw = getRaw(x, z);
+				if (raw != 0 && raw != DOOR) {
+					continue;
+				}
+
+				int mdx = dx + x / 2 * (this.evenBias + this.oddBias);
+				int mdz = dz + z / 2 * (this.evenBias + this.oddBias);
+				if (this.evenBias > 1) {
+					mdx--;
+					mdz--;
+				}
+
+				if (raw == 0) {
+					if (isEven(x) && isEven(z)) {
+						if (this.type == 4 && shouldTree(x, z)) {
+							putCanopyTree(world, mdx, dy, mdz, component, clip);
+						} else {
+
+							for (int ex = 0; ex < this.evenBias; ex++) {
+								for (int ez = 0; ez < this.evenBias; ez++) {
+									postColumn(world, x, z, mdx + ex, dy, mdz + ez, component, clip);
+								}
+							}
+						}
+					} else if (isEven(x)) {
+						for (int even = 0; even < this.evenBias; even++) {
+							for (int odd = 1; odd <= this.oddBias; odd++) {
+								wallColumn(world, mdx + even, dy, mdz + odd, component, clip);
+							}
+						}
+					} else if (isEven(z)) {
+						for (int even = 0; even < this.evenBias; even++) {
+							for (int odd = 1; odd <= this.oddBias; odd++) {
+								wallColumn(world, mdx + odd, dy, mdz + even, component, clip);
+							}
+						}
+					}
+				} else {
+
+					if (isEven(x) && !isEven(z)) {
+						for (int even = 0; even < this.evenBias; even++) {
+							for (int odd = 1; odd <= this.oddBias; odd++) {
+								doorColumn(world, mdx + even, dy, mdz + odd, component, clip);
+							}
+						}
+					} else if (!isEven(x) && isEven(z)) {
+						for (int even = 0; even < this.evenBias; even++) {
+							for (int odd = 1; odd <= this.oddBias; odd++) {
+								doorColumn(world, mdx + odd, dy, mdz + even, component, clip);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (int x = 0; x < this.rawWidth; x++) {
+			for (int z = 0; z < this.rawDepth; z++) {
+				if (getRaw(x, z) != 0 || !isEven(x) || !isEven(z) || !shouldTorch(x, z)) {
+					continue;
+				}
+				int mdx = dx + x / 2 * (this.evenBias + this.oddBias);
+				int mdy = dy + 1;
+				int mdz = dz + z / 2 * (this.evenBias + this.oddBias);
+
+				if (getStructureBlockId(world, component, clip, mdx, mdy, mdz) == this.wallBlockId) {
+					putStructureBlock(world, component, clip, this.torchBlockId, this.torchBlockMeta,
+						mdx, mdy, mdz);
+				}
+			}
+		}
+	}
+
+	private void postColumn(World world, int rawX, int rawZ, int x, int y, int z,
+	                        StructureComponentTF component, StructureComponentTF.BoundingBox clip) {
+		for (int i = 0; i < this.head; i++) {
+			putStructureBlock(world, component, clip, this.headBlockId, this.headBlockMeta,
+				x, y + this.tall + i, z);
+		}
+		boolean pillar = shouldPillar(rawX, rawZ);
+		for (int i = 0; i < this.tall; i++) {
+			if (pillar) {
+				putStructureBlock(world, component, clip, this.pillarBlockId, this.pillarBlockMeta,
+					x, y + i, z);
+			} else {
+				putWallBlock(world, component, clip, x, y + i, z);
+			}
+		}
+		for (int i = 1; i <= this.roots; i++) {
+			putStructureBlock(world, component, clip, this.rootBlockId, this.rootBlockMeta,
+				x, y - i, z);
+		}
+	}
+
+	private void wallColumn(World world, int x, int y, int z,
+	                        StructureComponentTF component, StructureComponentTF.BoundingBox clip) {
+		for (int i = 0; i < this.head; i++) {
+			putStructureBlock(world, component, clip, this.headBlockId, this.headBlockMeta,
+				x, y + this.tall + i, z);
+		}
+		for (int i = 0; i < this.tall; i++) {
+			putWallBlock(world, component, clip, x, y + i, z);
+		}
+		for (int i = 1; i <= this.roots; i++) {
+			putStructureBlock(world, component, clip, this.rootBlockId, this.rootBlockMeta,
+				x, y - i, z);
+		}
+	}
+
+	private void doorColumn(World world, int x, int y, int z,
+	                        StructureComponentTF component, StructureComponentTF.BoundingBox clip) {
+		for (int i = 0; i < this.head; i++) {
+			putStructureBlock(world, component, clip, this.headBlockId, this.headBlockMeta,
+				x, y + this.tall + i, z);
+		}
+		for (int i = 0; i < this.tall; i++) {
+			putStructureBlock(world, component, clip, this.doorBlockId, this.doorBlockMeta,
+				x, y + i, z);
+		}
+		for (int i = 1; i <= this.roots; i++) {
+			putStructureBlock(world, component, clip, this.rootBlockId, this.rootBlockMeta,
+				x, y - i, z);
+		}
+	}
+
+	private void putWallBlock(World world, StructureComponentTF component,
+	                          StructureComponentTF.BoundingBox clip, int x, int y, int z) {
+
+		if (this.wallVarRarity > 0.0f && this.rand.nextFloat() < this.wallVarRarity) {
+			putStructureBlock(world, component, clip, this.wallVar0Id, this.wallVar0Meta, x, y, z);
+		} else {
+			putStructureBlock(world, component, clip, this.wallBlockId, this.wallBlockMeta, x, y, z);
+		}
+	}
+
+	private void putCanopyTree(World world, int x, int y, int z,
+	                           StructureComponentTF component, StructureComponentTF.BoundingBox clip) {
+		int[] w = toWorld(component, x, y, z);
+		if (clip.contains(w[0], w[1], w[2])) {
+			new WorldFeatureTFCanopyTree().place(world, this.rand, w[0], w[1], w[2]);
+		}
+	}
+
+	private static int[] toWorld(StructureComponentTF component, int x, int y, int z) {
+		return component.getOffsetAsIfRotated(new int[]{x, y, z}, component.getCoordBaseMode());
+	}
+
+	private static void putStructureBlock(World world, StructureComponentTF component,
+	                                      StructureComponentTF.BoundingBox clip,
+	                                      int blockId, int meta, int x, int y, int z) {
+		int[] w = toWorld(component, x, y, z);
+		if (!clip.contains(w[0], w[1], w[2])) {
+			return;
+		}
+
+		world.setBlockAndMetadataRaw(w[0], w[1], w[2], blockId, meta);
+	}
+
+	private static int getStructureBlockId(World world, StructureComponentTF component,
+	                                       StructureComponentTF.BoundingBox clip,
+	                                       int x, int y, int z) {
+		int[] w = toWorld(component, x, y, z);
+		if (!clip.contains(w[0], w[1], w[2])) {
+			return 0;
+		}
+		return world.getBlockId(w[0], w[1], w[2]);
+	}
+
 	public boolean shouldTorch(int rx, int rz) {
 		if (getRaw(rx + 1, rz) == OUT_OF_BOUNDS || getRaw(rx - 1, rz) == OUT_OF_BOUNDS
 			|| getRaw(rx, rz + 1) == OUT_OF_BOUNDS || getRaw(rx, rz - 1) == OUT_OF_BOUNDS) {
@@ -292,7 +517,20 @@ public class TFMaze {
 		}
 		boolean openOnX = getRaw(rx + 1, rz) != 0 || getRaw(rx - 1, rz) != 0;
 		boolean openOnZ = getRaw(rx, rz + 1) != 0 || getRaw(rx, rz - 1) != 0;
-		return openOnX && openOnZ && this.rand.nextInt(4) == 0;
+		return openOnX && openOnZ && this.rand.nextFloat() <= this.torchRarity;
+	}
+
+	public boolean shouldPillar(int rx, int rz) {
+		if (this.pillarBlockId == -1) {
+			return false;
+		}
+		if (getRaw(rx + 1, rz) == OUT_OF_BOUNDS || getRaw(rx - 1, rz) == OUT_OF_BOUNDS
+			|| getRaw(rx, rz + 1) == OUT_OF_BOUNDS || getRaw(rx, rz - 1) == OUT_OF_BOUNDS) {
+			return false;
+		}
+		boolean openOnX = getRaw(rx + 1, rz) != 0 || getRaw(rx - 1, rz) != 0;
+		boolean openOnZ = getRaw(rx, rz + 1) != 0 || getRaw(rx, rz - 1) != 0;
+		return openOnX && openOnZ;
 	}
 
 	public boolean shouldTree(int rx, int rz) {

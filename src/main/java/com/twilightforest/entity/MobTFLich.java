@@ -33,7 +33,7 @@ public class MobTFLich extends MobMonster implements IItemHolding {
 
 	@Override
 	public int getMaxHealth() {
-		return 50;
+		return 100;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class MobTFLich extends MobMonster implements IItemHolding {
 			double py = this.y + this.getHeadHeight() * 0.82;
 			double pz = this.z + MathHelper.sin(angle) * 0.65;
 
-			this.world.spawnParticle("mobSpell", px, py, pz, dx, dy, dz, 0, false);
+			this.world.spawnParticle("puffrgb", px, py, pz, dx, dy, dz, 0, false);
 		}
 
 		super.onLivingUpdate();
@@ -210,12 +210,13 @@ public class MobTFLich extends MobMonster implements IItemHolding {
 			double py = fromY + (this.y - fromY) * along + this.random.nextDouble() * this.bbHeight;
 			double pz = fromZ + (this.z - fromZ) * along
 				+ (this.random.nextDouble() - 0.5) * this.bbWidth * 2.0;
-			this.world.spawnParticle("spell", px, py, pz, dx, dy, dz, 0, false);
+
+			this.world.spawnParticle("portal", px, py, pz, dx, dy, dz, 0, false);
 		}
 
 		this.world.playSoundEffect(null, net.minecraft.core.sound.SoundCategory.WORLD_SOUNDS,
-			fromX, fromY, fromZ, "mob.endermen.portal", 1.0F, 1.0F);
-		this.world.playSoundAtEntity(null, this, "mob.endermen.portal", 1.0F, 1.0F);
+			fromX, fromY, fromZ, "portal.trigger", 1.0F, 1.0F);
+		this.world.playSoundAtEntity(null, this, "portal.trigger", 1.0F, 1.0F);
 		return true;
 	}
 

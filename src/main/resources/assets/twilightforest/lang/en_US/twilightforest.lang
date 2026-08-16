@@ -76,6 +76,26 @@ guidebook.section.mob.slimebeetle.name=Slime Beetle
 guidebook.section.mob.pinchbeetle.name=Pinch Beetle
 guidebook.section.mob.redcapsapper.name=Redcap Sapper
 
+# The labyrinth's two, also the donor's own registerTFCreature strings.
+guidebook.section.mob.minotaur.name=Minotaur
+guidebook.section.mob.mazeslime.name=Maze Slime
+
+# The dark tower's six, and all six strings are the donor's own TFCreatures.registerTFCreature
+# arguments rather than anything invented here -- "Redscale Broodling" in particular is not a name
+# anybody would guess from the class, which is EntityTFTowerBroodling.
+#
+# ⚠️ The Ur-Ghast is registered upstream as "Tower Boss", which is a placeholder: the class is
+# EntityTFTowerBoss, nothing in the archive spawns it, and no lang file, achievement or guidebook
+# entry anywhere in the mod ever shows the string. The name every player of this mod knows the mob by
+# is the Ur-Ghast, and that is what a nameplate should read. This is the one string on this list that
+# is not a transcription, and the entity id (urghast) is named for the same reason.
+guidebook.section.mob.towerghast.name=Tower Ghast
+guidebook.section.mob.urghast.name=Ur-Ghast
+guidebook.section.mob.minighast.name=Mini Ghast
+guidebook.section.mob.towerbroodling.name=Redscale Broodling
+guidebook.section.mob.towergolem.name=Tower Golem
+guidebook.section.mob.towertermite.name=Tower Termite
+
 # The two projectiles. Upstream never names them -- they are not registered as mobs at all, only as
 # network-visible entities -- so these are this port's own, and exist because BTA asks every
 # registered entity for a display name whether or not anything shows it.
@@ -107,6 +127,19 @@ tile.twilightforest.leaves.rainbow.name=Rainbow Oak Leaves
 # tile.TFRoots.0 is "Roots". Its metadata-1 sibling "Liveroots" is not ported -- see
 # BlockLogicTFRoots -- so there is no name for it here either.
 tile.twilightforest.roots.name=Roots
+
+# tile.TFPlant.13, Benimatic's own, and note it is "Torchberry Plant" rather than "Torchberries" --
+# he keeps the bare "Torchberries" for item.torchberries, the food the plant drops. That item is not
+# ported (see BlockLogicTFTorchberries.getBreakResult), and the distinction is kept anyway: the
+# player is holding the plant, not a handful of berries.
+#
+# TWO of the three siblings upstream exposes alongside it -- tile.TFPlant.8 "Fiddlehead" and .9
+# "Mushgloom" -- are still not registered, so they have no names here. The third, .14 "Root
+# Strands", now is: the labyrinth places it.
+tile.twilightforest.torchberries.name=Torchberry Plant
+# Benimatic's own string, verbatim from the same lang/en_US.xml -- `tile.TFPlant.14.name=Root
+# Strands`. Note the plural: one block is a curtain of them, not a single root.
+tile.twilightforest.root_strands.name=Root Strands
 
 # --- The four magic trees. All eight names are Benimatic's, verbatim from the same lang/en_US.xml.
 #
@@ -176,6 +209,9 @@ item.twilightforest.naga_scale.name=Naga Scale
 item.twilightforest.naga_scale_tunic.name=Naga Scale Tunic
 item.twilightforest.naga_scale_leggings.name=Naga Scale Leggings
 
+# Benimatic's own, from TFItems.registerTFItem(towerKey, "Tower Key").
+item.twilightforest.tower_key.name=Tower Key
+
 # --- Achievements -----------------------------------------------------------------------------------
 # Names and descriptions are Benimatic's own, out of TFAchievementPage's addStringLocalization calls.
 # The page name is this port's -- upstream passes the literal string "Twilight Forest" to the Forge
@@ -205,3 +241,56 @@ achievement.twilight_hill_3=I See Right Through You
 achievement.twilight_hill_3.desc=Defeat a twilight wraith in a large hollow hill
 achievement.twilight_hedge=Bug Stomper
 achievement.twilight_hedge.desc=Defeat a spider in a hedge maze
+
+# --- The Ur-Ghast's dark tower. Every name below is Benimatic's own, verbatim from the 1.15.4
+# archive's lang/en_US.xml.
+#
+# ⚠️ Upstream's key for the wood is `tile.TFTowerStone.*` while the class is BlockTFTowerWood and every
+# display name says "Towerwood". The key is a fossil from an earlier version where the tower was made
+# of stone; the names are what players know, so the names are what is kept and the key follows this
+# port's own naming instead.
+#
+# The five towerwood variants are five blocks here (upstream: one block, five metadata), so each gets
+# a plain `.name`.
+tile.twilightforest.tower_wood.name=Towerwood Planks
+tile.twilightforest.tower_wood.encased.name=Encased Towerwood
+tile.twilightforest.tower_wood.cracked.name=Cracked Towerwood
+tile.twilightforest.tower_wood.mossy.name=Mossy Towerwood
+tile.twilightforest.tower_wood.infested.name=Infested Towerwood
+
+# The device is ONE block with fourteen states, so its names are keyed by metadata --
+# BlockLogicTFTowerDevice.getLanguageKey appends the number, which is the same shape upstream's
+# `tile.TFTowerDevice.<meta>.name` has. Six of the fourteen are reachable from the creative menu; the
+# rest are only ever seen for the instant the block is in that state.
+#
+# ⚠️ Upstream tags four of these [WIP] -- the two ghast trap states and the two reactor states -- and
+# the tag is dropped from the name here, following the precedent set for the magic saplings. The
+# blocks genuinely do nothing, and blocks.lang says so plainly rather than hiding it behind an
+# abbreviation.
+tile.twilightforest.tower_device.0.name=Reappearing Block
+tile.twilightforest.tower_device.1.name=Active Reappearing Block
+tile.twilightforest.tower_device.2.name=Vanishing Block
+tile.twilightforest.tower_device.3.name=Active Vanishing Block
+tile.twilightforest.tower_device.4.name=Locked Vanishing Block
+tile.twilightforest.tower_device.5.name=Unlocked Vanishing Block
+tile.twilightforest.tower_device.6.name=Tower Builder
+tile.twilightforest.tower_device.7.name=Active Tower Builder
+tile.twilightforest.tower_device.8.name=Inactive Tower Builder
+tile.twilightforest.tower_device.9.name=Anti-builder
+tile.twilightforest.tower_device.10.name=Ghast Trap
+tile.twilightforest.tower_device.11.name=Active Ghast Trap
+tile.twilightforest.tower_device.12.name=Carminite Reactor
+tile.twilightforest.tower_device.13.name=Active Carminite Reactor
+
+# ⚠️ Benimatic spells it "Carminie Reactor" in en_US.xml and "Carminite" everywhere else in the mod --
+# the ore, the item, the golem. It is a typo in one string rather than a second material, so the name
+# above is the corrected spelling. This is the only place in the tower's strings where his text is not
+# reproduced literally, and it is recorded here so it is not "fixed" back.
+
+# The translucent block is unobtainable and appears in no menu, so these names are only ever seen
+# through a debug readout. They exist upstream and cost five lines.
+tile.twilightforest.tower_translucent.0.name=Reappearing Block
+tile.twilightforest.tower_translucent.1.name=Active Reappearing Block
+tile.twilightforest.tower_translucent.2.name=Built Tower Block
+tile.twilightforest.tower_translucent.3.name=Active Built Tower Block
+tile.twilightforest.tower_translucent.4.name=Anti-built Block

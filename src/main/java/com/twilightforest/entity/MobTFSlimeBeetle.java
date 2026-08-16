@@ -110,7 +110,7 @@ public class MobTFSlimeBeetle extends MobMonster {
 
 		blob.setHeading(dx, dy + arc, dz, THROW_SPEED, THROW_SPREAD);
 
-		this.world.playSoundAtEntity(null, this, "mob.slime.small", 1.0F,
+		this.world.playSoundAtEntity(null, this, "mob.slime", 1.0F,
 			1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
 
 		this.world.entityJoinedWorld(blob);

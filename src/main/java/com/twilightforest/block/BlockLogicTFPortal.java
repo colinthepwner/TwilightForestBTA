@@ -179,7 +179,8 @@ public class BlockLogicTFPortal extends BlockLogicPortal {
 				if (inPool) {
 					continue;
 				}
-				if (materialAt(world, x + dx, y, z + dz) != Materials.GRASS) {
+
+				if (!isGrassOrDirt(world, x + dx, y, z + dz)) {
 					return false;
 				}
 				if (!isNatureBlock(world, x + dx, y + 1, z + dz)) {
@@ -323,13 +324,8 @@ public class BlockLogicTFPortal extends BlockLogicPortal {
 	private static final int MAX_PORTAL_Y = 118;
 
 	private static boolean isNatureBlock(@NotNull World world, int x, int y, int z) {
-		int id = world.getBlockId(x, y, z);
-		for (Block<?> block : NATURE_BLOCKS) {
-			if (block != null && block.id() == id) {
-				return true;
-			}
-		}
-		return false;
+		Material material = materialAt(world, x, y, z);
+		return material == Materials.PLANT || material == Materials.LEAVES;
 	}
 
 	private static boolean isGrassOrDirt(@NotNull World world, int x, int y, int z) {

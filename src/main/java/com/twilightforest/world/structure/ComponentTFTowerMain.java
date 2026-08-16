@@ -8,11 +8,6 @@ import java.util.Random;
 
 public class ComponentTFTowerMain extends ComponentTFTowerWing {
 
-	public static int floorY() {
-
-		return TFWorldConstants.SEA_LEVEL - 2;
-	}
-
 	public ComponentTFTowerMain(int componentType, Random rand, int x, int y, int z) {
 		super(componentType, x, y, z, 15,
 			45 + rand.nextInt(TFWorldConstants.WORLD_HEIGHT - TFWorldConstants.SEA_LEVEL - 56), 0);

@@ -568,7 +568,7 @@ public final class TFPathfinder {
 		return path;
 	}
 
-	private static List<int[]> smooth(World world, List<int[]> path) {
+	private static List<int[]> smooth(World world, List<int[]> path, Set<Long> avoid) {
 		if (path.size() <= 2) {
 			return path;
 		}
@@ -577,7 +577,8 @@ public final class TFPathfinder {
 		out.add(path.get(0));
 		while (i < path.size() - 1) {
 			int j;
-			for (j = path.size() - 1; j > i + 1 && !walkableStraight(world, path.get(i), path.get(j)); --j) {
+			for (j = path.size() - 1;
+					j > i + 1 && !walkableStraight(world, path.get(i), path.get(j), avoid); --j) {
 			}
 			out.add(path.get(j));
 			i = j;
@@ -585,7 +586,7 @@ public final class TFPathfinder {
 		return out;
 	}
 
-	private static boolean walkableStraight(World world, int[] a, int[] b) {
+	private static boolean walkableStraight(World world, int[] a, int[] b, Set<Long> avoid) {
 
 		if (a[1] != b[1] || a[3] != MOVE || b[3] != MOVE) {
 			return false;
@@ -605,6 +606,9 @@ public final class TFPathfinder {
 			for (int cx = (int) Math.floor(fx - r); cx <= (int) Math.floor(fx + r); ++cx) {
 				for (int cz = (int) Math.floor(fz - r); cz <= (int) Math.floor(fz + r); ++cz) {
 
+					if (avoid != null && !avoid.isEmpty() && avoid.contains(packKey(cx, y, cz))) {
+						return false;
+					}
 					if (isBodyClear(world, cx, y, cz) && isStandable(world, cx, y, cz) && !isHazard(world, cx, y, cz)) {
 						continue;
 					}
@@ -673,7 +677,7 @@ public final class TFPathfinder {
 				double ddx = cur.x - this.gx, ddy = cur.y - this.gy, ddz = cur.z - this.gz;
 				if (ddx * ddx + ddy * ddy + ddz * ddz <= this.acceptSq
 						|| (cur.x == this.gx && cur.y == this.gy && cur.z == this.gz)) {
-					this.result = smooth(this.world, reconstruct(cur));
+					this.result = smooth(this.world, reconstruct(cur), this.avoid);
 					this.done = true;
 					return true;
 				}
@@ -687,7 +691,7 @@ public final class TFPathfinder {
 			}
 			if (this.state.open.isEmpty() || this.visited >= this.maxNodes) {
 
-				this.result = this.best == this.start ? null : smooth(this.world, reconstruct(this.best));
+				this.result = this.best == this.start ? null : smooth(this.world, reconstruct(this.best), this.avoid);
 				this.done = true;
 			}
 			return this.done;

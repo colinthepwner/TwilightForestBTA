@@ -32,6 +32,63 @@
     "subtitle": "subtitles.twilightforest.tinybird",
     "sounds": ["mob/tf/tinybird/hurt0.ogg", "mob/tf/tinybird/hurt1.ogg"]
   },
+  "mob.tf.naga.hiss": {
+    "subtitle": "subtitles.twilightforest.naga",
+    "sounds": [
+      "mob/tf/naga/hiss0.ogg",
+      "mob/tf/naga/hiss1.ogg",
+      "mob/tf/naga/hiss2.ogg"
+    ]
+  },
+  "mob.tf.naga.rattle": {
+    "subtitle": "subtitles.twilightforest.naga",
+    "sounds": ["mob/tf/naga/rattle0.ogg", "mob/tf/naga/rattle1.ogg"]
+  },
+  "mob.tf.naga.hurt": {
+    "subtitle": "subtitles.twilightforest.naga",
+    "sounds": [
+      "mob/tf/naga/hurt0.ogg",
+      "mob/tf/naga/hurt1.ogg",
+      "mob/tf/naga/hurt2.ogg"
+    ]
+  },
+  "mob.tf.redcap.redcap": {
+    "subtitle": "subtitles.twilightforest.redcap",
+    "sounds": [
+      "mob/tf/redcap/redcap0.ogg",
+      "mob/tf/redcap/redcap1.ogg",
+      "mob/tf/redcap/redcap2.ogg",
+      "mob/tf/redcap/redcap3.ogg",
+      "mob/tf/redcap/redcap4.ogg",
+      "mob/tf/redcap/redcap5.ogg"
+    ]
+  },
+  "mob.tf.redcap.hurt": {
+    "subtitle": "subtitles.twilightforest.redcap",
+    "sounds": [
+      "mob/tf/redcap/hurt0.ogg",
+      "mob/tf/redcap/hurt1.ogg",
+      "mob/tf/redcap/hurt2.ogg",
+      "mob/tf/redcap/hurt3.ogg"
+    ]
+  },
+  "mob.tf.redcap.die": {
+    "subtitle": "subtitles.twilightforest.redcap",
+    "sounds": [
+      "mob/tf/redcap/die0.ogg",
+      "mob/tf/redcap/die1.ogg",
+      "mob/tf/redcap/die2.ogg"
+    ]
+  },
+  "mob.tf.wraith.wraith": {
+    "subtitle": "subtitles.twilightforest.wraith",
+    "sounds": [
+      "mob/tf/wraith/wraith0.ogg",
+      "mob/tf/wraith/wraith1.ogg",
+      "mob/tf/wraith/wraith2.ogg",
+      "mob/tf/wraith/wraith3.ogg"
+    ]
+  },
   "mob.tf.kobold.kobold": {
     "subtitle": "subtitles.twilightforest.kobold",
     "sounds": [

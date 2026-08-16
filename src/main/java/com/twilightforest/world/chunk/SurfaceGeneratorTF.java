@@ -170,7 +170,8 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 				int dist = (int) Math.sqrt((double) dx * dx + (double) dz * dz);
 				int hheight = (int) (Math.cos(dist / hdiam * Math.PI) * (hdiam / 3.0));
 
-				if (htype < 4 || htype == 8) {
+				if (htype == TFFeature.SMALL_HILL || htype == TFFeature.MEDIUM_HILL
+					|| htype == TFFeature.LARGE_HILL || htype == TFFeature.HYDRA_LAIR) {
 					int newGround = -1;
 					for (int y = 0; y <= maxY; y++) {
 						int here = result.getBlock(x, y, z);
@@ -185,8 +186,23 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 						}
 					}
 
-					int hollow = Math.max(hheight - 4 - hsize, 0);
-					int hollowFloor = TFWorldConstants.SEA_LEVEL - 3;
+					int hollow = hheight - 4 - hsize;
+
+					if (htype == TFFeature.HYDRA_LAIR) {
+						int mx = dx + 16;
+						int mz = dz + 16;
+						int mdist = (int) Math.sqrt((double) mx * mx + (double) mz * mz);
+						int mheight = (int) (Math.cos(mdist / (hdiam / 1.5) * Math.PI) * (hdiam / 1.5));
+						hollow = Math.max(mheight - 4, hollow);
+					}
+
+					if (hollow < 0) {
+						hollow = 0;
+					}
+
+					int hollowFloor = htype == TFFeature.HYDRA_LAIR
+						? TFWorldConstants.SEA_LEVEL
+						: TFWorldConstants.SEA_LEVEL - 3 - hollow / 8;
 
 					for (int y = 0; y <= maxY; y++) {
 
@@ -200,7 +216,8 @@ public class SurfaceGeneratorTF implements SurfaceGenerator {
 					}
 				}
 
-				if (htype == TFFeature.HEDGE_MAZE || htype == TFFeature.NAGA_COURTYARD || htype == 9) {
+				if (htype == TFFeature.HEDGE_MAZE || htype == TFFeature.NAGA_COURTYARD
+					|| htype == TFFeature.QUEST_GROVE) {
 					float squish = 0.0F;
 					int mazeHeight = TFWorldConstants.SEA_LEVEL + 1;
 					int boundary = (hsize * 2 + 1) * 8 - 8;

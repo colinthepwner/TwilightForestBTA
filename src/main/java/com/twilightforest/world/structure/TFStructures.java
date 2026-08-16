@@ -3,8 +3,6 @@ package com.twilightforest.world.structure;
 import com.twilightforest.world.feature.TFFeature;
 import net.minecraft.core.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public final class TFStructures {
@@ -27,69 +25,31 @@ public final class TFStructures {
 					continue;
 				}
 
-				int size = TFFeature.featureSize(world, cx, cz);
+				if (!TFFeature.isStructureEnabled(type)) {
+					continue;
+				}
+
+				int size = TFFeature.sizeOf(type);
 				if (size < 0 || Math.abs(dx) > size || Math.abs(dz) > size) {
 					continue;
 				}
 
-				List<StructureComponentTF> pieces = start(world, cx, cz, type);
-				if (pieces.isEmpty()) {
+				long seed = world.getRandomSeed() + cx * 341873128712L + cz * 132897987541L;
+
+				StructureStartTF start =
+					new StructureStartTF(world, new Random(seed), cx, cz, type);
+				if (start.isEmpty()) {
 					continue;
 				}
 
-				Random structureRand = new Random(world.getRandomSeed() + cx * 341873128712L
-					+ cz * 132897987541L);
+				Random placeRand = new Random(seed);
 
-				for (StructureComponentTF piece : pieces) {
-					if (piece.boundingBox.intersects(clip)) {
-						piece.addComponentParts(world, structureRand, clip);
+				for (StructureComponentTF piece : start.getComponents()) {
+					if (piece.boundingBox != null && piece.boundingBox.intersects(clip)) {
+						piece.addComponentParts(world, placeRand, clip);
 					}
 				}
 			}
 		}
-	}
-
-	private static List<StructureComponentTF> start(World world, int cx, int cz, int type) {
-		List<StructureComponentTF> pieces = new ArrayList<>();
-		Random rand = new Random(world.getRandomSeed() + cx * 341873128712L + cz * 132897987541L);
-
-		if (type == TFFeature.SMALL_HILL || type == TFFeature.MEDIUM_HILL
-			|| type == TFFeature.LARGE_HILL) {
-			int x = (cx << 4) + 8;
-			int z = (cz << 4) + 8;
-			int y = ComponentTFHollowHill.chamberY();
-			ComponentTFHollowHill hill = new ComponentTFHollowHill(0, type, x, y, z);
-			pieces.add(hill);
-			hill.buildComponent(hill, pieces, rand);
-
-			ComponentTFHillMaze maze =
-				new ComponentTFHillMaze(1, x, ComponentTFHillMaze.mazeY(), z, type);
-			pieces.add(maze);
-			maze.buildComponent(maze, pieces, rand);
-		}
-
-		if (type == TFFeature.HEDGE_MAZE) {
-			ComponentTFHedgeMaze maze = new ComponentTFHedgeMaze(0,
-				(cx << 4) + 8, ComponentTFHedgeMaze.floorY(), (cz << 4) + 8);
-			pieces.add(maze);
-			maze.buildComponent(maze, pieces, rand);
-		}
-
-		if (type == TFFeature.NAGA_COURTYARD) {
-			ComponentTFNagaCourtyard courtyard = new ComponentTFNagaCourtyard(0,
-				(cx << 4) + 8, ComponentTFNagaCourtyard.floorY(), (cz << 4) + 8);
-			pieces.add(courtyard);
-			courtyard.buildComponent(courtyard, pieces, rand);
-		}
-
-		if (type == TFFeature.LICH_TOWER) {
-
-			ComponentTFTowerMain keep = new ComponentTFTowerMain(0, rand,
-				(cx << 4) + 8, ComponentTFTowerMain.floorY(), (cz << 4) + 8);
-			pieces.add(keep);
-			keep.buildComponent(keep, pieces, rand);
-		}
-
-		return pieces;
 	}
 }

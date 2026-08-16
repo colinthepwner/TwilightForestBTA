@@ -31,8 +31,24 @@ public final class TFTreasure {
 
 	public static final TFTreasureTable UNDERHILL_DEADEND = underhillDeadEnd();
 
+	public static final TFTreasureTable LABYRINTH_ROOM = labyrinthRoom();
+
+	public static final TFTreasureTable LABYRINTH_DEADEND = labyrinthDeadEnd();
+
+	public static final TFTreasureTable LABYRINTH_VAULT = vault("labyrinth_vault");
+
+	public static final TFTreasureTable BASEMENT = basement();
+
+	public static final TFTreasureTable DARKTOWER_CACHE = darkTowerCache();
+
+	public static final TFTreasureTable DARKTOWER_KEY = darkTowerKey();
+
+	public static final TFTreasureTable DARKTOWER_VAULT = vault("darktower_vault");
+
 	private static final TFTreasureTable[] ALL = {
 		HILL_1, HILL_2, HILL_3, HEDGE_MAZE, TOWER_ROOM, TREE_CACHE, UNDERHILL_ROOM, UNDERHILL_DEADEND,
+		LABYRINTH_ROOM, LABYRINTH_DEADEND, LABYRINTH_VAULT, BASEMENT,
+		DARKTOWER_CACHE, DARKTOWER_KEY, DARKTOWER_VAULT,
 	};
 
 	private static final int COMMON_ROLLS = 4;
@@ -245,6 +261,166 @@ public final class TFTreasure {
 		table.ultrarare.add(Items.OLIVINE, 1);
 		table.ultrarare.add(Blocks.OBSIDIAN, 4);
 		table.ultrarare.add(Items.DIAMOND, 1);
+		return table;
+	}
+
+	private static TFTreasureTable labyrinthRoom() {
+		TFTreasureTable table = new TFTreasureTable("labyrinth_room");
+
+		table.common.add(Items.INGOT_IRON, 4);
+		table.common.add(Items.FOOD_BREAD, 12);
+		table.common.add(Items.GUNPOWDER, 4);
+		table.common.add(Items.INGOT_IRON, 4);
+		table.common.add(TFBlocks.FIREFLY, 5);
+		table.common.add(Items.BUCKET_IRON, 1);
+
+		table.uncommon.add(Items.INGOT_STEEL, 6);
+		table.uncommon.add(Items.ARMOR_LEGGINGS_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_CHESTPLATE_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_HELMET_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_BOOTS_STEEL, 1);
+		table.uncommon.add(Items.TOOL_PICKAXE_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_CHESTPLATE_IRON, 1);
+		table.uncommon.add(Items.TOOL_SWORD_IRON, 1);
+
+		table.rare.add(Items.TOOL_COMPASS, 1);
+		table.rare.add(Blocks.TNT, 3);
+
+		return table;
+	}
+
+	private static TFTreasureTable labyrinthDeadEnd() {
+		TFTreasureTable table = new TFTreasureTable("labyrinth_deadend");
+		fillUseless(table);
+
+		table.common.add(Items.STICK, 12);
+		table.common.add(Items.COAL, 12);
+		table.common.add(Items.AMMO_ARROW, 12);
+		table.common.add(Items.FOOD_BREAD, 9);
+		table.common.add(Items.PAPER, 12);
+		table.common.add(Items.LEATHER, 4);
+		table.common.add(Items.FOOD_STEW_MUSHROOM, 1);
+
+		table.uncommon.add(Items.BUCKET_IRON, 1);
+		table.uncommon.add(Items.PAPER, 5);
+		table.uncommon.add(Items.INGOT_IRON, 6);
+		table.uncommon.add(Items.INGOT_IRON, 8);
+		table.uncommon.add(TFBlocks.FIREFLY, 5);
+
+		table.rare.add(Items.INGOT_STEEL, 8);
+		table.rare.add(Items.FOOD_APPLE_GOLD, 1);
+		table.rare.add(Items.NETHERCOAL, 2);
+
+		return table;
+	}
+
+	private static TFTreasureTable vault(String name) {
+		TFTreasureTable table = new TFTreasureTable(name);
+
+		table.common.add(Items.INGOT_IRON, 9);
+		table.common.add(Items.OLIVINE, 5);
+		table.common.add(Items.FOOD_BREAD, 12);
+		table.common.add(Items.INGOT_IRON, 9);
+
+		table.uncommon.add(Items.TOOL_BOW, 1);
+		table.uncommon.add(Items.TOOL_BOW, 1);
+		table.uncommon.add(Items.TOOL_SHOVEL_STEEL, 1);
+		table.uncommon.add(Items.TOOL_AXE_STEEL, 1);
+		table.uncommon.add(Items.INGOT_STEEL, 12);
+		table.uncommon.add(Items.ARMOR_CHESTPLATE_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_LEGGINGS_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_BOOTS_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_HELMET_STEEL, 1);
+
+		table.rare.add(Blocks.BLOCK_OLIVINE, 1);
+
+		table.rare.add(Items.TOOL_PICKAXE_STEEL, 1);
+		table.rare.add(Items.TOOL_SWORD_STEEL, 1);
+		table.rare.add(Items.TOOL_SWORD_STEEL, 1);
+
+		table.rare.add(Items.TOOL_PICKAXE_DIAMOND, 1);
+
+		return table;
+	}
+
+	private static TFTreasureTable basement() {
+		TFTreasureTable table = new TFTreasureTable("basement");
+		fillUseless(table);
+
+		table.common.add(Items.WHEAT, 6);
+
+		table.common.add(Items.FOOD_APPLE, 6);
+		table.common.add(Items.BUCKET_IRON, 1);
+		table.common.add(Blocks.TORCH_COAL, 12);
+		table.common.add(Items.FOOD_STEW_MUSHROOM, 1);
+		table.common.add(Items.BUCKET_IRON, 1);
+		table.common.add(Items.SEEDS_WHEAT, 5);
+
+		table.uncommon.add(Items.FOOD_BREAD, 8);
+		table.uncommon.add(Items.FOOD_VENISON_COOKED, 6);
+		table.uncommon.add(Items.FOOD_PORKCHOP_COOKED, 8);
+		table.uncommon.add(Items.FOOD_FISH_COOKED, 8);
+
+		table.rare.add(Items.FOOD_APPLE, 12);
+		table.rare.add(Items.MAP, 1);
+
+		table.ultrarare.add(Items.FOOD_APPLE_GOLD, 2);
+		table.ultrarare.add(Items.FOOD_CAKE, 1);
+		table.ultrarare.add(Items.BOAT, 1);
+
+		table.ultrarare.add(Blocks.SAPLING_OAK, 1, 4);
+
+		return table;
+	}
+
+	private static TFTreasureTable darkTowerCache() {
+		TFTreasureTable table = new TFTreasureTable("darktower_cache");
+		fillUseless(table);
+
+		table.common.add(Items.STICK, 12);
+
+		table.common.addWithMetadata(Items.COAL, 12, 1);
+		table.common.add(Items.AMMO_ARROW, 12);
+		table.common.add(Items.FOOD_BREAD, 9);
+
+		table.common.addWithMetadata(Blocks.WOOL, 1, 14);
+		table.common.add(Items.DUST_REDSTONE, 6);
+
+		table.uncommon.add(Blocks.LAMP_IDLE, 3);
+		table.uncommon.add(Items.INGOT_IRON, 6);
+		table.uncommon.add(Items.INGOT_IRON, 8);
+		table.uncommon.add(TFBlocks.FIREFLY, 5);
+
+		table.rare.add(Items.INGOT_STEEL, 8);
+		table.rare.add(Items.DIAMOND, 2);
+
+		return table;
+	}
+
+	private static TFTreasureTable darkTowerKey() {
+		TFTreasureTable table = new TFTreasureTable("darktower_key");
+
+		table.common.add(Items.INGOT_IRON, 4);
+		table.common.add(Items.FOOD_BREAD, 12);
+		table.common.add(Items.GUNPOWDER, 4);
+		table.common.add(Items.INGOT_IRON, 4);
+		table.common.add(TFBlocks.FIREFLY, 5);
+		table.common.add(Items.DUST_REDSTONE, 12);
+		table.common.add(Items.DUST_GLOWSTONE, 12);
+
+		table.uncommon.add(Items.INGOT_STEEL, 6);
+		table.uncommon.add(Items.ARMOR_LEGGINGS_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_CHESTPLATE_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_HELMET_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_BOOTS_STEEL, 1);
+		table.uncommon.add(Items.TOOL_PICKAXE_STEEL, 1);
+		table.uncommon.add(Items.ARMOR_CHESTPLATE_IRON, 1);
+		table.uncommon.add(Items.TOOL_SWORD_IRON, 1);
+
+		table.rare.add(Items.BOOK, 1);
+		table.rare.add(Items.BOOK, 1);
+		table.rare.add(Items.BOOK, 1);
+
 		return table;
 	}
 }

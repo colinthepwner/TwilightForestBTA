@@ -24,6 +24,8 @@ public final class TFItems {
 	public static Item NAGA_SCALE_TUNIC;
 	public static Item NAGA_SCALE_LEGGINGS;
 
+	public static Item TOWER_KEY;
+
 	public static void register() {
 
 		ARMOR_NAGA_SCALE = ArmorMaterial.register(
@@ -49,6 +51,11 @@ public final class TFItems {
 			.build(new ItemArmor<>("naga_scale_leggings", "twilightforest:item/naga_scale_leggings",
 				2402, ARMOR_NAGA_SCALE, HumanArmorShape.LEGS));
 
-		TwilightForest.LOGGER.info("Registered 3 Twilight Forest items.");
+		TOWER_KEY = new ItemBuilder(TwilightForest.MOD_ID)
+			.setCreativeInventoryPlacement(
+				new CreativeInventoryPlacement.After(() -> Items.INGOT_IRON))
+			.build(new ItemTFTowerKey("tower_key", "twilightforest:item/tower_key", 2403));
+
+		TwilightForest.LOGGER.info("Registered 4 Twilight Forest items.");
 	}
 }

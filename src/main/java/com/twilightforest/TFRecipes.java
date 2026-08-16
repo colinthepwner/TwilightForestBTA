@@ -4,6 +4,7 @@ import com.twilightforest.block.TFBlocks;
 import com.twilightforest.item.TFItems;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
+import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
@@ -42,12 +43,28 @@ public final class TFRecipes {
 		charcoalFrom(TFBlocks.LOG_MINEWOOD, "minewood_log_to_charcoal");
 		charcoalFrom(TFBlocks.LOG_SORTINGWOOD, "sortingwood_log_to_charcoal");
 
+		torchesFromBerries();
+
 		nagaArmour(TFItems.NAGA_SCALE_TUNIC, "naga_scale_tunic",
 			new String[]{"n n", "nnn", "nnn"});
 		nagaArmour(TFItems.NAGA_SCALE_LEGGINGS, "naga_scale_leggings",
 			new String[]{"nnn", "n n", "n n"});
 
-		TwilightForest.LOGGER.info("Registered 18 Twilight Forest recipes.");
+		towerWood();
+
+		invalidateRecipeCache();
+
+		TwilightForest.LOGGER.info("Registered 20 Twilight Forest recipes.");
+	}
+
+	private static void invalidateRecipeCache() {
+		if (Registries.RECIPES == null) {
+			TwilightForest.LOGGER.error("Recipe registry does not exist yet -- Twilight Forest recipes "
+				+ "will not be craftable. Is register() being called before AFTER_GAME_START?");
+			return;
+		}
+
+		Registries.RECIPES.invalidateCaches();
 	}
 
 	private static ItemStack oakPlanks() {
@@ -76,6 +93,34 @@ public final class TFRecipes {
 			.setInput(log)
 			.create(name, new ItemStack(Items.COAL, 1, CHARCOAL_META));
 	}
+
+	private static void torchesFromBerries() {
+		if (TFBlocks.TORCHBERRIES == null) {
+
+			return;
+		}
+		RecipeBuilder.Shaped(TwilightForest.MOD_ID)
+			.setShape(new String[]{"B", "S"})
+			.addInput('B', TFBlocks.TORCHBERRIES)
+			.addInput('S', Items.STICK)
+			.create("torchberries_to_torches", new ItemStack(Blocks.TORCH_COAL, TORCHES_PER_BERRY));
+	}
+
+	private static final int TORCHES_PER_BERRY = 5;
+
+	private static void towerWood() {
+		if (TFBlocks.TOWER_WOOD == null || TFBlocks.LOG_DARKWOOD == null) {
+
+			return;
+		}
+		RecipeBuilder.Shaped(TwilightForest.MOD_ID)
+			.setShape(new String[]{"##", "##"})
+			.addInput('#', TFBlocks.LOG_DARKWOOD)
+			.create("darkwood_log_to_tower_wood",
+				new ItemStack(TFBlocks.TOWER_WOOD, TOWER_WOOD_PER_CRAFT));
+	}
+
+	private static final int TOWER_WOOD_PER_CRAFT = 4;
 
 	private static void nagaArmour(Item piece, String name, String[] shape) {
 		if (piece == null || TFItems.NAGA_SCALE == null) {

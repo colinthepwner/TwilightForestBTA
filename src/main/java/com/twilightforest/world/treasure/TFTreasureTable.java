@@ -15,12 +15,31 @@ public final class TFTreasureTable {
 		private final List<TFTreasureItem> entries = new ArrayList<>();
 
 		void add(IItemConvertible what, int quantity) {
+			this.add(what, quantity, TFTreasureItem.DEFAULT_RARITY);
+		}
+
+		void add(IItemConvertible what, int quantity, int rarity) {
+			if (rejectedAsNull(what)) {
+				return;
+			}
+			this.entries.add(new TFTreasureItem(what, quantity, rarity));
+		}
+
+		void addWithMetadata(IItemConvertible what, int quantity, int metadata) {
+			if (rejectedAsNull(what)) {
+				return;
+			}
+			this.entries.add(
+				new TFTreasureItem(what, quantity, metadata, TFTreasureItem.DEFAULT_RARITY));
+		}
+
+		private static boolean rejectedAsNull(IItemConvertible what) {
 			if (what == null) {
 				TwilightForest.LOGGER.error("A treasure table entry was null -- a block or item was "
 					+ "referenced before it was registered. That entry has been dropped.");
-				return;
+				return true;
 			}
-			this.entries.add(new TFTreasureItem(what, quantity, TFTreasureItem.DEFAULT_RARITY));
+			return false;
 		}
 
 		boolean isEmpty() {
@@ -76,7 +95,7 @@ public final class TFTreasureTable {
 
 	@Nullable
 	ItemStack getCommonItem(Random rand) {
-		return rand.nextInt(SUBSTITUTION_CHANCE) == 0
+		return !this.useless.isEmpty() && rand.nextInt(SUBSTITUTION_CHANCE) == 0
 			? this.useless.getRandomItem(rand)
 			: this.common.getRandomItem(rand);
 	}
@@ -88,13 +107,12 @@ public final class TFTreasureTable {
 
 	@Nullable
 	ItemStack getRareItem(Random rand) {
-		return rand.nextInt(SUBSTITUTION_CHANCE) == 0
+		return !this.ultrarare.isEmpty() && rand.nextInt(SUBSTITUTION_CHANCE) == 0
 			? this.ultrarare.getRandomItem(rand)
 			: this.rare.getRandomItem(rand);
 	}
 
 	boolean isComplete() {
-		return !this.useless.isEmpty() && !this.common.isEmpty() && !this.uncommon.isEmpty()
-			&& !this.rare.isEmpty() && !this.ultrarare.isEmpty();
+		return !this.common.isEmpty() && !this.uncommon.isEmpty() && !this.rare.isEmpty();
 	}
 }

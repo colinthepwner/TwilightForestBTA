@@ -440,6 +440,23 @@ public class MobTFNaga extends MobMonster {
 		return true;
 	}
 
+	@Override
+	public String getLivingSound() {
+		return this.random.nextInt(3) != 0
+			? TwilightForest.MOD_ID + ":mob.tf.naga.hiss"
+			: TwilightForest.MOD_ID + ":mob.tf.naga.rattle";
+	}
+
+	@Override
+	protected String getHurtSound() {
+		return TwilightForest.MOD_ID + ":mob.tf.naga.hurt";
+	}
+
+	@Override
+	protected String getDeathSound() {
+		return TwilightForest.MOD_ID + ":mob.tf.naga.hurt";
+	}
+
 	protected void breakNearbyBlocks() {
 		int minX = MathHelper.floor(this.bb.minX() - 0.5);
 		int minY = MathHelper.floor(this.bb.minY() + 1.01);
@@ -492,7 +509,8 @@ public class MobTFNaga extends MobMonster {
 			double vx = this.random.nextGaussian() * 0.02;
 			double vy = this.random.nextGaussian() * 0.02;
 			double vz = this.random.nextGaussian() * 0.02;
-			this.world.spawnParticle("crit",
+
+			this.world.spawnParticle("smoke",
 				this.x + this.random.nextFloat() * this.bbWidth * 2.0F - this.bbWidth,
 				this.y + this.random.nextFloat() * this.bbHeight,
 				this.z + this.random.nextFloat() * this.bbWidth * 2.0F - this.bbWidth,

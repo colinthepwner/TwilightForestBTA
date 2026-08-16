@@ -1,6 +1,7 @@
 package com.twilightforest.entity;
 
 import net.minecraft.core.entity.animal.MobWolf;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.world.World;
 
 public class MobTFHostileWolf extends MobWolf {
@@ -16,6 +17,11 @@ public class MobTFHostileWolf extends MobWolf {
 	@Override
 	public int getMaxHealth() {
 		return HEALTH;
+	}
+
+	@Override
+	public boolean interact(Player player) {
+		return false;
 	}
 
 	@Override

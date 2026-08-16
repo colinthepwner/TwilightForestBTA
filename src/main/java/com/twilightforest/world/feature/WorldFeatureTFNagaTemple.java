@@ -19,7 +19,7 @@ public class WorldFeatureTFNagaTemple extends TFWorldFeature {
 	public boolean generate(World world, Random rand, int x, int y, int z) {
 		this.worldObj = world;
 
-		fillFloor(x - RADIUS, y - 1, z - RADIUS, RADIUS * 2 + 1, RADIUS * 2 + 1, Blocks.GRASS.id());
+		fill(x - RADIUS, y - 1, z - RADIUS, RADIUS * 2 + 1, 1, RADIUS * 2 + 1, Blocks.GRASS.id());
 
 		ruinFloor(world, rand, x, y, z);
 		buildWalls(world, rand, x, y, z);

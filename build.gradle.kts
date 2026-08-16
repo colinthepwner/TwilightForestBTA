@@ -61,6 +61,16 @@ dependencies {
 	localRuntime("org.lwjgl:lwjgl-openal::$lwjglNatives")
 	localRuntime("org.lwjgl:lwjgl-opengl::$lwjglNatives")
 	localRuntime("org.lwjgl:lwjgl-stb::$lwjglNatives")
+
+	// --- test harness ------------------------------------------------------------------------
+	// The test source set inherits the BTA/Loom classpath through testImplementation extending
+	// implementation, so tests run against the REAL Blocks, Materials and pathfinder classes rather
+	// than restatements of them. Mockito supplies the two things that cannot be constructed headlessly:
+	// World (abstract, enormous, wants a save directory and a chunk provider) and Mob (wants a live
+	// world). See src/test/java/com/twilightforest/entity/ai/harness/FakeWorld.java.
+	testImplementation(libs.junitJupiter)
+	testImplementation(libs.mockitoCore)
+	testRuntimeOnly(libs.junitLauncher)
 }
 java {
 	toolchain {
@@ -102,7 +112,16 @@ tasks {
 	}
 	withType<JavaExec>().configureEach { defaultCharacterEncoding = "UTF-8" }
 	withType<Javadoc>().configureEach { options.encoding = "UTF-8" }
-	withType<Test>().configureEach { defaultCharacterEncoding = "UTF-8" }
+	withType<Test>().configureEach {
+		defaultCharacterEncoding = "UTF-8"
+		useJUnitPlatform()
+		// A* searches over synthetic worlds allocate a node pool per PathfinderState.
+		maxHeapSize = "2g"
+		testLogging {
+			events("passed", "failed", "skipped")
+			exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+		}
+	}
 	withType<Jar>().configureEach {
 		licenseFile?.let {
 			from(it) {

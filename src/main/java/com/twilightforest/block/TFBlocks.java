@@ -3,6 +3,8 @@ package com.twilightforest.block;
 import com.twilightforest.block.entity.TileEntityTFBossSpawner;
 import com.twilightforest.block.entity.TileEntityTFCicada;
 import com.twilightforest.block.entity.TileEntityTFFirefly;
+import com.twilightforest.block.entity.TileEntityTFReverter;
+import com.twilightforest.block.entity.TileEntityTFTowerBuilder;
 import com.twilightforest.TwilightForest;
 import com.twilightforest.world.TFDimension;
 import com.twilightforest.world.feature.WorldFeatureTFMinersTree;
@@ -18,11 +20,14 @@ import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.material.Materials;
 import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.item.IItemConvertible;
+import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.sound.BlockSounds;
 import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.helper.BlockBuilder;
 import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public final class TFBlocks {
@@ -42,6 +47,10 @@ public final class TFBlocks {
 	public static Block<?> LEAVES_RAINBOW;
 	public static Block<?> ROOTS;
 
+	public static Block<?> TORCHBERRIES;
+
+	public static Block<?> ROOT_STRANDS;
+
 	public static Block<?> LOG_TIMEWOOD;
 	public static Block<?> LOG_TRANSWOOD;
 	public static Block<?> LOG_MINEWOOD;
@@ -56,6 +65,17 @@ public final class TFBlocks {
 	public static Block<?> SAPLING_TRANSFORMATION;
 	public static Block<?> SAPLING_MINERS;
 	public static Block<?> SAPLING_SORTING;
+
+	public static Block<?> TOWER_WOOD;
+	public static Block<?> TOWER_WOOD_ENCASED;
+	public static Block<?> TOWER_WOOD_CRACKED;
+	public static Block<?> TOWER_WOOD_MOSSY;
+
+	public static Block<?> TOWER_WOOD_INFESTED;
+
+	public static Block<?> TOWER_DEVICE;
+
+	public static Block<?> TOWER_TRANSLUCENT;
 
 	public static Block<?> MAZESTONE;
 	public static Block<?> MAZESTONE_COBBLE;
@@ -262,7 +282,82 @@ public final class TFBlocks {
 			.setCreativeInventoryPlacement(after(() -> Blocks.LEAVES_OAK))
 			.build("leaves.sorting", 2327, block -> leaves(block, SAPLING_SORTING));
 
-		TwilightForest.LOGGER.info("Registered 31 Twilight Forest blocks (ids 2301-2331).");
+		TORCHBERRIES = builder.clone()
+			.setHardness(0.0f)
+			.setLuminance(8)
+			.setBlockSound(BlockSounds.GRASS)
+			.setTags(BlockTags.MINEABLE_BY_SHEARS)
+			.setCreativeInventoryPlacement(after(() -> Blocks.TALLGRASS))
+			.build("torchberries", 2332, BlockLogicTFTorchberries::new);
+
+		ROOT_STRANDS = builder.clone()
+			.setHardness(0.0f)
+			.setBlockSound(BlockSounds.GRASS)
+			.setTags(BlockTags.MINEABLE_BY_SHEARS)
+			.setCreativeInventoryPlacement(after(() -> Blocks.TALLGRASS))
+			.build("root_strands", 2333, BlockLogicTFRootStrands::new);
+
+		registerDarkTower(builder);
+
+		TwilightForest.LOGGER.info("Registered 40 Twilight Forest blocks (ids 2301-2340).");
+	}
+
+	private static void registerDarkTower(@NotNull BlockBuilder builder) {
+
+		BlockBuilder towerWood = builder.clone()
+			.setHardness(40.0f)
+			.setResistance(10.0f)
+			.setBlockSound(BlockSounds.WOOD)
+			.setFlammability(0, 1)
+			.setTags(BlockTags.MINEABLE_BY_AXE)
+			.setCreativeInventoryPlacement(after(() -> Blocks.PLANKS_OAK));
+
+		TOWER_WOOD = towerWood.clone().build("tower_wood", 2334,
+			block -> new BlockLogicTFTowerWood(block, BlockLogicTFTowerWood.META_PLAIN));
+		TOWER_WOOD_ENCASED = towerWood.clone().build("tower_wood.encased", 2335,
+			block -> new BlockLogicTFTowerWood(block, BlockLogicTFTowerWood.META_ENCASED));
+		TOWER_WOOD_CRACKED = towerWood.clone().build("tower_wood.cracked", 2336,
+			block -> new BlockLogicTFTowerWood(block, BlockLogicTFTowerWood.META_CRACKED));
+		TOWER_WOOD_MOSSY = towerWood.clone().build("tower_wood.mossy", 2337,
+			block -> new BlockLogicTFTowerWood(block, BlockLogicTFTowerWood.META_MOSSY));
+		TOWER_WOOD_INFESTED = towerWood.clone().build("tower_wood.infested", 2338,
+			block -> new BlockLogicTFTowerWood(block, BlockLogicTFTowerWood.META_INFESTED));
+
+		TileEntityTFTowerBuilder.register();
+		TileEntityTFReverter.register();
+
+		TOWER_DEVICE = builder.clone()
+			.setHardness(10.0f)
+			.setResistance(10000.0f)
+			.setBlockSound(BlockSounds.WOOD)
+			.setTags(BlockTags.MINEABLE_BY_AXE)
+			.setTileEntity(TileEntityTFTowerBuilder::new)
+			.setCreativeInventoryPlacement(deviceMenuEntries())
+			.build("tower_device", 2339, BlockLogicTFTowerDevice::new);
+
+		TOWER_TRANSLUCENT = builder.clone()
+			.setHardness(50.0f)
+			.setResistance(2000.0f)
+			.setBlockSound(BlockSounds.GLASS)
+			.setTags(BlockTags.MINEABLE_BY_PICKAXE, BlockTags.NOT_IN_CREATIVE_MENU)
+			.build("tower_translucent", 2340, BlockLogicTFTowerTranslucent::new);
+	}
+
+	private static CreativeInventoryPlacement deviceMenuEntries() {
+		return after(() -> Blocks.PLANKS_OAK).setCustomSupplier(() -> {
+			List<ItemStack> stacks = new ArrayList<>();
+			for (int meta : new int[]{
+				BlockLogicTFTowerDevice.META_REAPPEARING_INACTIVE,
+				BlockLogicTFTowerDevice.META_VANISH_INACTIVE,
+				BlockLogicTFTowerDevice.META_VANISH_LOCKED,
+				BlockLogicTFTowerDevice.META_VANISH_UNLOCKED,
+				BlockLogicTFTowerDevice.META_BUILDER_INACTIVE,
+				BlockLogicTFTowerDevice.META_ANTIBUILDER,
+			}) {
+				stacks.add(new ItemStack(TOWER_DEVICE, 1, meta));
+			}
+			return stacks;
+		});
 	}
 
 	public static void registerPortal() {

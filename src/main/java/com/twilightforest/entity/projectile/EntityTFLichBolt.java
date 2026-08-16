@@ -38,7 +38,8 @@ public class EntityTFLichBolt extends EntityTFProjectile {
 			double dx = (this.random.nextFloat() - 0.5F) * sparkle;
 			double dy = (this.random.nextFloat() - 0.5F) * sparkle;
 			double dz = (this.random.nextFloat() - 0.5F) * sparkle;
-			this.world.spawnParticle("mobSpell", px, py, pz, dx, dy, dz, 0, false);
+
+			this.world.spawnParticle("puffrgb", px, py, pz, dx, dy, dz, 0, false);
 		}
 	}
 }

@@ -382,7 +382,8 @@ public final class TFGeometryBridge {
 		}
 	}
 
-	private static final List<String> BUILTIN_MODEL_IDS = Arrays.asList("mosquitoswarm");
+	private static final List<String> BUILTIN_MODEL_IDS =
+		Arrays.asList("mosquitoswarm", "towergolem", "towertermite");
 
 	private static void publish(Result result) {
 		convertedCount = result.converted.size();

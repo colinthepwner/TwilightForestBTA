@@ -42,7 +42,7 @@ public final class TFAssetBridge {
 	private static final String STAMP = "bridge-source.txt";
 	private static final String SOUND_INDEX = "/assets/twilightforest/sounds/sounds.json";
 
-	private static final int BRIDGE_REVISION = 33;
+	private static final int BRIDGE_REVISION = 36;
 
 	private static final int MAX_NESTING = 3;
 

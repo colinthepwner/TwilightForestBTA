@@ -63,8 +63,11 @@ public class RendererTFTinyFirefly extends EntityRenderer<EntityTFTinyFirefly> {
 		GLRenderer.setAlphaTest(ALPHA_TEST);
 		GLRenderer.enableState(State.BLEND);
 
+		GLRenderer.disableState(State.CULL_FACE);
+
 		GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE);
-		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, brightness);
+
+		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, Math.min(brightness, 1.0F));
 
 		float half = QUAD_SIZE * size * 0.5F;
 

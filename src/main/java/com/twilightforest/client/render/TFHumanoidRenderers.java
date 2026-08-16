@@ -1,6 +1,7 @@
 package com.twilightforest.client.render;
 
 import com.twilightforest.entity.MobTFLich;
+import com.twilightforest.entity.MobTFMinotaur;
 import com.twilightforest.entity.MobTFRedcap;
 import com.twilightforest.entity.MobTFSkeletonDruid;
 import com.twilightforest.entity.MobTFWraith;
@@ -17,6 +18,12 @@ public final class TFHumanoidRenderers {
 	public static final class Redcap extends MobRendererTFBiped<MobTFRedcap> {
 		public Redcap() {
 			super("geometry.redcap", 0.0D, 0.5F);
+		}
+	}
+
+	public static final class Minotaur extends MobRendererTFBiped<MobTFMinotaur> {
+		public Minotaur() {
+			super("geometry.minotaur", 0.0D, 0.625F);
 		}
 	}
 

@@ -75,6 +75,19 @@ public final class TFEntities {
 
 		register(EntityTFSlimeProjectile.class, "slimeprojectile", EntityTFSlimeProjectile::new);
 
+		register(MobTFMinotaur.class, "minotaur", MobTFMinotaur::new);
+		register(MobTFMazeSlime.class, "mazeslime", MobTFMazeSlime::new);
+
+		register(MobTFTowerGhast.class, "towerghast", MobTFTowerGhast::new);
+		register(MobTFTowerBoss.class, "urghast", MobTFTowerBoss::new);
+		register(MobTFMiniGhast.class, "minighast", MobTFMiniGhast::new);
+		register(MobTFTowerBroodling.class, "towerbroodling", MobTFTowerBroodling::new);
+		register(MobTFTowerGolem.class, "towergolem", MobTFTowerGolem::new);
+		register(MobTFTowerTermite.class, "towertermite", MobTFTowerTermite::new);
+
+		register(MobTFMinoshroom.class, "minoshroom", MobTFMinoshroom::new);
+		register(MobTFQuestRam.class, "questram", MobTFQuestRam::new);
+
 		TwilightForest.LOGGER.info("Registered {} Twilight Forest entities.", REGISTERED_IDS.size());
 	}
 }

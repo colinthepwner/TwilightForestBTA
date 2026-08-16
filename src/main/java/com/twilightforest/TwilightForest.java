@@ -24,6 +24,8 @@ public class TwilightForest implements ModInitializer {
 		TFConfig.init();
 		CommonEvents.BEFORE_GAME_START.listen(Key.of(MOD_ID), this::beforeGameStart);
 		CommonEvents.AFTER_GAME_START.listen(Key.of(MOD_ID), this::afterGameStart);
+
+		CommonEvents.RECIPES_NAMESPACE_INIT.listen(Key.of(MOD_ID), TFRecipeNamespaces::initNamespaces);
 		LOGGER.info("Twilight Forest initialized.");
 	}
 

@@ -11,9 +11,17 @@ import com.twilightforest.entity.MobTFNagaSegment;
 import com.twilightforest.entity.MobTFBunny;
 import com.twilightforest.entity.MobTFFireBeetle;
 import com.twilightforest.entity.MobTFKobold;
+import com.twilightforest.entity.MobTFMiniGhast;
+import com.twilightforest.entity.MobTFMinoshroom;
+import com.twilightforest.entity.MobTFMinotaur;
 import com.twilightforest.entity.MobTFMobileFirefly;
+import com.twilightforest.entity.MobTFTowerBoss;
+import com.twilightforest.entity.MobTFTowerGhast;
+import com.twilightforest.entity.MobTFTowerGolem;
+import com.twilightforest.entity.MobTFTowerTermite;
 import com.twilightforest.entity.MobTFMosquitoSwarm;
 import com.twilightforest.entity.MobTFPinchBeetle;
+import com.twilightforest.entity.MobTFQuestRam;
 import com.twilightforest.entity.MobTFRedcapSapper;
 import com.twilightforest.entity.MobTFSlimeBeetle;
 import com.twilightforest.entity.MobTFPenguin;
@@ -73,8 +81,22 @@ public final class TFEntityRenderers {
 		dispatcher.assignRenderer(MobTFMosquitoSwarm.class,
 			new TFHostileRenderers.Swarm<>("geometry.mosquitoswarm", 0.5F));
 
+		dispatcher.assignRenderer(MobTFMinotaur.class, new TFHumanoidRenderers.Minotaur());
+
+		dispatcher.assignRenderer(MobTFMinoshroom.class, new TFBossRenderers.Minoshroom());
+		dispatcher.assignRenderer(MobTFQuestRam.class, new TFBossRenderers.QuestRam());
+
 		dispatcher.assignRenderer(MobTFNaga.class, new TFMiscRenderers.Naga());
 		dispatcher.assignRenderer(MobTFNagaSegment.class, new TFMiscRenderers.NagaSegment());
+
+		dispatcher.assignRenderer(MobTFTowerGhast.class,
+			new TFTowerRenderers.Ghast<>(0.625F, 8.0F));
+		dispatcher.assignRenderer(MobTFTowerBoss.class,
+			new TFTowerRenderers.Ghast<>(0.625F, 32.0F));
+		dispatcher.assignRenderer(MobTFMiniGhast.class,
+			TFTowerRenderers.Ghast.unscaled(0.625F));
+		dispatcher.assignRenderer(MobTFTowerGolem.class, new TFTowerRenderers.Golem());
+		dispatcher.assignRenderer(MobTFTowerTermite.class, new TFTowerRenderers.Termite());
 
 	}
 }

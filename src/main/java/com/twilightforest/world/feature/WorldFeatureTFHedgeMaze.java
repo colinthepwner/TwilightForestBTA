@@ -42,7 +42,7 @@ public class WorldFeatureTFHedgeMaze extends TFWorldFeature {
 		this.maze.tall = 3;
 		this.maze.roots = 3;
 
-		fillFloor(sx, y - 1, sz, MAZE_CELLS * 3, MAZE_CELLS * 3, Blocks.GRASS.id());
+		fill(sx, y - 1, sz, MAZE_CELLS * 3, 1, MAZE_CELLS * 3, Blocks.GRASS.id());
 
 		lantern(world, sx - 1, y, sz + 23, 1);
 		lantern(world, sx - 1, y, sz + 28, 1);

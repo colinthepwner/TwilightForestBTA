@@ -37,7 +37,7 @@ public class ComponentTFTowerWing extends StructureComponentTF {
 	protected static final int STONE = Blocks.STONE.id();
 	protected static final int MOSSY_COBBLE = Blocks.COBBLE_STONE_MOSSY.id();
 
-	protected static final int[] STAIR_META = {1, 0, 3, 2};
+	protected static final int[] STAIR_META = StructureComponentTF.STAIR_META;
 
 	private static final String HEDGE_SPIDER = TwilightForest.MOD_ID + ":hedgespider";
 	private static final String SWARM_SPIDER = TwilightForest.MOD_ID + ":swarmspider";
@@ -243,28 +243,7 @@ public class ComponentTFTowerWing extends StructureComponentTF {
 		return true;
 	}
 
-	protected static final BlockSelector TOWER_STONE = new BlockSelector() {
-		@Override
-		public void select(Random rand, int x, int y, int z, boolean shell) {
-			if (!shell) {
-				this.blockId = 0;
-				this.meta = 0;
-				return;
-			}
-
-			this.meta = 0;
-			float f = rand.nextFloat();
-			if (f < 0.2F) {
-				this.blockId = STONE_BRICK;
-			} else if (f < 0.5F) {
-				this.blockId = STONE_BRICK_MOSSY;
-			} else if (f < 0.55F) {
-				this.blockId = STONE_BRICK;
-			} else {
-				this.blockId = STONE_BRICK;
-			}
-		}
-	};
+	protected static final BlockSelector TOWER_STONE = getStrongholdStones();
 
 	protected void decorateThisTower(World world, Random rand, BoundingBox clip) {
 		Random decoRNG = new Random(world.getRandomSeed()
@@ -646,16 +625,6 @@ public class ComponentTFTowerWing extends StructureComponentTF {
 			case 2 -> this.size / 2 + 1;
 			case 3 -> 1;
 			default -> this.size / 2;
-		};
-	}
-
-	protected int getLadderMeta(int ladderDir) {
-		return switch ((this.coordBaseMode + ladderDir) % 4) {
-			case 0 -> 4;
-			case 1 -> 2;
-			case 2 -> 5;
-			case 3 -> 3;
-			default -> -1;
 		};
 	}
 

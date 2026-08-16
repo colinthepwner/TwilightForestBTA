@@ -9,5 +9,8 @@ public class WorldFeatureTFTreeOfTransformation extends WorldFeatureTFCanopyTree
 		this.treeBlock = TFBlocks.LOG_TRANSWOOD.id();
 		this.leafBlock = TFBlocks.LEAVES_TRANSFORMATION.id();
 		this.minHeight = 11;
+
+		this.chanceAddFirstFive = Integer.MAX_VALUE;
+		this.chanceAddSecondFive = Integer.MAX_VALUE;
 	}
 }

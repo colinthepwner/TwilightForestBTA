@@ -85,16 +85,6 @@ public class WorldFeatureTFHillMaze extends TFWorldFeature {
 		return false;
 	}
 
-	private void fill(int x, int y, int z, int width, int height, int depth, int blockId) {
-		for (int dx = 0; dx < width; dx++) {
-			for (int dy = 0; dy < height; dy++) {
-				for (int dz = 0; dz < depth; dz++) {
-					this.worldObj.setBlockAndMetadataRaw(x + dx, y + dy, z + dz, blockId, 0);
-				}
-			}
-		}
-	}
-
 	private void decorateDeadEnds() {
 		for (int x = 0; x < cellCount(); x++) {
 			for (int z = 0; z < cellCount(); z++) {

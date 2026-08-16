@@ -1,5 +1,7 @@
 {
 	"model_paths": [
-		"/assets/twilightforest/models/entity/mosquitoswarm.json"
+		"/assets/twilightforest/models/entity/mosquitoswarm.json",
+		"/assets/twilightforest/models/entity/towergolem.json",
+		"/assets/twilightforest/models/entity/towertermite.json"
 	]
 }

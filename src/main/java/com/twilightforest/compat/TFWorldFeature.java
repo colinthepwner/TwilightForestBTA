@@ -170,10 +170,12 @@ public abstract class TFWorldFeature extends WorldFeature {
 		}
 	}
 
-	protected void fillFloor(int x, int y, int z, int width, int depth, int blockValue) {
+	protected void fill(int x, int y, int z, int width, int height, int depth, int blockValue) {
 		for (int dx = 0; dx < width; dx++) {
-			for (int dz = 0; dz < depth; dz++) {
-				this.putBlock(x + dx, y, z + dz, blockValue, true);
+			for (int dy = 0; dy < height; dy++) {
+				for (int dz = 0; dz < depth; dz++) {
+					this.putBlock(x + dx, y + dy, z + dz, blockValue, true);
+				}
 			}
 		}
 	}

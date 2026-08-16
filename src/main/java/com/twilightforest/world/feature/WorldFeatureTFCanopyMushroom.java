@@ -88,6 +88,8 @@ public class WorldFeatureTFCanopyMushroom extends TFWorldFeature {
 	}
 
 	public void drawMushroomCircle(int sx, int sy, int sz, int rad, int blockValue, boolean priority) {
+		int cap = BlockLogicTFGiantMushroom.CAP;
+
 		for (int dx = 0; dx <= rad; dx++) {
 			for (int dz = 0; dz <= rad; dz++) {
 				int dist = (int) (Math.max(dx, dz) + Math.min(dx, dz) * 0.5);
@@ -96,16 +98,32 @@ public class WorldFeatureTFCanopyMushroom extends TFWorldFeature {
 				}
 
 				if (dx == 0) {
-					this.putBlockAndMetadata(sx, sy, sz + dz, blockValue, this.leafMeta, priority);
-					this.putBlockAndMetadata(sx, sy, sz - dz, blockValue, this.leafMeta, priority);
+
+					if (dz < rad) {
+						this.putBlockAndMetadata(sx, sy, sz + dz, blockValue, cap, priority);
+						this.putBlockAndMetadata(sx, sy, sz - dz, blockValue, cap, priority);
+					} else {
+						this.putBlockAndMetadata(sx, sy, sz + dz, blockValue, 8, priority);
+						this.putBlockAndMetadata(sx, sy, sz - dz, blockValue, 2, priority);
+					}
 				} else if (dz == 0) {
-					this.putBlockAndMetadata(sx + dx, sy, sz, blockValue, this.leafMeta, priority);
-					this.putBlockAndMetadata(sx - dx, sy, sz, blockValue, this.leafMeta, priority);
-				} else if (dist <= rad) {
-					this.putBlockAndMetadata(sx + dx, sy, sz + dz, blockValue, this.leafMeta, priority);
-					this.putBlockAndMetadata(sx + dx, sy, sz - dz, blockValue, this.leafMeta, priority);
-					this.putBlockAndMetadata(sx - dx, sy, sz + dz, blockValue, this.leafMeta, priority);
-					this.putBlockAndMetadata(sx - dx, sy, sz - dz, blockValue, this.leafMeta, priority);
+					if (dx < rad) {
+						this.putBlockAndMetadata(sx + dx, sy, sz, blockValue, cap, priority);
+						this.putBlockAndMetadata(sx - dx, sy, sz, blockValue, cap, priority);
+					} else {
+						this.putBlockAndMetadata(sx + dx, sy, sz, blockValue, 6, priority);
+						this.putBlockAndMetadata(sx - dx, sy, sz, blockValue, 4, priority);
+					}
+				} else if (dist < rad) {
+					this.putBlockAndMetadata(sx + dx, sy, sz + dz, blockValue, cap, priority);
+					this.putBlockAndMetadata(sx + dx, sy, sz - dz, blockValue, cap, priority);
+					this.putBlockAndMetadata(sx - dx, sy, sz + dz, blockValue, cap, priority);
+					this.putBlockAndMetadata(sx - dx, sy, sz - dz, blockValue, cap, priority);
+				} else if (dist == rad) {
+					this.putBlockAndMetadata(sx + dx, sy, sz + dz, blockValue, 9, priority);
+					this.putBlockAndMetadata(sx + dx, sy, sz - dz, blockValue, 3, priority);
+					this.putBlockAndMetadata(sx - dx, sy, sz + dz, blockValue, 7, priority);
+					this.putBlockAndMetadata(sx - dx, sy, sz - dz, blockValue, 1, priority);
 				}
 			}
 		}

@@ -19,3 +19,31 @@ guidebook.section.mob.lichbolt.name=Lich Bolt
 
 # The firefly spark thrown off by a firefly. Nothing spawns it yet -- see EntityTFTinyFirefly.
 guidebook.section.mob.tinyfirefly.name=Firefly
+
+# The two bosses that finish the mod.
+#
+# ⚠️ "Minoshroom" is upstream's own name and is not a typo for Minotaur -- it is a minotaur crossed
+# with a mooshroom, which is what the skin, the mushroom houses around it and the bowl of stew it
+# drops are all saying. The entity ID is `minoshroom`; its SKIN is minoshroomtaur.png, which is a
+# different string and belongs in asset-bridge.properties, not here.
+guidebook.section.mob.minoshroom.name=Minoshroom
+
+# ⚠️ "Questing Ram", not "Quest Ram". Upstream's class is EntityTFQuestRam and its display name is
+# the longer form; the id here has to stay `questram` because that is what TFEntities registers and
+# what a saved world holds.
+guidebook.section.mob.questram.name=Questing Ram
+
+# --- Sound subtitles ------------------------------------------------------------------------------
+# The strings shown when subtitles are on, keyed by whatever `subtitle` a sound event declares in
+# assets/twilightforest/sounds/sounds.json.
+#
+# ⚠️ This is the port's own layer, not Benimatic's. Minecraft 1.4.7 had no subtitles at all, so there
+# is nothing upstream to be faithful to and nothing in the archive to bridge -- the key names and the
+# wording are both decisions taken here.
+#
+# ONE KEY PER MOB, not one per event, which is the convention sounds.json already set for the raven
+# (caw and squawk share a key) and the kobold (mutter, hurt and die share one). So the Naga's key has
+# to cover its hiss, its rattle AND its hurt, and the wording below is loose enough to.
+subtitles.twilightforest.naga=Naga hisses
+subtitles.twilightforest.redcap=Redcap mutters
+subtitles.twilightforest.wraith=Wraith moans

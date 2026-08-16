@@ -48,17 +48,17 @@ public class MobTFWraith extends MobFlying implements Enemy {
 
 	@Override
 	public String getLivingSound() {
-		return "mob.zombie";
+		return TwilightForest.MOD_ID + ":mob.tf.wraith.wraith";
 	}
 
 	@Override
 	protected String getHurtSound() {
-		return "mob.zombiehurt";
+		return TwilightForest.MOD_ID + ":mob.tf.wraith.wraith";
 	}
 
 	@Override
 	protected String getDeathSound() {
-		return "mob.zombiedeath";
+		return TwilightForest.MOD_ID + ":mob.tf.wraith.wraith";
 	}
 
 	@Override

@@ -39,8 +39,12 @@ public class MobTFSwarmSpider extends MobSpider {
 		super.tick();
 	}
 
+	protected MobTFSwarmSpider createSibling() {
+		return new MobTFSwarmSpider(this.world, false);
+	}
+
 	private boolean spawnAnother() {
-		MobTFSwarmSpider another = new MobTFSwarmSpider(this.world, false);
+		MobTFSwarmSpider another = createSibling();
 
 		double sx = this.x + (this.random.nextDouble() - this.random.nextDouble()) * 4.0;
 		double sy = this.y + this.random.nextInt(3) - 1.0;

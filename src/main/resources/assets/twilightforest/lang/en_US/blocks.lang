@@ -31,6 +31,15 @@ tile.twilightforest.hedge.desc=A wall of thorns. It bites anything that touches 
 tile.twilightforest.log.darkwood.desc=Black-barked wood from the dark forest.
 tile.twilightforest.leaves.darkwood.desc=A solid canopy, not a loose one. It shuts out the sky, and unlike a hedge it is harmless.
 tile.twilightforest.roots.desc=Grows under a dark forest tree rather than on top of one. Breaks into sticks.
+# The description leads with "hangs" because that is the thing a player will get wrong: it is the only
+# plant in the game that needs a block ABOVE it, and one placed hopefully on a cave floor vanishes on
+# the next block update. Soil rather than stone is the second surprise and is upstream's own rule --
+# see BlockLogicTFTorchberries.canPlaceRootBelow.
+tile.twilightforest.torchberries.desc=Hangs from soil, never stone, and glows half as bright as a torch. Found where a cave has cut in under the forest floor.
+# Same hanging rule as the torchberry above, so the description leads with the SECOND surprise
+# instead: bare hands get nothing. That is upstream's -- BlockTFPlant.getBlockDropped is an empty
+# case for metadata 14 and only its shear path yields the block.
+tile.twilightforest.root_strands.desc=Hangs from soil or from the roots above it, in long chains. Bare hands tear it apart; shears take it whole.
 tile.twilightforest.leaves.rainbow.desc=No two are the same colour. The shade depends on where the leaf grew, not on the season or the soil.
 
 # --- The four magic trees ---------------------------------------------------------------------------
@@ -73,3 +82,29 @@ tile.twilightforest.boss_spawner.desc=Something is waiting. It fires once, from 
 # its own: a player only ever holds the cap form.
 tile.twilightforest.mushroom_giant.brown.name=Giant Brown Mushroom
 tile.twilightforest.mushroom_giant.red.name=Giant Red Mushroom
+
+# --- The Ur-Ghast's dark tower ----------------------------------------------------------------------
+# Towerwood. The description that matters is the asymmetry: hardness 40 against a blast resistance of
+# 10, so a pickaxe is hopeless and TNT is not. A player who reads only one of these lines should come
+# away knowing not to try mining the tower.
+tile.twilightforest.tower_wood.desc=The dark tower's timber. Twice as hard as obsidian to mine, and no tougher than stone against an explosion.
+tile.twilightforest.tower_wood.encased.desc=The tower's framing timber. Same stuff, bound at the edges.
+tile.twilightforest.tower_wood.cracked.desc=Towerwood that has started to give.
+tile.twilightforest.tower_wood.mossy.desc=Towerwood the forest has begun to take back.
+# ⚠️ Says outright that it drops nothing. The block is a trap -- it is the only towerwood you can break
+# by hand, and breaking it costs you the block and gains you a termite -- and a trap the player is
+# warned about is a mechanic rather than an annoyance.
+tile.twilightforest.tower_wood.infested.desc=Soft, and hollow. It yields nothing, and something lives in it.
+
+# The devices, keyed by metadata. Only the six the creative menu offers are described; the transient
+# "active" states are on screen for a fifth of a second and nobody reads a tooltip for them.
+tile.twilightforest.tower_device.0.desc=Touch it or power it and it goes, taking its neighbours with it -- then comes back four seconds later.
+tile.twilightforest.tower_device.2.desc=Touch it or power it and it goes for good, taking its neighbours with it. Cannot be mined.
+tile.twilightforest.tower_device.4.desc=Holds every vanishing block within two of it. A tower key opens it.
+tile.twilightforest.tower_device.5.desc=A lock that has been opened. It vanishes like any other now.
+tile.twilightforest.tower_device.6.desc=Power it and it lays a bridge of tower blocks in whatever direction the nearest player is looking.
+tile.twilightforest.tower_device.9.desc=Remembers the nine blocks around it in every direction and undoes whatever you build there.
+# The two [WIP] pairs. Upstream gives them a name, a texture and nothing else, and saying so is better
+# than letting a player hunt for a mechanism that was never written.
+tile.twilightforest.tower_device.10.desc=Part of the Ur-Ghast's tower. It does nothing yet.
+tile.twilightforest.tower_device.12.desc=Part of the Ur-Ghast's tower. It does nothing yet.

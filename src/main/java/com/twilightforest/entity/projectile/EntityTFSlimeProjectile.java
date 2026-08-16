@@ -43,7 +43,7 @@ public class EntityTFSlimeProjectile extends EntityTFProjectile {
 	@Override
 	public void explode() {
 		for (int i = 0; i < 8; i++) {
-			this.world.spawnParticle("slime", this.x, this.y, this.z,
+			this.world.spawnParticle("slimechunk", this.x, this.y, this.z,
 				this.random.nextGaussian() * 0.05,
 				this.random.nextDouble() * 0.2,
 				this.random.nextGaussian() * 0.05, 0, false);
@@ -59,7 +59,7 @@ public class EntityTFSlimeProjectile extends EntityTFProjectile {
 			double px = this.x + 0.5 * (this.random.nextDouble() - this.random.nextDouble());
 			double py = this.y + 0.5 * (this.random.nextDouble() - this.random.nextDouble());
 			double pz = this.z + 0.5 * (this.random.nextDouble() - this.random.nextDouble());
-			this.world.spawnParticle("slime", px, py, pz, 0.0, 0.0, 0.0, 0, false);
+			this.world.spawnParticle("slimechunk", px, py, pz, 0.0, 0.0, 0.0, 0, false);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package com.twilightforest.block.entity;
 import com.twilightforest.TwilightForest;
 import com.twilightforest.block.TFBlocks;
 import com.twilightforest.entity.MobTFNaga;
+import com.twilightforest.entity.MobTFTowerBoss;
 import net.minecraft.core.block.entity.TileEntityMobSpawner;
 import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.entity.Mob;
@@ -107,6 +108,8 @@ public class TileEntityTFBossSpawner extends TileEntityMobSpawner {
 
 		if (boss instanceof MobTFNaga naga) {
 			naga.setHome(this.tilePos.x, this.tilePos.y, this.tilePos.z);
+		} else if (boss instanceof MobTFTowerBoss urGhast) {
+			urGhast.setSpawnerHome(this.tilePos.x, this.tilePos.y, this.tilePos.z);
 		}
 		boss.spawnExplosionParticle();
 

@@ -1,5 +1,6 @@
 package com.twilightforest.entity;
 
+import com.twilightforest.world.chunk.TFWorldConstants;
 import net.minecraft.core.entity.MobFlying;
 import net.minecraft.core.entity.animal.AmbientCreature;
 import net.minecraft.core.util.helper.MathHelper;
@@ -7,6 +8,12 @@ import net.minecraft.core.world.World;
 import net.minecraft.core.world.pos.TilePos;
 
 public class MobTFMobileFirefly extends MobFlying implements AmbientCreature {
+
+	private static final int SPAWN_CEILING = 63;
+
+	private static final int LIGHT_ROLL = 4;
+
+	private static final int SPAWN_FLOOR = TFWorldConstants.SEA_LEVEL;
 
 	private TilePos flightTarget;
 
@@ -22,17 +29,29 @@ public class MobTFMobileFirefly extends MobFlying implements AmbientCreature {
 
 	@Override
 	protected String getHurtSound() {
-		return "mob.bat.hurt";
+		return "";
 	}
 
 	@Override
 	protected String getDeathSound() {
-		return "mob.bat.death";
+		return "";
 	}
 
 	@Override
 	protected void causeFallDamage(float distance) {
 
+	}
+
+	@Override
+	public boolean canSpawnHere() {
+		int y = MathHelper.floor(this.bb.minY);
+		if (y >= SPAWN_CEILING || y < SPAWN_FLOOR) {
+			return false;
+		}
+
+		int light = this.world.getBlockLightValue(
+			MathHelper.floor(this.x), y, MathHelper.floor(this.z));
+		return light <= this.random.nextInt(LIGHT_ROLL) && super.canSpawnHere();
 	}
 
 	@Override

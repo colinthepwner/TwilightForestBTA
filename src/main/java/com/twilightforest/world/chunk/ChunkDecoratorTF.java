@@ -11,7 +11,9 @@ import com.twilightforest.world.feature.WorldFeatureTFCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFDarkCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFFoundation;
 import com.twilightforest.world.feature.WorldFeatureTFGlacierMaze;
+import com.twilightforest.world.feature.WorldFeatureTFHangBerries;
 import com.twilightforest.world.feature.WorldFeatureTFHollowTree;
+import com.twilightforest.world.feature.WorldFeatureTFHugeCanopyTree;
 import com.twilightforest.world.feature.WorldFeatureTFMangroveTree;
 import com.twilightforest.world.feature.WorldFeatureTFMonolith;
 import com.twilightforest.world.feature.WorldFeatureTFMushrooms;
@@ -137,7 +139,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 		if (!loggedFirstChunk) {
 			loggedFirstChunk = true;
 			com.twilightforest.TwilightForest.LOGGER.info(
-				"Decorating the first Twilight Forest 1.7.1 chunk: ({}, {}) as biome '{}', "
+				"Decorating the first Twilight Forest chunk: ({}, {}) as biome '{}', "
 					+ "surface y={}, nearest feature type {}.",
 				chunkX, chunkZ,
 				net.minecraft.core.data.registry.Registries.BIOMES.getKey(biome),
@@ -148,7 +150,7 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 		TFStructures.generate(this.world, this.rand, chunkX, chunkZ);
 		watch("structures", chunkX, chunkZ);
 
-		boolean insideStructure = nearType > 3;
+		boolean insideStructure = !TFFeature.areChunkDecorationsEnabled(nearType);
 
 		if (!insideStructure && this.rand.nextInt(4) == 0) {
 			int lx = mapX + this.rand.nextInt(16) + 8;
@@ -176,15 +178,16 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			}
 		}
 
-		if (nearType == TFFeature.HEDGE_MAZE || nearType == TFFeature.NAGA_COURTYARD
-			|| nearType == TFFeature.LICH_TOWER || nearType == 9) {
-			return;
-		}
+		hangBerries(mapX, mapZ);
 
 		int hereType = TFFeature.featureType(this.world, mapX >> 4, mapZ >> 4);
 		if (hereType == TFFeature.GLACIER_FEATURE) {
 			new WorldFeatureTFGlacierMaze(1).place(this.world, this.rand,
 				mapX + 8, TFWorldConstants.SEA_LEVEL + 10, mapZ + 8);
+		}
+
+		if (insideStructure) {
+			return;
 		}
 
 		Counts counts = Counts.of(biome);
@@ -224,6 +227,9 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 			} else if (biome == TFBiomes.DARK_FOREST) {
 
 				new WorldFeatureTFDarkCanopyTree().place(this.world, this.rand, rx, ry, rz);
+			} else if (this.rand.nextInt(24) == 0) {
+
+				new WorldFeatureTFHugeCanopyTree().place(this.world, this.rand, rx, ry, rz);
 			} else {
 				new WorldFeatureTFCanopyTree().place(this.world, this.rand, rx, ry, rz);
 			}
@@ -294,6 +300,15 @@ public class ChunkDecoratorTF implements ChunkDecorator {
 
 		return LAVA_FLOOR
 			+ (rawY * (ceiling - LAVA_FLOOR)) / (TFWorldConstants.WORLD_HEIGHT - 1);
+	}
+
+	private void hangBerries(int mapX, int mapZ) {
+		for (int i = 0; i < 3; i++) {
+			int rx = mapX + this.rand.nextInt(16) + 8;
+			int rz = mapZ + this.rand.nextInt(16) + 8;
+			new WorldFeatureTFHangBerries()
+				.place(this.world, this.rand, rx, TFWorldConstants.TERRAIN_HEIGHT, rz);
+		}
 	}
 
 	private int groundAt(int x, int z) {

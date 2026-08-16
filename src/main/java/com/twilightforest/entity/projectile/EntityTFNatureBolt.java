@@ -43,7 +43,8 @@ public class EntityTFNatureBolt extends EntityTFProjectile {
 			double px = this.x + 0.5 * (this.random.nextDouble() - this.random.nextDouble());
 			double py = this.y + 0.5 * (this.random.nextDouble() - this.random.nextDouble());
 			double pz = this.z + 0.5 * (this.random.nextDouble() - this.random.nextDouble());
-			this.world.spawnParticle("crit", px, py, pz, 0.0, 0.0, 0.0, 0, false);
+
+			this.world.spawnParticle("puffrgb", px, py, pz, 0.25, 0.8, 0.25, 0, false);
 		}
 	}
 }

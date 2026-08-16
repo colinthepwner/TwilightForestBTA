@@ -8,6 +8,7 @@ import com.twilightforest.world.treasure.TFTreasure;
 import com.twilightforest.world.treasure.TFTreasureTable;
 import net.minecraft.core.world.World;
 
+import java.util.List;
 import java.util.Random;
 
 public class ComponentTFHollowHill extends StructureComponentTF {
@@ -31,6 +32,16 @@ public class ComponentTFHollowHill extends StructureComponentTF {
 	@Override
 	public int featureType() {
 		return this.hsize;
+	}
+
+	@Override
+	public void buildComponent(StructureComponentTF parent, List<StructureComponentTF> pieces,
+	                           Random rand) {
+		ComponentTFHillMaze maze = new ComponentTFHillMaze(1,
+			this.boundingBox.minX + this.radius, ComponentTFHillMaze.mazeY(),
+			this.boundingBox.minZ + this.radius, this.hsize);
+		pieces.add(maze);
+		maze.buildComponent(maze, pieces, rand);
 	}
 
 	@Override
@@ -70,14 +81,8 @@ public class ComponentTFHollowHill extends StructureComponentTF {
 	}
 
 	private void placeTreasureChest(World world, Random rand, int x, int y, int z, BoundingBox clip) {
-		int wx = getXWithOffset(x, z);
-		int wy = getYWithOffset(y);
-		int wz = getZWithOffset(x, z);
-		if (!clip.contains(wx, wy, wz) || world.getBlockId(wx, wy, wz) == Blocks.CHEST_PLANKS_OAK.id()) {
-			return;
-		}
 
-		TFTreasure.place(world, rand, wx, wy, wz, HILL_TABLES[this.hsize]);
+		placeTreasure(world, rand, x, y, z, HILL_TABLES[this.hsize], clip);
 	}
 
 	private void placeOreStalactite(World world, int x, int y, int z, BoundingBox clip) {

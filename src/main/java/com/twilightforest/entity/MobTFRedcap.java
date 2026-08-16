@@ -69,9 +69,22 @@ public class MobTFRedcap extends MobMonster implements IItemHolding {
 		this.lefty = this.random.nextBoolean();
 		this.shy = true;
 
-		this.mobDrops.add(new WeightedRandomLootObject(Items.ARMOR_BOOTS_IRON.getDefaultStack(), 1, 1));
-		this.mobDrops.add(new WeightedRandomLootObject(Items.TOOL_PICKAXE_IRON.getDefaultStack(), 1, 1));
+		this.mobDrops.add(new WeightedRandomLootObject(Items.COAL.getDefaultStack(), 0, 2));
 	}
+
+	@Override
+	protected void dropDeathItems() {
+		super.dropDeathItems();
+
+		if (this.random.nextFloat() < EQUIPMENT_DROP_CHANCE) {
+			this.dropItem(Items.TOOL_PICKAXE_IRON.getDefaultStack(), 0.0F);
+		}
+		if (this.random.nextFloat() < EQUIPMENT_DROP_CHANCE) {
+			this.dropItem(Items.ARMOR_BOOTS_IRON.getDefaultStack(), 0.0F);
+		}
+	}
+
+	private static final float EQUIPMENT_DROP_CHANCE = 0.2F;
 
 	@Override
 	public int getMaxHealth() {
@@ -110,17 +123,17 @@ public class MobTFRedcap extends MobMonster implements IItemHolding {
 
 	@Override
 	public String getLivingSound() {
-		return "mob.zombie";
+		return TwilightForest.MOD_ID + ":mob.tf.redcap.redcap";
 	}
 
 	@Override
 	protected String getHurtSound() {
-		return "mob.zombiehurt";
+		return TwilightForest.MOD_ID + ":mob.tf.redcap.hurt";
 	}
 
 	@Override
 	protected String getDeathSound() {
-		return "mob.zombiedeath";
+		return TwilightForest.MOD_ID + ":mob.tf.redcap.die";
 	}
 
 	@Override

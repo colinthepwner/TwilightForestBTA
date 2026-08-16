@@ -25,7 +25,7 @@ public class BlockLogicTFHedge extends BlockLogic {
 	}
 
 	private BlockLogicTFHedge(Block<?> block, boolean damaging) {
-		super(block, Materials.LEAVES);
+		super(block, Materials.CLAY);
 		this.damaging = damaging;
 	}
 
