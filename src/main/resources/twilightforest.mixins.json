@@ -9,7 +9,9 @@
     "EntityItemPortalMixin",
     "FireflySpawnMixin",
     "GlacierThawMixin",
+    "NagaArmorerMixin",
     "PortalHandlerMixin",
+    "StructureSpawnListMixin",
     "TwilightDaytimeMixin"
   ],
   "client": [

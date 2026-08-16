@@ -14,8 +14,6 @@ public final class TFBossRenderers {
 
 	private static final float RATE = 0.6662F;
 
-	private static final float SPINE = (float) (Math.PI / 2.0);
-
 	public static final class Minoshroom extends MobRendererTFBiped<MobTFMinoshroom> {
 
 		private static final float LEG_SWING = 1.4F;
@@ -31,9 +29,6 @@ public final class TFBossRenderers {
 		@Override
 		protected void poseExtra(StaticEntityModel model, MobTFMinoshroom entity, float limbSwing,
 		                         float limbYaw, float partialTick) {
-
-			setRotX(model, "barrel", SPINE);
-			setRotX(model, "udders", SPINE);
 
 			float phaseA = MathHelper.cos(limbSwing * RATE) * LEG_SWING * limbYaw;
 			float phaseB = MathHelper.cos(limbSwing * RATE + (float) Math.PI) * LEG_SWING * limbYaw;

@@ -408,6 +408,8 @@ public final class TFGeometryBridge {
 		String name;
 		String parent;
 
+		String boxName;
+
 		boolean composedInOriginal;
 		float pointX, pointY, pointZ;
 		float angleX, angleY, angleZ;
@@ -427,12 +429,26 @@ public final class TFGeometryBridge {
 
 	private static final Object THIS = new Object();
 
-	private static final class BoneArray {
-		String field = "array";
-		final Bone[] elements;
+	private static final class TrackedArray {
 
-		BoneArray(int size) {
-			this.elements = new Bone[size];
+		private static final int LIMIT = 4096;
+
+		String field = "array";
+		final Object[] elements;
+
+		final int length;
+
+		TrackedArray(int size) {
+			this.length = Math.max(0, size);
+			this.elements = new Object[Math.min(this.length, LIMIT)];
+		}
+
+		Object get(int at) {
+			return at >= 0 && at < elements.length ? elements[at] : null;
+		}
+
+		void set(int at, Object value) {
+			if (at >= 0 && at < elements.length) elements[at] = value;
 		}
 	}
 
@@ -475,8 +491,16 @@ public final class TFGeometryBridge {
 	}
 
 	private static boolean isPoseMethod(MethodNode method) {
-		return !"<init>".equals(method.name) && !"<clinit>".equals(method.name)
-			&& ("(FFFFFF)V".equals(method.desc) || "(FFFFFFZ)V".equals(method.desc));
+		if ("<init>".equals(method.name) || "<clinit>".equals(method.name)) return false;
+		if (!Type.VOID_TYPE.equals(Type.getReturnType(method.desc))) return false;
+		Type[] params = Type.getArgumentTypes(method.desc);
+		if (params.length < 6 || params.length > 7) return false;
+		for (int i = 0; i < 6; i++) {
+			if (params[i].getSort() != Type.FLOAT) return false;
+		}
+		if (params.length == 6) return true;
+		int trailing = params[6].getSort();
+		return trailing == Type.BOOLEAN || trailing == Type.OBJECT;
 	}
 
 	private static final class Interpreter {
@@ -492,7 +516,11 @@ public final class TFGeometryBridge {
 
 		private AbstractInsnNode jumped;
 
-		private static final double[] REST_ARGUMENTS = {0, 0, 0, 0, 0, 0, 0};
+		private static final double[] REST_ARGUMENTS = {0, 0, 0, 0, 0, 0};
+
+		private final Map<String, int[]> boxOffsets = new HashMap<>();
+
+		private Map<String, MethodNode> declared;
 
 		Interpreter(ClassNode owner, Map<String, MethodNode> ctors, Manifest manifest, Extraction out) {
 			this.owner = owner;
@@ -518,6 +546,13 @@ public final class TFGeometryBridge {
 		}
 
 		void run(MethodNode method, double[] args) {
+			Object[] boxed = new Object[args.length];
+			for (int i = 0; i < args.length; i++) boxed[i] = args[i];
+			run(method, boxed);
+		}
+
+		void run(MethodNode method, Object[] args) {
+
 			if (depth++ > 8) {
 				if (!pose) out.problems.add("constructor delegation is too deep to follow");
 				return;
@@ -535,9 +570,19 @@ public final class TFGeometryBridge {
 			List<Object> stack = new ArrayList<>();
 			AbstractInsnNode insn = method.instructions.getFirst();
 
-			int budget = method.instructions.size() * 4 + 64;
+			final int allowance = method.instructions.size() * 8 + 256;
+			int budget = allowance;
 			try {
-				while (insn != null && budget-- > 0) {
+				while (insn != null) {
+					if (budget-- <= 0) {
+
+						if (!pose) {
+							out.problems.add("the constructor is still running after " + allowance
+								+ " instructions, so it loops in a way this cannot bound -- the boxes read so far"
+								+ " are almost certainly not all of them");
+						}
+						return;
+					}
 					jumped = null;
 					if (!step(insn, stack, locals)) return;
 					insn = jumped != null ? jumped : insn.getNext();
@@ -565,13 +610,8 @@ public final class TFGeometryBridge {
 				taken = isForward(insn, ((org.objectweb.asm.tree.JumpInsnNode) insn).label);
 			}
 			if (!taken) return true;
-			AbstractInsnNode label = ((org.objectweb.asm.tree.JumpInsnNode) insn).label;
 
-			if (!isForward(insn, label) && !pose) {
-				out.problems.add("constructor jumps backwards, which this cannot follow");
-				return false;
-			}
-			jumped = label;
+			jumped = ((org.objectweb.asm.tree.JumpInsnNode) insn).label;
 			return true;
 		}
 
@@ -651,8 +691,10 @@ public final class TFGeometryBridge {
 					push(stack, (double) (op - Opcodes.FCONST_0));
 				case Opcodes.BIPUSH, Opcodes.SIPUSH -> push(stack, (double) ((IntInsnNode) insn).operand);
 				case Opcodes.LDC -> {
+
 					Object value = ((LdcInsnNode) insn).cst;
-					push(stack, value instanceof Number n ? (Object) n.doubleValue() : null);
+					push(stack, value instanceof Number n ? (Object) n.doubleValue()
+						: value instanceof String s ? s : null);
 				}
 				case Opcodes.ILOAD, Opcodes.FLOAD, Opcodes.ALOAD -> push(stack, locals[((VarInsnNode) insn).var]);
 				case Opcodes.ISTORE, Opcodes.FSTORE, Opcodes.ASTORE -> locals[((VarInsnNode) insn).var] = pop(stack);
@@ -679,26 +721,34 @@ public final class TFGeometryBridge {
 					String type = ((TypeInsnNode) insn).desc;
 					push(stack, type.equals(rendererType) ? new Bone() : new PendingNew(type));
 				}
-				case Opcodes.ANEWARRAY -> {
+				case Opcodes.ANEWARRAY, Opcodes.NEWARRAY -> {
+
 					Object size = pop(stack);
-					push(stack, size instanceof Double d ? new BoneArray((int) (double) d) : null);
+					push(stack, size instanceof Double d ? new TrackedArray((int) (double) d) : null);
 				}
-				case Opcodes.AASTORE -> {
+				case Opcodes.ARRAYLENGTH -> {
+					Object array = pop(stack);
+					push(stack, array instanceof TrackedArray a ? (Object) (double) a.length : null);
+				}
+				case Opcodes.AASTORE, Opcodes.IASTORE, Opcodes.BASTORE, Opcodes.CASTORE, Opcodes.SASTORE,
+					Opcodes.FASTORE, Opcodes.DASTORE, Opcodes.LASTORE -> {
+
 					Object value = pop(stack);
 					Object index = pop(stack);
 					Object array = pop(stack);
-					if (array instanceof BoneArray a && index instanceof Double i && value instanceof Bone bone) {
+					if (array instanceof TrackedArray a && index instanceof Double i) {
 						int at = (int) (double) i;
-						if (at >= 0 && at < a.elements.length) a.elements[at] = bone;
-						bone.slot = a.field + "[" + at + "]";
+						a.set(at, value);
+
+						if (value instanceof Bone bone) bone.slot = a.field + "[" + at + "]";
 					}
 				}
-				case Opcodes.AALOAD -> {
+				case Opcodes.AALOAD, Opcodes.IALOAD, Opcodes.BALOAD, Opcodes.CALOAD, Opcodes.SALOAD,
+					Opcodes.FALOAD, Opcodes.DALOAD, Opcodes.LALOAD -> {
 					Object index = pop(stack);
 					Object array = pop(stack);
-					push(stack, array instanceof BoneArray a && index instanceof Double i
-						&& (int) (double) i >= 0 && (int) (double) i < a.elements.length
-						? a.elements[(int) (double) i] : null);
+					push(stack, array instanceof TrackedArray a && index instanceof Double i
+						? a.get((int) (double) i) : null);
 				}
 				case Opcodes.GETSTATIC -> push(stack, null);
 				case Opcodes.PUTSTATIC -> pop(stack);
@@ -725,7 +775,7 @@ public final class TFGeometryBridge {
 					} else if (target == THIS) {
 						if (value instanceof Bone bone) {
 							bone.slot = field.name;
-						} else if (value instanceof BoneArray array) {
+						} else if (value instanceof TrackedArray array) {
 							array.field = field.name;
 						}
 						fields.put(field.name, value);
@@ -762,10 +812,19 @@ public final class TFGeometryBridge {
 				case Opcodes.INVOKESPECIAL -> {
 					MethodInsnNode call = (MethodInsnNode) insn;
 					Type[] params = Type.getArgumentTypes(call.desc);
-					double[] args = popArgs(stack, params);
+					Object[] values = popObjects(stack, params);
+					double[] args = numbers(values);
 					Object target = pop(stack);
+					if (!"<init>".equals(call.name)) {
+
+						if (target == THIS && call.owner.equals(owner.name)) {
+							MethodNode helper = helper(call.name, call.desc);
+							if (helper != null) run(helper, values);
+						}
+						if (!Type.VOID_TYPE.equals(Type.getReturnType(call.desc))) push(stack, null);
+						return true;
+					}
 					if (pose) return true;
-					if (!"<init>".equals(call.name)) return true;
 					if (target instanceof PendingNew pending && rendererType == null
 						&& isRendererCtor(params)) {
 
@@ -779,6 +838,10 @@ public final class TFGeometryBridge {
 						&& call.owner.equals(rendererType)) {
 
 						applyRendererCtor(bone, new double[0], new Type[0]);
+
+						for (Object value : values) {
+							if (value instanceof String name) bone.boxName = name;
+						}
 					} else if (target == THIS) {
 						if (call.owner.equals(owner.name)) {
 							MethodNode delegate = ctors.get(call.desc);
@@ -786,7 +849,7 @@ public final class TFGeometryBridge {
 								out.problems.add("constructor delegates to a missing " + call.desc);
 								return false;
 							}
-							run(delegate, args);
+							run(delegate, values);
 						} else {
 							out.superArgs = args;
 							out.superIsPlainBase = params.length == 0;
@@ -809,8 +872,16 @@ public final class TFGeometryBridge {
 						return true;
 					}
 
-					double[] args = popArgs(stack, params);
+					Object[] values = popObjects(stack, params);
+					double[] args = numbers(values);
 					Object target = pop(stack);
+
+					if (target == THIS && "(Ljava/lang/String;II)".equals(shape)
+						&& values[0] instanceof String name && helper(call.name, call.desc) == null) {
+						boxOffsets.put(name, new int[]{(int) args[1], (int) args[2]});
+						if (!Type.VOID_TYPE.equals(Type.getReturnType(call.desc))) push(stack, null);
+						return true;
+					}
 					if (!Type.VOID_TYPE.equals(Type.getReturnType(call.desc))) {
 
 						push(stack, returnsRenderer(call) ? target : null);
@@ -825,9 +896,16 @@ public final class TFGeometryBridge {
 					switch (shape) {
 						case "(FFFIIIF)" -> addBox(bone, args, (float) args[6]);
 						case "(FFFIII)" -> addBox(bone, args, 0.0F);
-						case "(Ljava/lang/String;FFFIII)" ->
+						case "(Ljava/lang/String;FFFIII)" -> {
 
+							int[] offset = boxOffsets.get((bone.boxName == null ? "" : bone.boxName + ".")
+								+ (values[0] instanceof String name ? name : ""));
+							if (offset != null) {
+								bone.u = offset[0];
+								bone.v = offset[1];
+							}
 							addBox(bone, shift(args, 1), 0.0F);
+						}
 						case "(FFF)" -> {
 							bone.pointX = (float) args[0];
 							bone.pointY = (float) args[1];
@@ -953,11 +1031,28 @@ public final class TFGeometryBridge {
 			return meaning == null ? "" : meaning;
 		}
 
+		private MethodNode helper(String name, String desc) {
+			if (declared == null) {
+				declared = new HashMap<>();
+				for (MethodNode method : owner.methods) declared.put(method.name + method.desc, method);
+			}
+			return declared.get(name + desc);
+		}
+
 		private double[] popArgs(List<Object> stack, Type[] params) {
-			double[] args = new double[params.length];
-			for (int i = params.length - 1; i >= 0; i--) {
-				Object value = pop(stack);
-				args[i] = value instanceof Double d ? d : Double.NaN;
+			return numbers(popObjects(stack, params));
+		}
+
+		private Object[] popObjects(List<Object> stack, Type[] params) {
+			Object[] values = new Object[params.length];
+			for (int i = params.length - 1; i >= 0; i--) values[i] = pop(stack);
+			return values;
+		}
+
+		private static double[] numbers(Object[] values) {
+			double[] args = new double[values.length];
+			for (int i = 0; i < values.length; i++) {
+				args[i] = values[i] instanceof Double d ? d : Double.NaN;
 			}
 			return args;
 		}
@@ -1262,20 +1357,30 @@ public final class TFGeometryBridge {
 		return (min + max) / 2.0;
 	}
 
+	static String renameKey(ModelEntry entry, String slot) {
+		if (entry.renames.containsKey(slot)) return slot;
+		int bracket = slot == null ? -1 : slot.indexOf('[');
+		if (bracket < 0 || !slot.endsWith("]")) return null;
+		String wildcard = slot.substring(0, bracket) + "[*]";
+		return entry.renames.containsKey(wildcard) ? wildcard : null;
+	}
+
 	private static List<Bone> rename(List<Bone> bones, ModelEntry entry) {
 
 		Map<String, String> nameOfSlot = new LinkedHashMap<>();
 		for (Bone bone : bones) {
 			String name = bone.name != null ? bone.name : bone.slot;
-			if (entry.renames.containsKey(bone.slot)) name = entry.renames.get(bone.slot);
+			String key = renameKey(entry, bone.slot);
+			if (key != null) name = entry.renames.get(key);
 			if (name != null) nameOfSlot.put(bone.slot, name);
 		}
 
 		List<Bone> kept = new ArrayList<>();
 		for (Bone bone : bones) {
 			String name = bone.name != null ? bone.name : bone.slot;
-			if (entry.renames.containsKey(bone.slot)) {
-				name = entry.renames.get(bone.slot);
+			String key = renameKey(entry, bone.slot);
+			if (key != null) {
+				name = entry.renames.get(key);
 				if (name == null) continue;
 			}
 			bone.name = name;
